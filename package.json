@@ -1,0 +1,35 @@
+{
+  "name": "backendcongreso",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "vercel-start": "npm run build && node dist/index.js",
+    "dev": "nodemon dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/express-fileupload": "^1.5.1",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.10.2",
+    "nodemon": "^3.1.9",
+    "supabase": "^2.1.1",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.47.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-fileupload": "^1.5.1",
+    "fs": "^0.0.1-security",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.16"
+  }
+}
