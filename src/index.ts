@@ -13,10 +13,10 @@ app.use(express.urlencoded({ extended: true }));
 
 //Servidor Raiz.
 app.get('/', (req: Request, res: Response) => {
-    res.send('Root server is on siuuuuuuuuu todo funciona bien ');
+    res.send('Root server is on siuuuuuuuuu :3 ');
 });
 
 //Mensaje de consola que dice que funciona.
 app.listen(port, () => {
-    console.log(`Servidor corriendo en el puerto: ${port}`);
+    console.log(`Servidor corriendo en el puerto: ${port} :p`);
 });
