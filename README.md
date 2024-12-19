@@ -1,38 +1,29 @@
-🎉 Backend Congreso
-Este proyecto utiliza Supabase y está desarrollado con TypeScript para gestionar la lógica del backend del Congreso. ¡Sigue los pasos a continuación para configurarlo y ejecutarlo en tu máquina!
+📦 Instalación del Proyecto
 
-🚀 Instalación
-Instala las dependencias del proyecto
-
-bash
-Copiar código
+1️⃣ Instalar dependencias
+Ejecuta el siguiente comando para instalar todas las dependencias necesarias:
 npm install
-Inicia sesión en Supabase
 
-bash
-Copiar código
+2️⃣ Iniciar sesión en Supabase
+Asegúrate de estar autenticado con tu cuenta de Supabase:
 npx supabase login
-Inicializa Supabase
 
-bash
-Copiar código
+3️⃣ Inicializar Supabase
+Configura tu entorno local con:
 npx supabase init
-📂 Actualización del Schema Local
-Para generar los tipos de TypeScript según el esquema de Supabase, utiliza el siguiente comando:
 
-bash
-Copiar código
+🛠 Generar Tipos del Esquema
+Para mantener el esquema de la base de datos sincronizado y generar los tipos de TypeScript, utiliza:
 npx supabase gen types typescript --project-id "qlxfbquojsmjxhmguhbr" --schema congreso > database.types.ts
-🔧 Traducción de TypeScript a JavaScript
-Para traducir tu proyecto de TypeScript a JavaScript de forma automática mientras trabajas, ejecuta:
 
-bash
-Copiar código
+📌 Nota: Este comando es esencial para que las definiciones de la base de datos estén actualizadas y listas para usar en el proyecto.
+
+🔄 Compilación de TypeScript a JavaScript
+Durante el desarrollo, puedes traducir automáticamente tu código de TypeScript a JavaScript ejecutando:
 npx tsc --watch
-🏃 Ejecución del Proyecto
-Para ejecutar el servidor en modo desarrollo, usa:
+Esto iniciará un proceso que compilará tu código cada vez que realices cambios.
 
-bash
-Copiar código
+
+🚀 Ejecutar el Proyecto
+Para iniciar el servidor en modo desarrollo, simplemente ejecuta:
 npm run dev
-¡Y listo! 🎉 Ahora estás listo para trabajar en el backend del Congreso. Si tienes alguna duda, revisa la documentación o comunícate con el equipo. 
