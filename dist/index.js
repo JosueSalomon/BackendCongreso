@@ -19,7 +19,7 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use('/prueba', prueba_route_1.default);
 //Servidor Raiz.
 app.get('/', (req, res) => {
-    res.send('Root server is on siuuuuuuuuu :3 ');
+    res.send('Root server is on :3 ');
 });
 //Mensaje de consola que dice que funciona.
 app.listen(port, () => {
