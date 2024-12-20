@@ -14,7 +14,7 @@ npx supabase init
 
 🛠 Generar Tipos del Esquema
 Para mantener el esquema de la base de datos sincronizado y generar los tipos de TypeScript, utiliza:
-npx supabase gen types typescript --project-id "qlxfbquojsmjxhmguhbr" --schema congreso > database.types.ts
+npx supabase gen types typescript --project-id "qlxfbquojsmjxhmguhbr" --schema congreso > src/database.types.ts
 
 📌 Nota: Este comando es esencial para que las definiciones de la base de datos estén actualizadas y listas para usar en el proyecto.
 
