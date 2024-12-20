@@ -20,7 +20,7 @@ app.use('/prueba', pruebaRouter);
 
 //Servidor Raiz.
 app.get('/', (req: Request, res: Response) => {
-    res.send('Root server is on :3 ');
+    res.send('Root server is on yei :3 ');
 });
 
 //Mensaje de consola que dice que funciona.
