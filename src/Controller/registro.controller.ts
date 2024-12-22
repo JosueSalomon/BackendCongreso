@@ -17,7 +17,6 @@ export const RegistrarUsuario = async (req: Request, res: Response): Promise<voi
       codigo_recibo
     } = req.body;
 
-    // Validar datos requeridos
     if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
       res.status(400).json({ message: 'Faltan datos requeridos en la solicitud' });
       return;

@@ -3,6 +3,7 @@ import {enviarCodigo, verificarCodigo, actualizarCorreo} from '../Controller/ver
 
 const router = express.Router();
 
+
 router.post('/verificarcodigo', verificarCodigo);
 router.post('/actualizarcorreo', actualizarCorreo);
 router.post('/enviarcodigo', enviarCodigo);

@@ -14,7 +14,7 @@ export class registro {
     img_recibo: string,
     codigo_recibo: string
   ) {
-    // Determinar si el correo es institucional y asignar valores predeterminados
+    
     let externo = false;
     let estudiante = false;
 

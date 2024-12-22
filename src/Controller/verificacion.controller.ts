@@ -3,7 +3,6 @@ import { sendVerificationEmail } from '../services/emailservice';
 import { verificacion } from '../models/verificacion.model';
 import validator from 'email-validator';
 
-
 export const enviarCodigo = async (req: Request, res: Response): Promise<any> => {
     try {
         const { id_usuario, correo } = req.body;
@@ -14,10 +13,8 @@ export const enviarCodigo = async (req: Request, res: Response): Promise<any> =>
 
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // Guarda el código en la base de datos
         await verificacion.guardarCodigoVerificacion(id_usuario, codigo_verificacion);
 
-        // Envía el correo al usuario
         await sendVerificationEmail(correo, codigo_verificacion);
 
         return res.status(200).json({ message: 'Código de verificación enviado.' });
@@ -30,7 +27,6 @@ export const enviarCodigo = async (req: Request, res: Response): Promise<any> =>
     }
 };
     
-        // Endpoint para verificar un código
         export const verificarCodigo= async(req: Request, res: Response) => {
             const { id_usuario, codigo_verificacion } = req.body;
     
@@ -51,7 +47,6 @@ export const enviarCodigo = async (req: Request, res: Response): Promise<any> =>
             }
         }
     
-        // Endpoint para actualizar el correo del usuario
         export const actualizarCorreo= async(req: Request, res: Response) => {
             const { id_usuario, nuevo_correo } = req.body;
     

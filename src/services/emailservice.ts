@@ -19,7 +19,6 @@ export const sendVerificationEmail = async (to: string, code: string): Promise<v
             text: `Tu código de verificación es: ${code}`,
             html: `<p>Tu código de verificación es: <b>${code}</b></p>`, // Cuerpo en HTML
         });
-
         console.log('Correo enviado: %s', info.messageId);
     } catch (error) {
         console.error('Error enviando correo:', error);

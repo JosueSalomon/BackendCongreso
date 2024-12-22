@@ -20,7 +20,6 @@ export class verificacion {
         }
     }
 
-    // Verificar el código proporcionado por el usuario
     static async verificarCodigo(id_usuario: number, codigo_verificacion: string): Promise<boolean> {
         try {
             const { data, error } = await supabase.rpc('p_verificar_codigo', {

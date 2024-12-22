@@ -7,7 +7,6 @@ import pruebaRouter from './routes/prueba.route'
 import registroRouter from './routes/registro.route';
 import verificacionRouter from './routes/verificacion.route';
 
-
 dotenv.config();
 require('dotenv').config();
 const app: Express = express();
