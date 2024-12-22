@@ -4,6 +4,7 @@ import cors from 'cors';
 
 // importacion rutas
 import pruebaRouter from './routes/prueba.route'
+import subidaReciboRouter from './routes/subidaRecibo.route'
 
 dotenv.config();
 require('dotenv').config();
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //rutas
 app.use('/prueba', pruebaRouter);
+app.use('/pago', subidaReciboRouter)
 
 //Servidor Raiz.
 app.get('/', (req: Request, res: Response) => {

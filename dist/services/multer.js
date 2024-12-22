@@ -4,10 +4,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const multer_1 = __importDefault(require("multer"));
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+// Ruta donde se guardarán los archivos
+const uploadPath = path_1.default.join(__dirname, '..', '..', 'uploads', 'receipts');
+// Crear la carpeta si no existe
+if (!fs_1.default.existsSync(uploadPath)) {
+    fs_1.default.mkdirSync(uploadPath, { recursive: true });
+}
 //Configurar multer para almacenar imagenes
 const storage = multer_1.default.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); //Carpeta donde se guardaran los recibos.
+        cb(null, uploadPath); //Carpeta donde se guardaran los recibos.
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname); //Aqui le asignamos un nombre al archivo
