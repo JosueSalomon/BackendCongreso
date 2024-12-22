@@ -10,6 +10,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error("Faltan las variables de entorno SUPABASE_URL o SUPABASE_ANON_KEY");
 }
 
+
 const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, { db: { schema: 'congreso' } });
 
 export default supabase;

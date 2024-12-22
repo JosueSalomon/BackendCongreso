@@ -8,6 +8,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const cors_1 = __importDefault(require("cors"));
 // importacion rutas
 const prueba_route_1 = __importDefault(require("./routes/prueba.route"));
+const registro_route_1 = __importDefault(require("./routes/registro.route"));
+const verificacion_route_1 = __importDefault(require("./routes/verificacion.route"));
 const subidaRecibo_route_1 = __importDefault(require("./routes/subidaRecibo.route"));
 dotenv_1.default.config();
 require('dotenv').config();
@@ -18,6 +20,8 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 //rutas
 app.use('/prueba', prueba_route_1.default);
+app.use('/registro', registro_route_1.default);
+app.use('/verificacion', verificacion_route_1.default);
 app.use('/pago', subidaRecibo_route_1.default);
 //Servidor Raiz.
 app.get('/', (req, res) => {
