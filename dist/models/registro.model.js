@@ -17,7 +17,6 @@ const connection_1 = __importDefault(require("../utils/connection"));
 class registro {
     static registrarusuario(nombres_1, apellidos_1, dni_1, telefono_1, fecha_nacimiento_1, genero_1) {
         return __awaiter(this, arguments, void 0, function* (nombres, apellidos, dni, telefono, fecha_nacimiento, genero, identificador_unah = null, correo, contrasena, img_recibo, codigo_recibo) {
-            // Determinar si el correo es institucional y asignar valores predeterminados
             let externo = false;
             let estudiante = false;
             if (correo.endsWith('@unah.edu.hn')) {

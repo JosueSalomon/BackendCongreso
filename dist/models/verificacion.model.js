@@ -36,7 +36,6 @@ class verificacion {
             }
         });
     }
-    // Verificar el código proporcionado por el usuario
     static verificarCodigo(id_usuario, codigo_verificacion) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

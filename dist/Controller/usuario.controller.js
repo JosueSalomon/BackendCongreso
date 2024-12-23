@@ -12,10 +12,63 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actualizarCorreo = exports.verificarCodigo = exports.enviarCodigo = void 0;
+exports.actualizarCorreo = exports.verificarCodigo = exports.enviarCodigo = exports.RegistrarUsuario = exports.subirRecibo = void 0;
 const emailservice_1 = require("../services/emailservice");
-const verificacion_model_1 = require("../models/verificacion.model");
+const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
+const cloudinary_1 = __importDefault(require("../services/cloudinary"));
+const subirRecibo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Verificamos si no hay archivo en la solicitud
+        if (!req.file) {
+            res.status(400).json({
+                message: "Debe proporcionar un recibo de comprobante del pago",
+                codigoResultado: 0,
+            });
+            return;
+        }
+        console.log(req.body.nombre);
+        //Subimos el archivo a cloudinary.
+        const resultadoSubirArchivo = yield cloudinary_1.default.uploader.upload(req.file.path);
+        //borrado del archivo localmente.
+        // Si el archivo está presente, lo retornamos con los datos del archivo
+        res.status(200).json({
+            message: "Recibo subido correctamente",
+            codigoResultado: 1,
+            archivo: resultadoSubirArchivo, // Aquí puedes procesar el archivo más adelante
+        });
+        return;
+    }
+    catch (error) {
+        console.error("Error al procesar el recibo:", error); // Para registrar el error en el servidor
+        res.status(500).json({
+            message: 'Error ocurrido: ${error.message}',
+            codigoResultado: 0,
+        });
+        return;
+    }
+});
+exports.subirRecibo = subirRecibo;
+const RegistrarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, id_qr, validacion } = req.body;
+        if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
+            res.status(400).json({ message: 'Faltan datos requeridos en la solicitud' });
+            return;
+        }
+        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah || '', correo, contrasena, img_recibo || '', codigo_recibo || '', id_qr, validacion);
+        res.status(201).json(resultado);
+    }
+    catch (error) {
+        console.error('Error al registrar usuario:', error);
+        const err = error;
+        res.status(500).json({
+            message: 'Hubo un problema al registrar el usuario',
+            error: err.message || error,
+        });
+    }
+});
+exports.RegistrarUsuario = RegistrarUsuario;
 const enviarCodigo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id_usuario, correo } = req.body;
@@ -23,7 +76,7 @@ const enviarCodigo = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             return res.status(400).json({ message: 'Correo electrónico inválido.' });
         }
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
-        yield verificacion_model_1.verificacion.guardarCodigoVerificacion(id_usuario, codigo_verificacion);
+        yield usuario_model_1.usuario.usuariocodigocorreo(id_usuario, codigo_verificacion);
         yield (0, emailservice_1.sendVerificationEmail)(correo, codigo_verificacion);
         return res.status(200).json({ message: 'Código de verificación enviado.' });
     }
@@ -44,7 +97,7 @@ const verificarCodigo = (req, res) => __awaiter(void 0, void 0, void 0, function
         return;
     }
     try {
-        const isValid = yield verificacion_model_1.verificacion.verificarCodigo(id_usuario, codigo_verificacion);
+        const isValid = yield usuario_model_1.usuario.usuarioverificarcorreo(id_usuario, codigo_verificacion);
         if (isValid) {
             res.status(200).json({ message: 'Código verificado correctamente.' });
         }
@@ -64,7 +117,7 @@ const actualizarCorreo = (req, res) => __awaiter(void 0, void 0, void 0, functio
         return;
     }
     try {
-        yield verificacion_model_1.verificacion.actualizarCorreoUsuario(id_usuario, nuevo_correo);
+        yield usuario_model_1.usuario.usuarioexternoactualizarcorreo(id_usuario, nuevo_correo);
         res.status(200).json({ message: 'Correo actualizado correctamente.' });
     }
     catch (error) {

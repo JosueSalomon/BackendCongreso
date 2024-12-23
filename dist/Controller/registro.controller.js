@@ -14,7 +14,6 @@ const registro_model_1 = require("../models/registro.model");
 const RegistrarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { nombres, apellidos, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo } = req.body;
-        // Validar datos requeridos
         if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
             res.status(400).json({ message: 'Faltan datos requeridos en la solicitud' });
             return;
