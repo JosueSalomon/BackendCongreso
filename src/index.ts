@@ -4,7 +4,8 @@ import cors from 'cors';
 
 // importacion rutas
 import pruebaRouter from './routes/prueba.route'
-
+import conferenciasRouter from './routes/conferencias.routes'
+import ponentesRouter from './routes/ponentes.route'
 dotenv.config();
 require('dotenv').config();
 const app: Express = express();
@@ -17,6 +18,8 @@ app.use(express.urlencoded({ extended: true }));
 
 //rutas
 app.use('/prueba', pruebaRouter);
+app.use('/conferencias', conferenciasRouter);
+app.use('/ponentes', ponentesRouter);
 
 //Servidor Raiz.
 app.get('/', (req: Request, res: Response) => {
