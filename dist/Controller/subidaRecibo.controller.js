@@ -8,8 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.subirRecibo = void 0;
+const clodinary_1 = __importDefault(require("../services/clodinary"));
 const subirRecibo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Verificamos si no hay archivo en la solicitud
@@ -20,11 +24,15 @@ const subirRecibo = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             });
             return;
         }
+        console.log(req.body.nombre);
+        //Subimos el archivo a cloudinary.
+        const resultadoSubirArchivo = yield clodinary_1.default.uploader.upload(req.file.path);
+        //borrado del archivo localmente.
         // Si el archivo está presente, lo retornamos con los datos del archivo
         res.status(200).json({
             message: "Recibo subido correctamente",
             codigoResultado: 1,
-            archivo: req.file, // Aquí puedes procesar el archivo más adelante
+            archivo: resultadoSubirArchivo, // Aquí puedes procesar el archivo más adelante
         });
         return;
     }

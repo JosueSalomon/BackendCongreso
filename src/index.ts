@@ -17,7 +17,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 //rutas
 app.use('/prueba', pruebaRouter);
 app.use('/registro', registroRouter);

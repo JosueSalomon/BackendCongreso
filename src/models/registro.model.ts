@@ -71,6 +71,7 @@ export class registro {
 
     return data;
   }
+  
 }
 
 

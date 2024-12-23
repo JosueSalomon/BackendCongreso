@@ -18,11 +18,8 @@
     "@types/express-fileupload": "^1.5.1",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.10.2",
-<<<<<<< HEAD
-    "@types/tesseract.js": "^2.0.0",
-=======
     "@types/nodemailer": "^6.4.17",
->>>>>>> origin/moncada
+    "@types/tesseract.js": "^2.0.0",
     "nodemon": "^3.1.9",
     "supabase": "^2.1.1",
     "typescript": "^5.7.2"
@@ -30,11 +27,13 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.47.9",
     "backendcongreso": "file:",
+    "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "email-validator": "^2.0.4",
     "express": "^4.21.2",
     "express-fileupload": "^1.5.1",
+    "firebase": "^11.1.0",
     "fs": "^0.0.1-security",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.16",

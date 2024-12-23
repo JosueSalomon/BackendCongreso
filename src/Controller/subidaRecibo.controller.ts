@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import cloudinary from "../services/clodinary";
 
 export const subirRecibo = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -8,15 +9,19 @@ export const subirRecibo = async (req: Request, res: Response): Promise<void> =>
         message: "Debe proporcionar un recibo de comprobante del pago",
         codigoResultado: 0,
       });
-
       return;
     }
+    console.log(req.body.nombre)
+    //Subimos el archivo a cloudinary.
+    const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
+
+    //borrado del archivo localmente.
 
     // Si el archivo está presente, lo retornamos con los datos del archivo
     res.status(200).json({
       message: "Recibo subido correctamente",
       codigoResultado: 1,
-      archivo: req.file, // Aquí puedes procesar el archivo más adelante
+      archivo: resultadoSubirArchivo, // Aquí puedes procesar el archivo más adelante
     });
     return;
 
