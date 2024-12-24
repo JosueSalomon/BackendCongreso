@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.usuario = void 0;
 const connection_1 = __importDefault(require("../utils/connection")); // Asegúrate de que esta importación sea correcta
 class usuario {
-    static registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, id_qr, validacion) {
+    static registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, id_qr, validacion, codigo_organizador) {
         return __awaiter(this, void 0, void 0, function* () {
             let externo = false;
             let estudiante = false;
@@ -30,7 +30,7 @@ class usuario {
             else {
                 externo = true;
                 estudiante = false;
-                identificador_unah = "";
+                identificador_unah = "1";
             }
             const { data: duplicados, error: errorDuplicados } = yield connection_1.default.rpc('p_verificar_duplicados', {
                 p_dni: dni,
@@ -75,7 +75,8 @@ class usuario {
                 p_img_recibo: img_recibo,
                 p_codigo_recibo: codigo_recibo,
                 p_id_qr: id_qr,
-                p_validacion: validacion
+                p_validacion: validacion,
+                p_codigo_organizador: codigo_organizador
             });
             if (error) {
                 console.error('Error al insertar usuario:', error);

@@ -1,3 +1,4 @@
+import { isNull } from 'util';
 import supabase from '../utils/connection';  // Asegúrate de que esta importación sea correcta
 
 export class usuario {
@@ -17,7 +18,8 @@ export class usuario {
         img_recibo: string,
         codigo_recibo: string,
         id_qr: number,
-        validacion: boolean
+        validacion: boolean,
+        codigo_organizador :string
       ) {
         
         let externo = false;
@@ -32,7 +34,7 @@ export class usuario {
         } else {
           externo = true;
           estudiante = false;
-          identificador_unah = "";
+          identificador_unah = "1";
         }
         const { data: duplicados, error: errorDuplicados } = await supabase.rpc('p_verificar_duplicados', {
             p_dni: dni,
@@ -51,7 +53,7 @@ export class usuario {
             const duplicado = duplicados[0];
             throw new Error(`El campo '${duplicado.campo_duplicado}' con el valor '${duplicado.valor}' ya está en uso.`);
           }
-    
+
         const { data: PersonaData, error: PersonaError } = await supabase.rpc('p_insertar_persona', {
           p_nombres: nombres,
           p_apellidos: apellidos
@@ -85,7 +87,8 @@ export class usuario {
           p_img_recibo: img_recibo,
           p_codigo_recibo: codigo_recibo,
           p_id_qr: id_qr,
-          p_validacion: validacion
+          p_validacion: validacion,
+          p_codigo_organizador: codigo_organizador
         });
     
         if (error) {

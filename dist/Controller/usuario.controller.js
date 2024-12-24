@@ -27,7 +27,6 @@ const subirRecibo = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             });
             return;
         }
-        console.log(req.body.nombre);
         //Subimos el archivo a cloudinary.
         const resultadoSubirArchivo = yield cloudinary_1.default.uploader.upload(req.file.path);
         //borrado del archivo localmente.
@@ -51,12 +50,23 @@ const subirRecibo = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.subirRecibo = subirRecibo;
 const RegistrarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, id_qr, validacion } = req.body;
+        if (!req.file) {
+            res.status(400).json({
+                message: "Debe proporcionar un recibo de comprobante del pago",
+                codigoResultado: 0,
+            });
+            return;
+        }
+        //Subimos el archivo a cloudinary.
+        const resultadoSubirArchivo = yield cloudinary_1.default.uploader.upload(req.file.path);
+        const img_recibo = resultadoSubirArchivo.url;
+        // Elimina todos los datos almacenados en localStorage
+        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, codigo_recibo, id_qr, validacion, codigo_organizador } = req.body;
         if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
             res.status(400).json({ message: 'Faltan datos requeridos en la solicitud' });
             return;
         }
-        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah || '', correo, contrasena, img_recibo || '', codigo_recibo || '', id_qr, validacion);
+        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah || '', correo, contrasena, img_recibo, codigo_recibo || '', id_qr, validacion, codigo_organizador);
         res.status(201).json(resultado);
     }
     catch (error) {

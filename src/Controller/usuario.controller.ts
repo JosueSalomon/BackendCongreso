@@ -14,7 +14,6 @@ export const subirRecibo = async (req: Request, res: Response): Promise<void> =>
       });
       return;
     }
-    console.log(req.body.nombre)
     //Subimos el archivo a cloudinary.
     const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
 
@@ -40,6 +39,18 @@ export const subirRecibo = async (req: Request, res: Response): Promise<void> =>
 
 export const RegistrarUsuario = async (req: Request, res: Response): Promise<void> => {
   try {
+
+    if (!req.file) {
+      res.status(400).json({
+        message: "Debe proporcionar un recibo de comprobante del pago",
+        codigoResultado: 0,
+      });
+      return;
+    }
+    //Subimos el archivo a cloudinary.
+    const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
+    const img_recibo: string = resultadoSubirArchivo.url;
+    // Elimina todos los datos almacenados en localStorage
     const {
       nombres,
       apellidos,
@@ -52,10 +63,10 @@ export const RegistrarUsuario = async (req: Request, res: Response): Promise<voi
       identificador_unah,
       correo,
       contrasena,
-      img_recibo,
       codigo_recibo,
       id_qr,
-      validacion
+      validacion,
+      codigo_organizador
     } = req.body;
 
     if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
@@ -75,10 +86,11 @@ export const RegistrarUsuario = async (req: Request, res: Response): Promise<voi
       identificador_unah || '',
       correo,
       contrasena,
-      img_recibo || '',
+      img_recibo,
       codigo_recibo || '',
       id_qr,
-      validacion
+      validacion,
+      codigo_organizador
 
     );
 
@@ -91,9 +103,8 @@ export const RegistrarUsuario = async (req: Request, res: Response): Promise<voi
       error: err.message || error,
     });
   }
-
- 
 }
+
 
 export const enviarCodigo = async (req: Request, res: Response): Promise<any> => {
     try {
