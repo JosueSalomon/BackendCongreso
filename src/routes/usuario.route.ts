@@ -1,13 +1,15 @@
 import express from 'express';
 import upload from '../services/multer'
 
-import {enviarCodigo, verificarCodigo, actualizarCorreo, RegistrarUsuario} from '../Controller/usuario.controller';
+import {cambiarcontrasena, enviarcodigoverificacioncorreo, verificarcodigo, actualizarcorreo, registrarusuario, enviarcodigocambiocontrasena} from '../Controller/usuario.controller';
 
 const router = express.Router();
 
-router.post('/verificarcodigo', verificarCodigo);
-router.post('/actualizarcorreo', actualizarCorreo);
-router.post('/enviarcodigo', enviarCodigo);
-router.post('/registrar', upload.single('recibo') ,RegistrarUsuario);
+router.post('/verificarcodigo', verificarcodigo);
+router.post('/actualizarcorreo', actualizarcorreo);
+router.post('/verificacion/correo', enviarcodigoverificacioncorreo);
+router.post('/verificacion/contrasena', enviarcodigocambiocontrasena);
+router.post('/registrar', upload.single('recibo') ,registrarusuario);
+router.post('/cambiarcontrasena', cambiarcontrasena);
 
 export default router;

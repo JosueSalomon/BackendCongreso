@@ -100,11 +100,12 @@ export class usuario {
       }
     
     
-    static async usuariocodigocorreo(id_usuario: number, codigo_verificacion: string): Promise<any>  {
+    static async usuariocodigocorreo(id_usuario: number, codigo_verificacion: string, id_tipo_verificacion: number): Promise<any>  {
         try {
             const { data, error } = await supabase.rpc('p_guardar_codigo_verificacion', {
                 p_id_usuario: id_usuario,
-                p_codigo_verificacion: codigo_verificacion
+                p_codigo_verificacion: codigo_verificacion,
+                p_id_tipo_verificacion: id_tipo_verificacion
             });
         
             if (error) throw error;
@@ -156,6 +157,27 @@ export class usuario {
             }
         }
     }
+
+    static async cambiarcontrasena(id_usuario: number, contrasena_actual: string, nueva_contrasena: string): Promise<string> {
+      try {
+      const { data, error } = await supabase.rpc('p_cambiar_contrasena', {
+        p_id_usuario: id_usuario,
+        p_contrasena: contrasena_actual,
+        p_nueva_contrasena: nueva_contrasena,
+      });
+  
+      if (error) {
+        throw error;
+          }
+    return data;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+        throw new Error(error.message);
+              } else {
+        throw new Error('Error desconocido');
+            }
+          }
+        }
 
     }
 

@@ -6,7 +6,7 @@ import cloudinary from "../services/cloudinary";
 import fs from 'fs';
 
 
-export const RegistrarUsuario = async (req: Request, res: Response): Promise<void> => {
+export const registrarusuario = async (req: Request, res: Response): Promise<void> => {
   try {
 
     if (!req.file) {
@@ -85,7 +85,7 @@ export const RegistrarUsuario = async (req: Request, res: Response): Promise<voi
 }
 
 
-export const enviarCodigo = async (req: Request, res: Response): Promise<any> => {
+export const enviarcodigoverificacioncorreo = async (req: Request, res: Response): Promise<any> => {
     try {
         const { id_usuario, correo } = req.body;
 
@@ -94,12 +94,13 @@ export const enviarCodigo = async (req: Request, res: Response): Promise<any> =>
         }
 
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
+        const id_tipo_verificacion = 1;
 
-        await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion);
+        await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
 
         await sendVerificationEmail(correo, codigo_verificacion);
 
-        return res.status(200).json({ message: 'Código de verificación enviado.' });
+        return res.status(200).json({ message: 'Código de verificación de correo enviado correctamente.' });
     } catch (error: unknown) {
         if (error instanceof Error) {
             return res.status(500).json({ message: error.message });
@@ -108,8 +109,34 @@ export const enviarCodigo = async (req: Request, res: Response): Promise<any> =>
         }
     }
 };
+
+
+export const enviarcodigocambiocontrasena = async (req: Request, res: Response): Promise<any> => {
+  try {
+      const { id_usuario, correo } = req.body;
+
+      if (!validator.validate(correo)) {
+          return res.status(400).json({ message: 'Correo electrónico inválido.' });
+      }
+
+      const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
+      const id_tipo_verificacion = 2;
+
+      await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+
+      await sendVerificationEmail(correo, codigo_verificacion);
+
+      return res.status(200).json({ message: 'Código de verificación para cambio de contraseña enviado correctamente.' });
+  } catch (error: unknown) {
+      if (error instanceof Error) {
+          return res.status(500).json({ message: error.message });
+      } else {
+          return res.status(500).json({ message: 'Error desconocido.' });
+      }
+  }
+};
     
-        export const verificarCodigo= async(req: Request, res: Response) => {
+        export const verificarcodigo = async(req: Request, res: Response) => {
             const { id_usuario, codigo_verificacion } = req.body;
     
             if (!id_usuario || !codigo_verificacion) {
@@ -129,7 +156,7 @@ export const enviarCodigo = async (req: Request, res: Response): Promise<any> =>
             }
         }
     
-        export const actualizarCorreo= async(req: Request, res: Response) => {
+        export const actualizarcorreo = async(req: Request, res: Response) => {
             const { id_usuario, nuevo_correo } = req.body;
     
             if (!id_usuario || !nuevo_correo) {
@@ -144,5 +171,29 @@ export const enviarCodigo = async (req: Request, res: Response): Promise<any> =>
                 res.status(500).json({ error: error instanceof Error ? error.message : 'Error desconocido.' });
             }
         }
+
+        export const cambiarcontrasena = async (req: Request, res: Response): Promise<any> => {
+            const { id_usuario, contrasena_actual, nueva_contrasena } = req.body;
+        
+            if (!id_usuario || !contrasena_actual || !nueva_contrasena) {
+              return res.status(400).json({ message: 'Todos los campos son requeridos.' });
+            }
+        
+            try {
+              const resultado = await usuario.cambiarcontrasena(
+                id_usuario,
+                contrasena_actual,
+                nueva_contrasena
+              );
+              res.status(201).json(resultado);
+            } catch (error) {
+              console.error('Error al cambiar contraseña:', error);
+              const err = error as Error;
+              res.status(500).json({
+                message: 'Hubo un problema al cambiar contraseña',
+                error: err.message || error,
+              });
+        }
+      }
     
 

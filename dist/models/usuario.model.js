@@ -85,12 +85,13 @@ class usuario {
             return data;
         });
     }
-    static usuariocodigocorreo(id_usuario, codigo_verificacion) {
+    static usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { data, error } = yield connection_1.default.rpc('p_guardar_codigo_verificacion', {
                     p_id_usuario: id_usuario,
-                    p_codigo_verificacion: codigo_verificacion
+                    p_codigo_verificacion: codigo_verificacion,
+                    p_id_tipo_verificacion: id_tipo_verificacion
                 });
                 if (error)
                     throw error;
@@ -138,6 +139,29 @@ class usuario {
                 });
                 if (error)
                     throw error;
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(error.message);
+                }
+                else {
+                    throw new Error('Error desconocido');
+                }
+            }
+        });
+    }
+    static cambiarcontrasena(id_usuario, contrasena_actual, nueva_contrasena) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data, error } = yield connection_1.default.rpc('p_cambiar_contrasena', {
+                    p_id_usuario: id_usuario,
+                    p_contrasena: contrasena_actual,
+                    p_nueva_contrasena: nueva_contrasena,
+                });
+                if (error) {
+                    throw error;
+                }
+                return data;
             }
             catch (error) {
                 if (error instanceof Error) {
