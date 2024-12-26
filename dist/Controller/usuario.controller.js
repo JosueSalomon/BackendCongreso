@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cambiarcontrasena = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
+exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
 const emailservice_1 = require("../services/emailservice");
 const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
@@ -163,6 +163,74 @@ const actualizarcorreo = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.actualizarcorreo = actualizarcorreo;
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { correo, contrasenia } = req.body;
+        if (!correo || !contrasenia) {
+            return res.status(401).json({
+                message: "Correo y contraseña son requeridos",
+                codigoResultado: 0,
+                data: []
+            });
+        }
+        const resultado = yield usuario_model_1.usuario.login(correo, contrasenia);
+        return res.status(200).json({
+            message: "Inicio de sesión exitoso",
+            codigoResultado: 1,
+            data: resultado
+        });
+    }
+    catch (error) {
+        // Manejo de errores
+        if (error instanceof Error && error.message === "Credenciales inválidas") {
+            return res.status(401).json({
+                message: "Credenciales inválidas",
+                codigoResultado: 0,
+                data: []
+            });
+        }
+        // Error desconocido o interno
+        return res.status(500).json({
+            message: error instanceof Error ? error.message : "Error interno del servidor",
+            codigoResultado: -1,
+            data: []
+        });
+    }
+});
+exports.login = login;
+const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const correo = req.body.correo;
+        if (!correo) {
+            return res.status(401).json({
+                message: "Se necesitan credenciales",
+                codigoResultado: 0
+            });
+        }
+        const resultado = yield usuario_model_1.usuario.logout(correo);
+        console.log(resultado);
+        if (resultado === 1) {
+            return res.status(200).json({
+                message: "Cierre de sesión correcto",
+                codigoResultado: 1
+            });
+        }
+        else {
+            return res.status(401).json({
+                message: "No se pudo cerrar sesión o el usuario ya tenia cerrada la sesión, verificar existencia del token",
+                codigoResultado: 0
+            });
+        }
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error instanceof Error ? error.message : "Error interno del servidor",
+            codigoResultado: -1,
+            data: []
+        });
+    }
+});
+exports.logout = logout;
 const cambiarcontrasena = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id_usuario, contrasena_actual, nueva_contrasena } = req.body;
     if (!id_usuario || !contrasena_actual || !nueva_contrasena) {

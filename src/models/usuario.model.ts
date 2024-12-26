@@ -1,5 +1,9 @@
 import { isNull } from 'util';
 import supabase from '../utils/connection';  // Asegúrate de que esta importación sea correcta
+import jwt from "jsonwebtoken";
+import dotenv from 'dotenv'
+import { hacerToken } from '../services/jwt';
+dotenv.config()
 
 export class usuario {
 
@@ -158,6 +162,77 @@ export class usuario {
         }
     }
 
+    static async login(correo: string, contrasenia : string): Promise<any> {
+      try {
+        const { data, error } = await supabase.rpc('p_login', {
+          p_correo : correo,
+          p_contrasenia : contrasenia
+        });
+        if(error){
+          throw new Error(`Ocurrió el siguiente error ${error.message}`)
+        }
+
+        if(!data || data.length === 0 || data.codigo_resultado === 0) {
+          throw new Error("Credenciales inválidas o usuario no verificado");
+        }
+
+        const token = hacerToken(data.correo_salida, data.contrasenia_salida);
+        const resultado = await this.insertarTokenDelUsuario(data.correo_salida, data.contrasenia_salida, token);
+        
+        data.token = token;
+
+        return data;
+      } catch (error: unknown) {
+        if(error instanceof Error){
+          throw new Error(error.message);
+        }else {
+          throw new Error("Error desconocido");
+        }
+      }
+    }
+
+    static async insertarTokenDelUsuario (correo:any, contrasenia:any, token: any):Promise<any> {
+      try {
+        const { data, error } = await supabase.rpc('insertar_token_usuario', {
+          p_correo: correo, 
+          p_contrasenia: contrasenia,
+          p_token: token
+        });
+
+        if(error){
+          throw new Error(`Ocurrió el siguiente error ${error.message}`)
+        }
+
+        console.log(data);
+
+      } catch (error:unknown) {
+        if(error instanceof Error){
+          throw new Error(error.message);
+        }else {
+          throw new Error("Error desconocido");
+        }
+      }
+    }
+
+    static async logout(correo: any){
+      try {
+        const { data, error } = await supabase.rpc('logout', {
+          p_correo : correo
+        });
+
+        if(error){
+          throw new Error(`Ocurrió el siguiente error ${error.message}`)
+        }
+        return data;
+      } catch (error) {
+        if(error instanceof Error){
+          throw new Error(error.message);
+        }else {
+          throw new Error("Error desconocido");
+        }
+      }
+    }
+
     static async cambiarcontrasena(id_usuario: number, contrasena_actual: string, nueva_contrasena: string): Promise<string> {
       try {
       const { data, error } = await supabase.rpc('p_cambiar_contrasena', {
@@ -216,7 +291,14 @@ static async verificarcorreo(idUsuario: number, correo: string): Promise<boolean
 }
 
 
+
 }
+
+
+
+
+
+
 
 
 
