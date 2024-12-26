@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from "path";
 
 // Ruta donde se guardarán los archivos
-const uploadPath = path.join(__dirname, '..', '..', 'uploads', 'receipts');
+const uploadPath = path.join(__dirname, '..', 'uploads', 'receipts');
 
 if (!fs.existsSync(uploadPath)) {
     fs.mkdirSync(uploadPath, { recursive: true });

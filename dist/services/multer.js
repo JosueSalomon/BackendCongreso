@@ -7,7 +7,7 @@ const multer_1 = __importDefault(require("multer"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 // Ruta donde se guardarán los archivos
-const uploadPath = path_1.default.join(__dirname, '..', '..', 'uploads', 'receipts');
+const uploadPath = path_1.default.join(__dirname, '..', 'uploads', 'receipts');
 if (!fs_1.default.existsSync(uploadPath)) {
     fs_1.default.mkdirSync(uploadPath, { recursive: true });
 }
