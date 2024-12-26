@@ -12,22 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.prueba = void 0;
+exports.Admin = void 0;
 const connection_1 = __importDefault(require("../utils/connection"));
-class prueba {
-    static funcionprueba() {
+class Admin {
+    static GetUsuariosValidaciones(estado) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { data, error } = yield connection_1.default.rpc('p_select_tabla');
-            if (error) {
-                throw error;
-            }
-            return data;
-        });
-    }
-    static funcionPruebaParametro(id_persona) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { data, error } = yield connection_1.default.rpc('p_select_tabla_parametro', {
-                p_id_persona: id_persona
+            const { data, error } = yield connection_1.default.rpc('p_usuarios_validaciones', {
+                validacion_param: estado
             });
             if (error) {
                 throw error;
@@ -35,37 +26,51 @@ class prueba {
             return data;
         });
     }
-    static dataInserts(p_nombres, p_apellidos, p_dni, p_telefono, p_fecha_nacimiento, p_genero, p_externo, p_estudiante, p_identificador_unah, p_correo, p_contrasena, p_img_recibo, p_codigo_recibo, p_url_qr) {
+    static ValidarUsuarios(id_usuario, nuevo_estado, url_qr) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { data, error } = yield connection_1.default.rpc('p_insert', {
-                p_nombres,
-                p_apellidos,
-                p_dni,
-                p_telefono,
-                p_fecha_nacimiento,
-                p_genero,
-                p_externo,
-                p_estudiante,
-                p_identificador_unah,
-                p_correo,
-                p_contrasena,
-                p_img_recibo,
-                p_codigo_recibo,
-                p_url_qr,
+            const { data, error } = yield connection_1.default.rpc('p_cambiar_validacion', {
+                p_usuario_id: id_usuario,
+                p_nuevo_estado: nuevo_estado,
+                p_url_qr: url_qr
             });
             if (error) {
-                throw new Error(error.message);
+                throw error;
             }
             return data;
         });
     }
-    static getUserByDni(dni) {
+    static BuscarUsuario(busqueda) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { data, error } = yield connection_1.default
-                .from('tbl_usuarios')
-                .select('*')
-                .eq('dni', dni)
-                .single(); // Usamos .single() para obtener solo un resultado
+            const { data, error } = yield connection_1.default.rpc('p_buscar_usuario', {
+                p_parametro_busqueda: busqueda
+            });
+            if (error) {
+                throw error;
+            }
+            return data;
+        });
+    }
+    static UpdateUser(p_id_persona, p_nombres, p_apellidos, p_dni, p_correo, p_contrasena) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_actualizar_usuario_persona', {
+                p_id_persona: p_id_persona,
+                p_nombres: p_nombres,
+                p_apellidos: p_apellidos,
+                p_dni: p_dni,
+                p_correo: p_correo,
+                p_contrasena: p_contrasena,
+            });
+            if (error) {
+                throw error;
+            }
+            return data;
+        });
+    }
+    static GetUserByID(userID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_buscar_usuario_por_id', {
+                id_usuario_param: userID
+            });
             if (error) {
                 throw error;
             }
@@ -73,4 +78,4 @@ class prueba {
         });
     }
 }
-exports.prueba = prueba;
+exports.Admin = Admin;

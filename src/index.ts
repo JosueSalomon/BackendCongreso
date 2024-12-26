@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 
 // importacion rutas
-import pruebaRouter from './routes/prueba.route'
+import pruebaRouter from './routes/Admin.route'
 
 dotenv.config();
 require('dotenv').config();
@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 //rutas
-app.use('/prueba', pruebaRouter);
+app.use('/admin', pruebaRouter);
 
 //Servidor Raiz.
 app.get('/', (req: Request, res: Response) => {

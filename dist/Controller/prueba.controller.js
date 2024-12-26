@@ -8,33 +8,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.funcionpruebaparametro = exports.funcionprueba = void 0;
-const prueba_model_1 = require("../models/prueba.model");
-const funcionprueba = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.insertUser = void 0;
+const qrcode_1 = __importDefault(require("qrcode"));
+const insertUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { p_nombres, p_apellidos, p_dni, p_telefono, p_fecha_nacimiento, p_genero, p_externo, p_estudiante, p_identificador_unah, p_correo, p_contrasena, p_img_recibo, p_codigo_recibo } = req.body;
     try {
-        const resultado = yield prueba_model_1.prueba.funcionprueba();
-        res.status(201).json({
-            resultado
+        // Generar una URL única para el QR usando p_dni
+        const uniqueUrl = `http://localhost:4000/prueba/user/${p_dni}`;
+        // Generar el código QR en formato base64
+        const qrCode = yield qrcode_1.default.toDataURL(uniqueUrl);
+        // Llamar al modelo para insertar el usuario en la base de datos, pasando la URL del QR
+        const resultado = yield prueba.dataInserts(p_nombres, p_apellidos, p_dni, p_telefono, p_fecha_nacimiento, p_genero, p_externo, p_estudiante, p_identificador_unah, p_correo, p_contrasena, p_img_recibo, p_codigo_recibo, qrCode);
+        // Responder con el mensaje de éxito y el código QR
+        res.status(200).json({
+            message: 'Usuario insertado correctamente',
+            resultado,
+            qrCode, // El código QR generado en base64
         });
     }
     catch (error) {
-        console.log('error con fetch ', error);
-        res.status(500).json({ message: 'algo paso mal :(', error });
+        console.error('Error al insertar usuario:', error);
+        res.status(500).json({ error: 'Hubo un problema al insertar el usuario' });
     }
 });
-exports.funcionprueba = funcionprueba;
-const funcionpruebaparametro = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const { id } = req.params;
-        const resultado = yield prueba_model_1.prueba.funcionPruebaParametro(Number(id));
-        res.status(201).json({
-            resultado
-        });
-    }
-    catch (error) {
-        console.log('error con fetch ', error);
-        res.status(500).json({ message: 'algo paso mal :(', error });
-    }
-});
-exports.funcionpruebaparametro = funcionpruebaparametro;
+exports.insertUser = insertUser;
