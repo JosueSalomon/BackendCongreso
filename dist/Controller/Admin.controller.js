@@ -34,7 +34,7 @@ const ValidarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const { id_usuario } = req.params;
     const { nuevo_estado } = req.body;
     try {
-        const uniqueUrl = `http://localhost:4000/admin/user/${id_usuario}`;
+        const uniqueUrl = `https://backend-congreso.vercel.app/admin/user/${id_usuario}`;
         const qrCode = yield qrcode_1.default.toDataURL(uniqueUrl);
         const resultado = yield Admin_model_1.Admin.ValidarUsuarios(Number(id_usuario), nuevo_estado, qrCode);
         res.status(200).json({

@@ -24,7 +24,7 @@ export const ValidarUsuario = async (req: Request, res: Response) =>{
     const {nuevo_estado} = req.body
 
     try{
-        const uniqueUrl = `http://localhost:4000/admin/user/${id_usuario}`;
+        const uniqueUrl = `https://backend-congreso.vercel.app/admin/user/${id_usuario}`;
 
         const qrCode = await QRCode.toDataURL(uniqueUrl);
 
