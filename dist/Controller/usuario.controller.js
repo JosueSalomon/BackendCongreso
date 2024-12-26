@@ -66,7 +66,6 @@ const enviarcodigoverificacioncorreo = (req, res) => __awaiter(void 0, void 0, v
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
         const id_tipo_verificacion = 1;
         const coincide = yield usuario_model_1.usuario.verificarcorreo(id_usuario, correo);
-        console.log(coincide);
         if (coincide) {
             yield usuario_model_1.usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
             yield (0, emailservice_1.sendVerificationEmail)(correo, codigo_verificacion);

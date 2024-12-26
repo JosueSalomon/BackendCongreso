@@ -11,4 +11,5 @@ router.put('/validar/usuario/:id_usuario', Admin_controller_1.ValidarUsuario);
 router.post('/buscar', Admin_controller_1.BuscarUsuario);
 router.put('/actualizar/usuario/:id_usuario', Admin_controller_1.ActualizarUsuario);
 router.get('/user/:id_user', Admin_controller_1.GetUserByID);
+router.post('/codigo/usuario_organizador', Admin_controller_1.enviar_correo_organizador);
 exports.default = router;

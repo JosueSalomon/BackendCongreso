@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import {Admin} from '../models/Admin.model'
+import { sendVerificationEmail } from '../services/emailservice';
+import validator from 'email-validator';
 import QRCode from 'qrcode';
 
 
@@ -90,3 +92,29 @@ export const GetUserByID = async (req: Request, res: Response) =>{
         res.status(500).json({ error: 'Hubo un problema buscar el user' });
     }
 }
+
+export const enviar_correo_organizador = async (req: Request, res: Response): Promise<any> => {
+    const { id_usuario, correo } = req.body;
+    try {
+
+      if (!validator.validate(correo)) {
+          return res.status(400).json({ message: 'Correo electrónico inválido.' });
+      }
+
+      const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
+
+      const id_tipo_verificacion = 3;
+
+      await Admin.usuario_organizador(id_usuario, codigo_verificacion, id_tipo_verificacion);
+
+      await sendVerificationEmail(correo, codigo_verificacion);
+
+      return res.status(200).json({ message: 'El código de verificación para convertirse en usuario Organizador a sido enviado correctamente.' });
+  } catch (error: unknown) {
+      if (error instanceof Error) {
+          return res.status(500).json({ message: error.message });
+      } else {
+          return res.status(500).json({ message: 'Error desconocido.' });
+      }
+  }
+};

@@ -97,7 +97,7 @@ export const enviarcodigoverificacioncorreo = async (req: Request, res: Response
         const id_tipo_verificacion = 1;
 
         const coincide = await usuario.verificarcorreo(id_usuario, correo);
-        console.log(coincide);
+
         if (coincide) {
 
         await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);

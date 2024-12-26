@@ -77,5 +77,17 @@ class Admin {
             return data;
         });
     }
+    static usuario_organizador(id_usuario, codigo_verificacion, id_tipo_verificacion) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_guardar_codigo_verificacion', {
+                p_id_usuario: id_usuario,
+                p_codigo_verificacion: codigo_verificacion,
+                p_id_tipo_verificacion: id_tipo_verificacion
+            });
+            if (error)
+                throw error;
+            return data;
+        });
+    }
 }
 exports.Admin = Admin;
