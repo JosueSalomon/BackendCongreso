@@ -173,7 +173,7 @@ export class usuario {
         }
 
         if(!data || data.length === 0 || data.codigo_resultado === 0) {
-          throw new Error("Credenciales inválidas o usuario no verificado");
+          throw new Error("Credenciales inválidas o usuario en espera de verificacion de pago");
         }
 
         const token = hacerToken(data.correo_salida, data.contrasenia_salida);
