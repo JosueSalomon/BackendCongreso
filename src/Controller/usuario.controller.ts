@@ -84,7 +84,6 @@ export const registrarusuario = async (req: Request, res: Response): Promise<voi
 
 }
 
-
 export const enviarcodigoverificacioncorreo = async (req: Request, res: Response): Promise<any> => {
     try {
         const { id_usuario, correo } = req.body;
@@ -94,13 +93,23 @@ export const enviarcodigoverificacioncorreo = async (req: Request, res: Response
         }
 
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
+
         const id_tipo_verificacion = 1;
+
+        const coincide = await usuario.verificarcorreo(id_usuario, correo);
+        console.log(coincide);
+        if (coincide) {
 
         await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
 
         await sendVerificationEmail(correo, codigo_verificacion);
 
         return res.status(200).json({ message: 'Código de verificación de correo enviado correctamente.' });
+
+        } else {
+          return res.status(200).json({ message: 'El correo no coincide.', match: false });
+        }
+
     } catch (error: unknown) {
         if (error instanceof Error) {
             return res.status(500).json({ message: error.message });
@@ -156,6 +165,26 @@ export const enviarcodigocambiocontrasena = async (req: Request, res: Response):
             }
         }
     
+        export const verificarcodigoorganizador = async(req: Request, res: Response) => {
+          const { id_usuario, codigo_verificacion } = req.body;
+  
+          if (!id_usuario || !codigo_verificacion) {
+              res.status(400).json({ error: 'Faltan parámetros requeridos.' });
+              return;
+          }
+  
+          try {
+              const isValid = await usuario.verificar_usuario_organizador(id_usuario, codigo_verificacion);
+              if (isValid) {
+                  res.status(200).json({ message: 'Código verificado correctamente.' });
+              } else {
+                  res.status(400).json({ error: 'Código de verificación inválido o expirado.' });
+              }
+          } catch (error) {
+              res.status(500).json({ error: error instanceof Error ? error.message : 'Error desconocido.' });
+          }
+      }
+
         export const actualizarcorreo = async(req: Request, res: Response) => {
             const { id_usuario, nuevo_correo } = req.body;
     

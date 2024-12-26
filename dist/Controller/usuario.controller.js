@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cambiarcontrasena = exports.actualizarcorreo = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
+exports.cambiarcontrasena = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
 const emailservice_1 = require("../services/emailservice");
 const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
@@ -65,9 +65,16 @@ const enviarcodigoverificacioncorreo = (req, res) => __awaiter(void 0, void 0, v
         }
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
         const id_tipo_verificacion = 1;
-        yield usuario_model_1.usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
-        yield (0, emailservice_1.sendVerificationEmail)(correo, codigo_verificacion);
-        return res.status(200).json({ message: 'Código de verificación de correo enviado correctamente.' });
+        const coincide = yield usuario_model_1.usuario.verificarcorreo(id_usuario, correo);
+        console.log(coincide);
+        if (coincide) {
+            yield usuario_model_1.usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+            yield (0, emailservice_1.sendVerificationEmail)(correo, codigo_verificacion);
+            return res.status(200).json({ message: 'Código de verificación de correo enviado correctamente.' });
+        }
+        else {
+            return res.status(200).json({ message: 'El correo no coincide.', match: false });
+        }
     }
     catch (error) {
         if (error instanceof Error) {
@@ -121,6 +128,26 @@ const verificarcodigo = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.verificarcodigo = verificarcodigo;
+const verificarcodigoorganizador = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id_usuario, codigo_verificacion } = req.body;
+    if (!id_usuario || !codigo_verificacion) {
+        res.status(400).json({ error: 'Faltan parámetros requeridos.' });
+        return;
+    }
+    try {
+        const isValid = yield usuario_model_1.usuario.verificar_usuario_organizador(id_usuario, codigo_verificacion);
+        if (isValid) {
+            res.status(200).json({ message: 'Código verificado correctamente.' });
+        }
+        else {
+            res.status(400).json({ error: 'Código de verificación inválido o expirado.' });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ error: error instanceof Error ? error.message : 'Error desconocido.' });
+    }
+});
+exports.verificarcodigoorganizador = verificarcodigoorganizador;
 const actualizarcorreo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id_usuario, nuevo_correo } = req.body;
     if (!id_usuario || !nuevo_correo) {

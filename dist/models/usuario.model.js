@@ -173,5 +173,40 @@ class usuario {
             }
         });
     }
+    static verificar_usuario_organizador(id_usuario, codigo_verificacion) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data, error } = yield connection_1.default.rpc('p_verificar_codigo_usuario_verificado', {
+                    p_id_usuario: id_usuario,
+                    p_codigo_verificacion: codigo_verificacion
+                });
+                if (error) {
+                    throw error;
+                }
+                return data;
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(error.message);
+                }
+                else {
+                    throw new Error('Error desconocido');
+                }
+            }
+        });
+    }
+    static verificarcorreo(idUsuario, correo) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_verificar_correo', {
+                p_id_usuario: idUsuario,
+                p_correo: correo,
+            });
+            if (error) {
+                console.error('Error al verificar el correo:', error);
+                throw new Error('Error al verificar el correo');
+            }
+            return data;
+        });
+    }
 }
 exports.usuario = usuario;

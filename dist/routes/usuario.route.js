@@ -8,6 +8,7 @@ const multer_1 = __importDefault(require("../services/multer"));
 const usuario_controller_1 = require("../Controller/usuario.controller");
 const router = express_1.default.Router();
 router.post('/verificarcodigo', usuario_controller_1.verificarcodigo);
+router.post('/verificarorganizador', usuario_controller_1.verificarcodigoorganizador);
 router.post('/actualizarcorreo', usuario_controller_1.actualizarcorreo);
 router.post('/verificacion/correo', usuario_controller_1.enviarcodigoverificacioncorreo);
 router.post('/verificacion/contrasena', usuario_controller_1.enviarcodigocambiocontrasena);

@@ -179,11 +179,44 @@ export class usuario {
           }
         }
 
-    }
+
+    static async verificar_usuario_organizador(id_usuario: number, codigo_verificacion: string): Promise<boolean> {
+      try {
+          const { data, error } = await supabase.rpc('p_verificar_codigo_usuario_verificado', {
+              p_id_usuario: id_usuario,
+              p_codigo_verificacion: codigo_verificacion
+          });
+  
+          if (error) {
+              throw error;
+          }
+          return data;
+      } catch (error: unknown) {
+          if (error instanceof Error) {
+              throw new Error(error.message);
+          } else {
+              throw new Error('Error desconocido');
+          }
+      }
+  }
+
+  
+static async verificarcorreo(idUsuario: number, correo: string): Promise<boolean> {
+  const { data, error } = await supabase.rpc('p_verificar_correo', {
+    p_id_usuario: idUsuario,
+    p_correo: correo,
+  });
+
+  if (error) {
+    console.error('Error al verificar el correo:', error);
+    throw new Error('Error al verificar el correo');
+  }
+
+  return data as boolean;
+}
 
 
-
-
+}
 
 
 
