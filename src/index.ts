@@ -5,6 +5,8 @@ import cors from 'cors';
 // importacion rutas
 import pruebaRouter from './routes/Admin.route'
 
+import usuarioRouter from './routes/usuario.route';
+
 dotenv.config();
 require('dotenv').config();
 const app: Express = express();
@@ -17,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //rutas
 app.use('/admin', pruebaRouter);
+app.use('/usuario', usuarioRouter);
 
 //Servidor Raiz.
 app.get('/', (req: Request, res: Response) => {
