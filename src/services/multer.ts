@@ -1,24 +1,25 @@
 import multer from "multer";
-import fs from 'fs'
+import fs from "fs";
 import path from "path";
 
-// Ruta donde se guardarán los archivos
-const uploadPath = path.join(__dirname, '..', 'uploads', 'receipts');
+// Ruta temporal para almacenamiento (compatible con Vercel)
+const uploadPath = path.join('/tmp', 'uploads', 'receipts');
 
+// Crear el directorio si no existe
 if (!fs.existsSync(uploadPath)) {
     fs.mkdirSync(uploadPath, { recursive: true });
 }
 
-//Configurar multer para almacenar imagenes
+// Configurar multer para almacenar imágenes
 const storage = multer.diskStorage({
-    destination: (req, file, cb)=> {
-        cb(null, uploadPath); //Carpeta donde se guardaran los recibos.
+    destination: (req, file, cb) => {
+        cb(null, uploadPath); // Carpeta donde se guardarán los recibos
     },
-    filename : (req, file, cb)=> {
-        cb(null, Date.now() + '-' + file.originalname); //Aqui le asignamos un nombre al archivo
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname); // Nombre único para el archivo
     }
-})
+});
 
-const upload = multer({storage});
+const upload = multer({ storage });
 
-export default upload
+export default upload;
