@@ -290,6 +290,16 @@ static async verificarcorreo(idUsuario: number, correo: string): Promise<boolean
   return data as boolean;
 }
 
+static async obteneruniversidades(): Promise<{ id_universidad: number; universidad: string; abreviatura: string }[]> {
+  const { data, error } = await supabase.rpc('p_obtener_universidades');
+
+  if (error) {
+    console.error('Error al obtener universidades:', error);
+    throw new Error('Error al obtener universidades');
+  }
+
+  return data || [];
+}
 
 
 }

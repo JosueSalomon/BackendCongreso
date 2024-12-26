@@ -16,4 +16,5 @@ router.post('/registrar', multer_1.default.single('recibo'), usuario_controller_
 router.post('/login', usuario_controller_1.login);
 router.post('/logout', usuario_controller_1.logout);
 router.post('/cambiarcontrasena', usuario_controller_1.cambiarcontrasena);
+router.get('/universidades', usuario_controller_1.obteneruniversidades);
 exports.default = router;

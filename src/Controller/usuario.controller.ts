@@ -107,7 +107,7 @@ export const enviarcodigoverificacioncorreo = async (req: Request, res: Response
         return res.status(200).json({ message: 'Código de verificación de correo enviado correctamente.' });
 
         } else {
-          return res.status(200).json({ message: 'El correo no coincide.', match: false });
+          return res.status(200).json({ message: 'El correo no coincide, ingrese un correo valido.'});
         }
 
     } catch (error: unknown) {
@@ -271,10 +271,8 @@ export const logout = async (req:Request, res:Response):Promise<any> => {
     });
   }
 }
-            }
-        }
 
-        export const cambiarcontrasena = async (req: Request, res: Response): Promise<any> => {
+export const cambiarcontrasena = async (req: Request, res: Response): Promise<any> => {
             const { id_usuario, contrasena_actual, nueva_contrasena } = req.body;
         
             if (!id_usuario || !contrasena_actual || !nueva_contrasena) {
@@ -297,5 +295,17 @@ export const logout = async (req:Request, res:Response):Promise<any> => {
               });
         }
       }
-    
 
+
+export const obteneruniversidades = async (req: Request, res: Response): Promise<any>=> {
+        try {
+          const universidades = await usuario.obteneruniversidades();
+          return res.status(200).json(universidades);
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            return res.status(500).json({ message: error.message });
+          } else {
+            return res.status(500).json({ message: 'Error desconocido.' });
+          }
+        }
+      };
