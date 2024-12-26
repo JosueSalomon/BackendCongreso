@@ -14,4 +14,5 @@ router.post('/verificacion/correo', usuario_controller_1.enviarcodigoverificacio
 router.post('/verificacion/contrasena', usuario_controller_1.enviarcodigocambiocontrasena);
 router.post('/registrar', multer_1.default.single('recibo'), usuario_controller_1.registrarusuario);
 router.post('/cambiarcontrasena', usuario_controller_1.cambiarcontrasena);
+router.get('/universidades', usuario_controller_1.obteneruniversidades);
 exports.default = router;
