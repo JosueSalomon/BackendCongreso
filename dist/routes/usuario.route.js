@@ -10,4 +10,6 @@ router.post('/verificarcodigo', usuario_controller_1.verificarCodigo);
 router.post('/actualizarcorreo', usuario_controller_1.actualizarCorreo);
 router.post('/enviarcodigo', usuario_controller_1.enviarCodigo);
 router.post('/registrar', usuario_controller_1.RegistrarUsuario);
+router.post('/login', usuario_controller_1.login);
+router.post('/logout', usuario_controller_1.logout);
 exports.default = router;

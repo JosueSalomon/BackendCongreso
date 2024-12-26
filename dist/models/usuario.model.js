@@ -14,6 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.usuario = void 0;
 const connection_1 = __importDefault(require("../utils/connection")); // Asegúrate de que esta importación sea correcta
+const dotenv_1 = __importDefault(require("dotenv"));
+const jwt_1 = require("../services/jwt");
+dotenv_1.default.config();
 class usuario {
     static registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, id_qr, validacion) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -30,7 +33,7 @@ class usuario {
             else {
                 externo = true;
                 estudiante = false;
-                identificador_unah = "";
+                identificador_unah = "null";
             }
             const { data: duplicados, error: errorDuplicados } = yield connection_1.default.rpc('p_verificar_duplicados', {
                 p_dni: dni,
@@ -144,6 +147,78 @@ class usuario {
                 }
                 else {
                     throw new Error('Error desconocido');
+                }
+            }
+        });
+    }
+    static login(correo, contrasenia) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data, error } = yield connection_1.default.rpc('p_login', {
+                    p_correo: correo,
+                    p_contrasenia: contrasenia
+                });
+                if (error) {
+                    throw new Error(`Ocurrió el siguiente error ${error.message}`);
+                }
+                if (!data || data.length === 0 || data.codigo_resultado === 0) {
+                    throw new Error("Credenciales inválidas o usuario no verificado");
+                }
+                const token = (0, jwt_1.hacerToken)(data.correo_salida, data.contrasenia_salida);
+                const resultado = yield this.insertarTokenDelUsuario(data.correo_salida, data.contrasenia_salida, token);
+                data.token = token;
+                return data;
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(error.message);
+                }
+                else {
+                    throw new Error("Error desconocido");
+                }
+            }
+        });
+    }
+    static insertarTokenDelUsuario(correo, contrasenia, token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data, error } = yield connection_1.default.rpc('insertar_token_usuario', {
+                    p_correo: correo,
+                    p_contrasenia: contrasenia,
+                    p_token: token
+                });
+                if (error) {
+                    throw new Error(`Ocurrió el siguiente error ${error.message}`);
+                }
+                console.log(data);
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(error.message);
+                }
+                else {
+                    throw new Error("Error desconocido");
+                }
+            }
+        });
+    }
+    static logout(correo) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data, error } = yield connection_1.default.rpc('logout', {
+                    p_correo: correo
+                });
+                if (error) {
+                    throw new Error(`Ocurrió el siguiente error ${error.message}`);
+                }
+                return data;
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(error.message);
+                }
+                else {
+                    throw new Error("Error desconocido");
                 }
             }
         });
