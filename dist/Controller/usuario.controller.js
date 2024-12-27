@@ -180,6 +180,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (error) {
+        console.log(error);
         // Manejo de errores
         if (error instanceof Error && error.message === "Credenciales inválidas") {
             return res.status(401).json({
@@ -188,12 +189,18 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 data: []
             });
         }
-        // Error desconocido o interno
-        return res.status(500).json({
-            message: error instanceof Error ? error.message : "Error interno del servidor",
-            codigoResultado: -1,
-            data: []
-        });
+        if (error instanceof Error && error.message === "error de pago") {
+            return res.status(403).json({
+                message: "Un administrador debe de revisar antes el pago de su recibo para el congreso",
+                codigoResultado: -1
+            });
+        }
+        if (error) {
+            return res.status(500).json({
+                message: "Error interno del servidor backend", error,
+                codigoResultado: -1
+            });
+        }
     }
 });
 exports.login = login;

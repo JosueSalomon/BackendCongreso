@@ -164,7 +164,10 @@ class usuario {
                     throw new Error(`Ocurrió el siguiente error ${error.message}`);
                 }
                 if (!data || data.length === 0 || data.codigo_resultado === 0) {
-                    throw new Error("Credenciales inválidas o usuario en espera de verificacion de pago");
+                    throw new Error("Credenciales inválidas");
+                }
+                if (data.codigo_resultado === -1) {
+                    throw new Error("error de pago");
                 }
                 const token = (0, jwt_1.hacerToken)(data.correo_salida, data.contrasenia_salida);
                 const resultado = yield this.insertarTokenDelUsuario(data.correo_salida, data.contrasenia_salida, token);
