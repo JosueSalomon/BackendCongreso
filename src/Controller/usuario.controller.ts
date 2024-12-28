@@ -1,18 +1,17 @@
-import { Request, Response } from 'express';
+import { Request, Response , NextFunction} from 'express';
 import { sendVerificationEmail } from '../services/emailservice';
 import { usuario } from '../models/usuario.model';
 import validator from 'email-validator';
 import cloudinary from "../services/cloudinary";
 import fs from 'fs';
 
-export const registrarusuario = async (req: Request, res: Response): Promise<void> => {
+export const registrarusuario = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     let img_recibo="";
 
     if(req.file){
         const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
         img_recibo = resultadoSubirArchivo.url;
-        console.log(req.file.path)
         fs.unlink(req.file.path, (err) => {
           if (err) {
               console.error('Error al eliminar el archivo local:', err);
@@ -61,7 +60,25 @@ export const registrarusuario = async (req: Request, res: Response): Promise<voi
 
     );
 
-    res.status(201).json(resultado);
+    if (!validator.validate(correo)) {
+       res.status(400).json({ message: 'Correo electrónico inválido.' });
+    }
+    
+    let id_usuario: number = resultado[0].id_persona;
+
+    const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
+    const id_tipo_verificacion = 1;
+
+    const coincide = await usuario.verificarcorreo(id_usuario, correo);
+
+    if (coincide) {
+      await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+      await sendVerificationEmail(correo, codigo_verificacion);
+
+      res.status(200).json({ message: 'Usuario registrado y código de verificación enviado correctamente.' });
+    } else {
+      res.status(400).json({ message: 'El código de verificación tuvo un problema para enviarse.' });
+    }
   } catch (error) {
     console.error('Error al registrar usuario:', error);
     const err = error as Error;
@@ -70,17 +87,11 @@ export const registrarusuario = async (req: Request, res: Response): Promise<voi
       error: err.message || error,
     });
   }
-
-}
-
+};
 
 export const enviarcodigoverificacioncorreo = async (req: Request, res: Response): Promise<any> => {
     try {
         const { id_usuario, correo } = req.body;
-
-        if (!validator.validate(correo)) {
-            return res.status(400).json({ message: 'Correo electrónico inválido.' });
-        }
 
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -90,29 +101,34 @@ export const enviarcodigoverificacioncorreo = async (req: Request, res: Response
 
         if (coincide) {
 
-        await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
-
-        await sendVerificationEmail(correo, codigo_verificacion);
-
-        return res.status(200).json({ message: 'Código de verificación de correo enviado correctamente.' });
-
-        } else {
-          return res.status(200).json({ message: 'El correo no coincide, ingrese un correo valido.'});
-        }
-
+          try {
+              await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+              await sendVerificationEmail(correo, codigo_verificacion);
+      
+              return res.status(200).json({ message: 'Código de verificación enviado correctamente.' });
+          } catch (err) {
+              console.error('Error al enviar código de verificación:', err);
+              return res.status(500).json({ message: 'Hubo un problema al enviar el código de verificación.' });
+          }
+      } else {
+          return res.status(400).json({ message: 'El correo electrónico no coincide con el usuario proporcionado.' });
+      }
+      
     } catch (error: unknown) {
-        if (error instanceof Error) {
-            return res.status(500).json({ message: error.message });
-        } else {
-            return res.status(500).json({ message: 'Error desconocido.' });
-        }
-    }
+      if (error instanceof Error) {
+          console.error('Stack trace:', error.stack); 
+          return res.status(500).json({ message: error.message });
+      } else {
+          console.error('Error no identificado:', error);
+          return res.status(500).json({ message: 'Error desconocido.' });
+      }
+  }
 };
 
 
 export const enviarcodigocambiocontrasena = async (req: Request, res: Response): Promise<any> => {
   try {
-      const { id_usuario, correo } = req.body;
+      const { id_usuario, correo } = req.body.usuario;
 
       if (!validator.validate(correo)) {
           return res.status(400).json({ message: 'Correo electrónico inválido.' });
@@ -127,12 +143,14 @@ export const enviarcodigocambiocontrasena = async (req: Request, res: Response):
 
       return res.status(200).json({ message: 'Código de verificación para cambio de contraseña enviado correctamente.' });
   } catch (error: unknown) {
-      if (error instanceof Error) {
-          return res.status(500).json({ message: error.message });
-      } else {
-          return res.status(500).json({ message: 'Error desconocido.' });
-      }
-  }
+    if (error instanceof Error) {
+        console.error('Stack trace:', error.stack); 
+        return res.status(500).json({ message: error.message });
+    } else {
+        console.error('Error no identificado:', error); 
+        return res.status(500).json({ message: 'Error desconocido.' });
+    }
+}
 };
     
         export const verificarcodigo = async(req: Request, res: Response) => {
