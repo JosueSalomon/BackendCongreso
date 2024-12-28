@@ -5,13 +5,11 @@ import validator from 'email-validator';
 import cloudinary from "../services/cloudinary";
 import fs from 'fs';
 
-
 export const registrarusuario = async (req: Request, res: Response): Promise<void> => {
   try {
     let img_recibo="";
 
     if(req.file){
-              //Subimos el archivo a cloudinary.
         const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
         img_recibo = resultadoSubirArchivo.url;
         console.log(req.file.path)
@@ -54,7 +52,7 @@ export const registrarusuario = async (req: Request, res: Response): Promise<voi
       telefono,
       fecha_nacimiento,
       genero,
-      identificador_unah || '',
+      identificador_unah,
       correo,
       contrasena,
       img_recibo,
@@ -74,6 +72,7 @@ export const registrarusuario = async (req: Request, res: Response): Promise<voi
   }
 
 }
+
 
 export const enviarcodigoverificacioncorreo = async (req: Request, res: Response): Promise<any> => {
     try {

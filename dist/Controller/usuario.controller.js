@@ -22,7 +22,6 @@ const registrarusuario = (req, res) => __awaiter(void 0, void 0, void 0, functio
     try {
         let img_recibo = "";
         if (req.file) {
-            //Subimos el archivo a cloudinary.
             const resultadoSubirArchivo = yield cloudinary_1.default.uploader.upload(req.file.path);
             img_recibo = resultadoSubirArchivo.url;
             console.log(req.file.path);
@@ -40,7 +39,7 @@ const registrarusuario = (req, res) => __awaiter(void 0, void 0, void 0, functio
             res.status(400).json({ message: 'Faltan datos requeridos en la solicitud' });
             return;
         }
-        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah || '', correo, contrasena, img_recibo, codigo_recibo, codigo_organizador);
+        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador);
         res.status(201).json(resultado);
     }
     catch (error) {

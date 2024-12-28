@@ -22,7 +22,6 @@ class usuario {
         return __awaiter(this, void 0, void 0, function* () {
             let externo = false;
             let estudiante = false;
-            // Validar el tipo de correo para determinar si es externo o estudiante
             if (correo.endsWith('@unah.edu.hn')) {
                 externo = false;
                 estudiante = false;
@@ -50,7 +49,6 @@ class usuario {
             else {
                 throw new Error('Debe proporcionar un código de recibo o el código de organizador correcto.');
             }
-            // Verificar duplicados con la lógica existente
             const { data: duplicados, error: errorDuplicados } = yield connection_1.default.rpc('p_verificar_duplicados', {
                 p_dni: dni,
                 p_identificador_unah: identificador_unah,

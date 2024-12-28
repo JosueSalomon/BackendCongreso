@@ -26,7 +26,6 @@ export class usuario {
     let externo = false;
     let estudiante = false;
   
-    // Validar el tipo de correo para determinar si es externo o estudiante
     if (correo.endsWith('@unah.edu.hn')) {
       externo = false;
       estudiante = false;
@@ -40,7 +39,7 @@ export class usuario {
     }
   
     if (codigo_recibo) {
-      id_tipo_usuario = 1;
+      id_tipo_usuario =1;
       codigo_organizador="0";
     } else if (codigo_organizador==='1234') {
       id_tipo_usuario = 2;
@@ -50,8 +49,7 @@ export class usuario {
     }  else {
       throw new Error('Debe proporcionar un código de recibo o el código de organizador correcto.');
     }
-  
-    // Verificar duplicados con la lógica existente
+
     const { data: duplicados, error: errorDuplicados } = await supabase.rpc('p_verificar_duplicados', {
       p_dni: dni,
       p_identificador_unah: identificador_unah,
