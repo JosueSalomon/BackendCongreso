@@ -20,31 +20,27 @@ const cloudinary_1 = __importDefault(require("../services/cloudinary"));
 const fs_1 = __importDefault(require("fs"));
 const registrarusuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!req.file) {
-            res.status(400).json({
-                message: "Debe proporcionar un recibo de comprobante del pago",
-                codigoResultado: 0,
+        let img_recibo = "";
+        if (req.file) {
+            //Subimos el archivo a cloudinary.
+            const resultadoSubirArchivo = yield cloudinary_1.default.uploader.upload(req.file.path);
+            img_recibo = resultadoSubirArchivo.url;
+            console.log(req.file.path);
+            fs_1.default.unlink(req.file.path, (err) => {
+                if (err) {
+                    console.error('Error al eliminar el archivo local:', err);
+                }
+                else {
+                    console.log('Archivo local eliminado con éxito');
+                }
             });
-            return;
         }
-        //Subimos el archivo a cloudinary.
-        const resultadoSubirArchivo = yield cloudinary_1.default.uploader.upload(req.file.path);
-        const img_recibo = resultadoSubirArchivo.url;
-        console.log(req.file.path);
-        fs_1.default.unlink(req.file.path, (err) => {
-            if (err) {
-                console.error('Error al eliminar el archivo local:', err);
-            }
-            else {
-                console.log('Archivo local eliminado con éxito');
-            }
-        });
-        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, codigo_recibo, id_qr, validacion, codigo_organizador } = req.body;
+        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, codigo_recibo, codigo_organizador } = req.body;
         if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
             res.status(400).json({ message: 'Faltan datos requeridos en la solicitud' });
             return;
         }
-        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah || '', correo, contrasena, img_recibo, codigo_recibo || '', id_qr, validacion, codigo_organizador);
+        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah || '', correo, contrasena, img_recibo, codigo_recibo, codigo_organizador);
         res.status(201).json(resultado);
     }
     catch (error) {

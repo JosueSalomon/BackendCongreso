@@ -7,102 +7,111 @@ dotenv.config()
 
 export class usuario {
 
-    static async registrarusuario(
-        nombres: string,
-        apellidos: string,
-        id_universidad: number,
-        id_tipo_usuario : number,
-        dni: string, 
-        telefono: string,
-        fecha_nacimiento: string,
-        genero: string,
-        identificador_unah: string,
-        correo: string,
-        contrasena: string,
-        img_recibo: string,
-        codigo_recibo: string,
-        id_qr: number,
-        validacion: boolean,
-        codigo_organizador :string
-      ) {
-        
-        let externo = false;
-        let estudiante = false;
-    
-        if (correo.endsWith('@unah.edu.hn')) {
-          externo = false;
-          estudiante = false;
-        } else if (correo.endsWith('@unah.hn')) {
-          externo = false;
-          estudiante = true;
-        } else {
-          externo = true;
-          estudiante = false;
-          identificador_unah = "1";
-        }
-        const { data: duplicados, error: errorDuplicados } = await supabase.rpc('p_verificar_duplicados', {
-            p_dni: dni,
-            p_identificador_unah: identificador_unah,
-            p_correo: correo,
-            p_codigo_recibo: codigo_recibo,
-
-          });
-        
-          if (errorDuplicados) {
-            console.error('Error al verificar duplicados:', errorDuplicados);
-            throw new Error('Error al verificar duplicados.');
-          }
-        
-          if (duplicados && duplicados.length > 0) {
-            const duplicado = duplicados[0];
-            throw new Error(`El campo '${duplicado.campo_duplicado}' con el valor '${duplicado.valor}' ya está en uso.`);
-          }
-
-        const { data: PersonaData, error: PersonaError } = await supabase.rpc('p_insertar_persona', {
-          p_nombres: nombres,
-          p_apellidos: apellidos
-        });
-    
-        if (PersonaError) {
-          console.error('Error al insertar persona:', PersonaError);
-          throw new Error('Error al insertar persona');
-        }
-    
-        if (!PersonaData || typeof PersonaData !== 'number') {
-          throw new Error('El procedimiento almacenado no devolvió un ID válido para la persona.');
-        }
-    
-        const id_persona = PersonaData;
-    
-        // Insertar usuario en la base de datos
-        const { data, error } = await supabase.rpc('p_insertar_usuario', {
-          p_id_persona: id_persona,
-          p_id_universidad : id_universidad,
-          p_id_tipo_usuario: id_tipo_usuario,
-          p_dni: dni,
-          p_telefono: telefono,
-          p_fecha_nacimiento: fecha_nacimiento,
-          p_genero: genero,
-          p_externo: externo,
-          p_estudiante: estudiante,
-          p_identificador_unah: identificador_unah,
-          p_correo: correo,
-          p_contrasena: contrasena,
-          p_img_recibo: img_recibo,
-          p_codigo_recibo: codigo_recibo,
-          p_id_qr: id_qr,
-          p_validacion: validacion,
-          p_codigo_organizador: codigo_organizador
-        });
-    
-        if (error) {
-          console.error('Error al insertar usuario:', error);
-          throw new Error('Error al insertar usuario');
-        }
-    
-        return data;
-      }
-    
+  static async registrarusuario(
+    nombres: string,
+    apellidos: string,
+    id_universidad: number,
+    id_tipo_usuario: number,
+    dni: string,
+    telefono: string,
+    fecha_nacimiento: string,
+    genero: string,
+    identificador_unah: string,
+    correo: string,
+    contrasena: string,
+    img_recibo: string,
+    codigo_recibo: string,
+    codigo_organizador: string
+  ) {
+    let externo = false;
+    let estudiante = false;
+  
+    // Validar el tipo de correo para determinar si es externo o estudiante
+    if (correo.endsWith('@unah.edu.hn')) {
+      externo = false;
+      estudiante = false;
+    } else if (correo.endsWith('@unah.hn')) {
+      externo = false;
+      estudiante = true;
+    } else {
+      externo = true;
+      estudiante = false;
+      identificador_unah = "1";
+    }
+  
+    if (codigo_recibo) {
+      id_tipo_usuario = 1;
+      codigo_organizador="0";
+    } else if (codigo_organizador==='1234') {
+      id_tipo_usuario = 2;
+      codigo_recibo = '1';
+    }  else if (codigo_organizador) {
+      throw new Error('Ingrese un codigo de organizador correcto.');
+    }  else {
+      throw new Error('Debe proporcionar un código de recibo o el código de organizador correcto.');
+    }
+  
+    // Verificar duplicados con la lógica existente
+    const { data: duplicados, error: errorDuplicados } = await supabase.rpc('p_verificar_duplicados', {
+      p_dni: dni,
+      p_identificador_unah: identificador_unah,
+      p_correo: correo,
+      p_codigo_recibo: codigo_recibo,
+    });
+  
+    if (errorDuplicados) {
+      console.error('Error al verificar duplicados:', errorDuplicados);
+      throw new Error('Error al verificar duplicados.');
+    }
+  
+    if (duplicados && duplicados.length > 0) {
+      const duplicado = duplicados[0];
+      throw new Error(`El campo '${duplicado.campo_duplicado}' con el valor '${duplicado.valor}' ya está en uso.`);
+    }
+  
+    // Insertar en la tabla Persona
+    const { data: PersonaData, error: PersonaError } = await supabase.rpc('p_insertar_persona', {
+      p_nombres: nombres,
+      p_apellidos: apellidos,
+    });
+  
+    if (PersonaError) {
+      console.error('Error al insertar persona:', PersonaError);
+      throw new Error('Error al insertar persona');
+    }
+  
+    if (!PersonaData || typeof PersonaData !== 'number') {
+      throw new Error('El procedimiento almacenado no devolvió un ID válido para la persona.');
+    }
+  
+    const id_persona = PersonaData;
+  
+    // Insertar usuario en la base de datos
+    const { data, error } = await supabase.rpc('p_insertar_usuario', {
+      p_id_persona: id_persona,
+      p_id_universidad: id_universidad,
+      p_id_tipo_usuario: id_tipo_usuario,
+      p_dni: dni,
+      p_telefono: telefono,
+      p_fecha_nacimiento: fecha_nacimiento,
+      p_genero: genero,
+      p_externo: externo,
+      p_estudiante: estudiante,
+      p_identificador_unah: identificador_unah,
+      p_correo: correo,
+      p_contrasena: contrasena,
+      p_img_recibo: img_recibo,
+      p_codigo_recibo: codigo_recibo,
+      p_codigo_organizador: codigo_organizador,
+    });
+  
+    if (error) {
+      console.error('Error al insertar usuario:', error);
+      throw new Error('Error al insertar usuario');
+    }
+  
+    return data;
+  }
     
     static async usuariocodigocorreo(id_usuario: number, codigo_verificacion: string, id_tipo_verificacion: number): Promise<any>  {
         try {

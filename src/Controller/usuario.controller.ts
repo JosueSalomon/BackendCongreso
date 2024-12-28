@@ -8,27 +8,22 @@ import fs from 'fs';
 
 export const registrarusuario = async (req: Request, res: Response): Promise<void> => {
   try {
+    let img_recibo="";
 
-    if (!req.file) {
-      res.status(400).json({
-        message: "Debe proporcionar un recibo de comprobante del pago",
-        codigoResultado: 0,
+    if(req.file){
+              //Subimos el archivo a cloudinary.
+        const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
+        img_recibo = resultadoSubirArchivo.url;
+        console.log(req.file.path)
+        fs.unlink(req.file.path, (err) => {
+          if (err) {
+              console.error('Error al eliminar el archivo local:', err);
+          } else {
+              console.log('Archivo local eliminado con éxito');
+          }
       });
-      return;
     }
-    //Subimos el archivo a cloudinary.
-    const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
-    const img_recibo: string = resultadoSubirArchivo.url;
 
-    console.log(req.file.path)
-    fs.unlink(req.file.path, (err) => {
-      if (err) {
-          console.error('Error al eliminar el archivo local:', err);
-      } else {
-          console.log('Archivo local eliminado con éxito');
-      }
-  });
-  
     const {
       nombres,
       apellidos,
@@ -42,8 +37,6 @@ export const registrarusuario = async (req: Request, res: Response): Promise<voi
       correo,
       contrasena,
       codigo_recibo,
-      id_qr,
-      validacion,
       codigo_organizador
     } = req.body;
 
@@ -65,9 +58,7 @@ export const registrarusuario = async (req: Request, res: Response): Promise<voi
       correo,
       contrasena,
       img_recibo,
-      codigo_recibo || '',
-      id_qr,
-      validacion,
+      codigo_recibo,
       codigo_organizador
 
     );
