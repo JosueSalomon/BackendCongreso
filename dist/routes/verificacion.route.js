@@ -4,8 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const prueba_controller_1 = require("../Controller/prueba.controller");
+const verificacion_controller_1 = require("../Controller/verificacion.controller");
 const router = express_1.default.Router();
-router.post('/insert', prueba_controller_1.insertUser);
-router.get('/user/:dni', prueba_controller_1.getUserInfo);
+router.post('/verificarcodigo', verificacion_controller_1.verificarCodigo);
+router.post('/actualizarcorreo', verificacion_controller_1.actualizarCorreo);
+router.post('/enviarcodigo', verificacion_controller_1.enviarCodigo);
 exports.default = router;

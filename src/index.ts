@@ -3,9 +3,12 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 
 // importacion rutas
-import pruebaRouter from './routes/prueba.route'
+
+import adminrouter from './routes/Admin.route'
+import usuarioRouter from './routes/usuario.route';
 import conferenciasRouter from './routes/conferencias.routes'
 import ponentesRouter from './routes/ponentes.route'
+
 dotenv.config();
 require('dotenv').config();
 const app: Express = express();
@@ -17,9 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 
 
 //rutas
-app.use('/prueba', pruebaRouter);
+app.use('/admin',adminrouter)
 app.use('/conferencias', conferenciasRouter);
 app.use('/ponentes', ponentesRouter);
+app.use('/usuario', usuarioRouter);
 
 //Servidor Raiz.
 app.get('/', (req: Request, res: Response) => {
