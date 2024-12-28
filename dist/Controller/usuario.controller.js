@@ -18,34 +18,42 @@ const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
 const cloudinary_1 = __importDefault(require("../services/cloudinary"));
 const fs_1 = __importDefault(require("fs"));
-const registrarusuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const registrarusuario = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!req.file) {
-            res.status(400).json({
-                message: "Debe proporcionar un recibo de comprobante del pago",
-                codigoResultado: 0,
+        let img_recibo = "";
+        if (req.file) {
+            const resultadoSubirArchivo = yield cloudinary_1.default.uploader.upload(req.file.path);
+            img_recibo = resultadoSubirArchivo.url;
+            fs_1.default.unlink(req.file.path, (err) => {
+                if (err) {
+                    console.error('Error al eliminar el archivo local:', err);
+                }
+                else {
+                    console.log('Archivo local eliminado con éxito');
+                }
             });
-            return;
         }
-        //Subimos el archivo a cloudinary.
-        const resultadoSubirArchivo = yield cloudinary_1.default.uploader.upload(req.file.path);
-        const img_recibo = resultadoSubirArchivo.url;
-        console.log(req.file.path);
-        fs_1.default.unlink(req.file.path, (err) => {
-            if (err) {
-                console.error('Error al eliminar el archivo local:', err);
-            }
-            else {
-                console.log('Archivo local eliminado con éxito');
-            }
-        });
-        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, codigo_recibo, id_qr, validacion, codigo_organizador } = req.body;
+        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, codigo_recibo, codigo_organizador } = req.body;
         if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
             res.status(400).json({ message: 'Faltan datos requeridos en la solicitud' });
             return;
         }
-        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah || '', correo, contrasena, img_recibo, codigo_recibo || '', id_qr, validacion, codigo_organizador);
-        res.status(201).json(resultado);
+        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador);
+        if (!email_validator_1.default.validate(correo)) {
+            res.status(400).json({ message: 'Correo electrónico inválido.' });
+        }
+        let id_usuario = resultado[0].id_persona;
+        const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
+        const id_tipo_verificacion = 1;
+        const coincide = yield usuario_model_1.usuario.verificarcorreo(id_usuario, correo);
+        if (coincide) {
+            yield usuario_model_1.usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+            yield (0, emailservice_1.sendVerificationEmail)(correo, codigo_verificacion);
+            res.status(200).json({ message: 'Usuario registrado y código de verificación enviado correctamente.' });
+        }
+        else {
+            res.status(400).json({ message: 'El código de verificación tuvo un problema para enviarse.' });
+        }
     }
     catch (error) {
         console.error('Error al registrar usuario:', error);
@@ -60,26 +68,31 @@ exports.registrarusuario = registrarusuario;
 const enviarcodigoverificacioncorreo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id_usuario, correo } = req.body;
-        if (!email_validator_1.default.validate(correo)) {
-            return res.status(400).json({ message: 'Correo electrónico inválido.' });
-        }
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
         const id_tipo_verificacion = 1;
         const coincide = yield usuario_model_1.usuario.verificarcorreo(id_usuario, correo);
         if (coincide) {
-            yield usuario_model_1.usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
-            yield (0, emailservice_1.sendVerificationEmail)(correo, codigo_verificacion);
-            return res.status(200).json({ message: 'Código de verificación de correo enviado correctamente.' });
+            try {
+                yield usuario_model_1.usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+                yield (0, emailservice_1.sendVerificationEmail)(correo, codigo_verificacion);
+                return res.status(200).json({ message: 'Código de verificación enviado correctamente.' });
+            }
+            catch (err) {
+                console.error('Error al enviar código de verificación:', err);
+                return res.status(500).json({ message: 'Hubo un problema al enviar el código de verificación.' });
+            }
         }
         else {
-            return res.status(200).json({ message: 'El correo no coincide, ingrese un correo valido.' });
+            return res.status(400).json({ message: 'El correo electrónico no coincide con el usuario proporcionado.' });
         }
     }
     catch (error) {
         if (error instanceof Error) {
+            console.error('Stack trace:', error.stack);
             return res.status(500).json({ message: error.message });
         }
         else {
+            console.error('Error no identificado:', error);
             return res.status(500).json({ message: 'Error desconocido.' });
         }
     }
@@ -87,7 +100,7 @@ const enviarcodigoverificacioncorreo = (req, res) => __awaiter(void 0, void 0, v
 exports.enviarcodigoverificacioncorreo = enviarcodigoverificacioncorreo;
 const enviarcodigocambiocontrasena = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id_usuario, correo } = req.body;
+        const { id_usuario, correo } = req.body.usuario;
         if (!email_validator_1.default.validate(correo)) {
             return res.status(400).json({ message: 'Correo electrónico inválido.' });
         }
@@ -99,9 +112,11 @@ const enviarcodigocambiocontrasena = (req, res) => __awaiter(void 0, void 0, voi
     }
     catch (error) {
         if (error instanceof Error) {
+            console.error('Stack trace:', error.stack);
             return res.status(500).json({ message: error.message });
         }
         else {
+            console.error('Error no identificado:', error);
             return res.status(500).json({ message: 'Error desconocido.' });
         }
     }
