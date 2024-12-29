@@ -90,10 +90,8 @@ exports.editarUnaConferencia = editarUnaConferencia;
 const eliminarUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { idConferencia } = req.params;
-        yield conferencias_model_1.Conferencia.eliminarConferencia(Number(idConferencia));
-        res.status(200).json({
-            message: 'Conferencia eliminada correctamente'
-        });
+        const eliminarConferencia = yield conferencias_model_1.Conferencia.eliminarConferencia(Number(idConferencia));
+        res.status(201).json({ eliminarConferencia });
     }
     catch (error) {
         const errorInfo = error && typeof error === 'object'
