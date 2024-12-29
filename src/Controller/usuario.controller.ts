@@ -63,16 +63,14 @@ export const registrarusuario = async (req: Request, res: Response, next: NextFu
     if (!validator.validate(correo)) {
        res.status(400).json({ message: 'Correo electrónico inválido.' });
     }
-    
-    let id_usuario: number = resultado[0].id_persona;
 
     const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
     const id_tipo_verificacion = 1;
 
-    const coincide = await usuario.verificarcorreo(id_usuario, correo);
+    const coincide = await usuario.verificarcorreo(correo);
 
     if (coincide) {
-      await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+      await usuario.usuariocodigocorreo(correo, codigo_verificacion, id_tipo_verificacion);
       await sendVerificationEmail(correo, codigo_verificacion);
 
       res.status(200).json({ message: 'Usuario registrado y código de verificación enviado correctamente.' });
@@ -91,18 +89,18 @@ export const registrarusuario = async (req: Request, res: Response, next: NextFu
 
 export const enviarcodigoverificacioncorreo = async (req: Request, res: Response): Promise<any> => {
     try {
-        const { id_usuario, correo } = req.body;
+        const { correo } = req.body;
 
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
 
         const id_tipo_verificacion = 1;
 
-        const coincide = await usuario.verificarcorreo(id_usuario, correo);
+        const coincide = await usuario.verificarcorreo(correo);
 
         if (coincide) {
 
           try {
-              await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+              await usuario.usuariocodigocorreo(correo, codigo_verificacion, id_tipo_verificacion);
               await sendVerificationEmail(correo, codigo_verificacion);
       
               return res.status(200).json({ message: 'Código de verificación enviado correctamente.' });
@@ -128,7 +126,7 @@ export const enviarcodigoverificacioncorreo = async (req: Request, res: Response
 
 export const enviarcodigocambiocontrasena = async (req: Request, res: Response): Promise<any> => {
   try {
-      const { id_usuario, correo } = req.body.usuario;
+      const { correo } = req.body;
 
       if (!validator.validate(correo)) {
           return res.status(400).json({ message: 'Correo electrónico inválido.' });
@@ -137,7 +135,7 @@ export const enviarcodigocambiocontrasena = async (req: Request, res: Response):
       const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
       const id_tipo_verificacion = 2;
 
-      await usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+      await usuario.usuariocodigocorreo(correo, codigo_verificacion, id_tipo_verificacion);
 
       await sendVerificationEmail(correo, codigo_verificacion);
 
@@ -154,15 +152,15 @@ export const enviarcodigocambiocontrasena = async (req: Request, res: Response):
 };
     
         export const verificarcodigo = async(req: Request, res: Response) => {
-            const { id_usuario, codigo_verificacion } = req.body;
+            const { correo, codigo_verificacion } = req.body;
     
-            if (!id_usuario || !codigo_verificacion) {
+            if (!correo || !codigo_verificacion) {
                 res.status(400).json({ error: 'Faltan parámetros requeridos.' });
                 return;
             }
     
             try {
-                const isValid = await usuario.usuarioverificarcorreo(id_usuario, codigo_verificacion);
+                const isValid = await usuario.usuarioverificarcorreo(correo, codigo_verificacion);
                 if (isValid) {
                     res.status(200).json({ message: 'Código verificado correctamente.' });
                 } else {
@@ -174,15 +172,15 @@ export const enviarcodigocambiocontrasena = async (req: Request, res: Response):
         }
     
         export const verificarcodigoorganizador = async(req: Request, res: Response) => {
-          const { id_usuario, codigo_verificacion } = req.body;
+          const { correo, codigo_verificacion } = req.body;
   
-          if (!id_usuario || !codigo_verificacion) {
+          if (!correo || !codigo_verificacion) {
               res.status(400).json({ error: 'Faltan parámetros requeridos.' });
               return;
           }
   
           try {
-              const isValid = await usuario.verificar_usuario_organizador(id_usuario, codigo_verificacion);
+              const isValid = await usuario.verificar_usuario_organizador(correo, codigo_verificacion);
               if (isValid) {
                   res.status(200).json({ message: 'Código verificado correctamente.' });
               } else {
@@ -289,16 +287,15 @@ export const logout = async (req:Request, res:Response):Promise<any> => {
 }
 
 export const cambiarcontrasena = async (req: Request, res: Response): Promise<any> => {
-            const { id_usuario, contrasena_actual, nueva_contrasena } = req.body;
+            const { correo, nueva_contrasena } = req.body;
         
-            if (!id_usuario || !contrasena_actual || !nueva_contrasena) {
+            if (!correo || !nueva_contrasena) {
               return res.status(400).json({ message: 'Todos los campos son requeridos.' });
             }
         
             try {
               const resultado = await usuario.cambiarcontrasena(
-                id_usuario,
-                contrasena_actual,
+                correo,
                 nueva_contrasena
               );
               res.status(201).json(resultado);

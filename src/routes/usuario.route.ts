@@ -9,7 +9,7 @@ const router = express.Router();
 router.post('/verificarcodigo', verificarcodigo);
 router.post('/verificarorganizador', verificarcodigoorganizador);
 router.post('/actualizarcorreo', actualizarcorreo);
-//router.post('/verificacion/correo', enviarcodigoverificacioncorreo);
+router.post('/verificacion/correo', enviarcodigoverificacioncorreo);
 router.post('/verificacion/contrasena', enviarcodigocambiocontrasena);
 router.post('/registrar', upload.single('recibo') ,registrarusuario, enviarcodigoverificacioncorreo);
 

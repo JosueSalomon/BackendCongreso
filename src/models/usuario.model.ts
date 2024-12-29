@@ -111,12 +111,12 @@ export class usuario {
     return data;
   }
     
-    static async usuariocodigocorreo(id_usuario: number, codigo_verificacion: string, id_tipo_verificacion: number): Promise<any>  {
+    static async usuariocodigocorreo(correo: string, codigo_verificacion: string, id_tipo_verificacion: number): Promise<any>  {
         try {
             const { data, error } = await supabase.rpc('p_guardar_codigo_verificacion', {
-                p_id_usuario: id_usuario,
                 p_codigo_verificacion: codigo_verificacion,
-                p_id_tipo_verificacion: id_tipo_verificacion
+                p_id_tipo_verificacion: id_tipo_verificacion,
+                p_correo:correo
             });
         
             if (error) throw error;
@@ -130,10 +130,10 @@ export class usuario {
         }
     }
 
-    static async usuarioverificarcorreo(id_usuario: number, codigo_verificacion: string): Promise<boolean> {
+    static async usuarioverificarcorreo(correo: string, codigo_verificacion: string): Promise<boolean> {
         try {
             const { data, error } = await supabase.rpc('p_verificar_codigo', {
-                p_id_usuario: id_usuario,
+                p_correo: correo,
                 p_codigo_verificacion: codigo_verificacion
             });
     
@@ -244,11 +244,10 @@ export class usuario {
       }
     }
 
-    static async cambiarcontrasena(id_usuario: number, contrasena_actual: string, nueva_contrasena: string): Promise<string> {
+    static async cambiarcontrasena(correo: string, nueva_contrasena: string): Promise<string> {
       try {
       const { data, error } = await supabase.rpc('p_cambiar_contrasena', {
-        p_id_usuario: id_usuario,
-        p_contrasena: contrasena_actual,
+        p_correo : correo,
         p_nueva_contrasena: nueva_contrasena,
       });
   
@@ -266,10 +265,10 @@ export class usuario {
         }
 
 
-    static async verificar_usuario_organizador(id_usuario: number, codigo_verificacion: string): Promise<boolean> {
+    static async verificar_usuario_organizador(correo: string, codigo_verificacion: string): Promise<boolean> {
       try {
           const { data, error } = await supabase.rpc('p_verificar_codigo_usuario_verificado', {
-              p_id_usuario: id_usuario,
+              p_correo: correo,
               p_codigo_verificacion: codigo_verificacion
           });
   
@@ -287,10 +286,9 @@ export class usuario {
   }
 
   
-static async verificarcorreo(idUsuario: number, correo: string): Promise<boolean> {
+static async verificarcorreo( correo: string): Promise<boolean> {
   const { data, error } = await supabase.rpc('p_verificar_correo', {
-    p_id_usuario: idUsuario,
-    p_correo: correo,
+    p_correo: correo
   });
 
   if (error) {

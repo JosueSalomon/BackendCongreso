@@ -76,12 +76,12 @@ export class Admin{
     }
 
     static async usuario_organizador(
-        id_usuario: number, 
+        correo: string, 
         codigo_verificacion: string,
         id_tipo_verificacion: number) 
         {
             const { data, error } = await supabase.rpc('p_guardar_codigo_verificacion', {
-                p_id_usuario: id_usuario,
+                p_correo: correo,
                 p_codigo_verificacion: codigo_verificacion,
                 p_id_tipo_verificacion: id_tipo_verificacion
             });

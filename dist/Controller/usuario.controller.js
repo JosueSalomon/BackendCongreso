@@ -42,12 +42,11 @@ const registrarusuario = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         if (!email_validator_1.default.validate(correo)) {
             res.status(400).json({ message: 'Correo electrónico inválido.' });
         }
-        let id_usuario = resultado[0].id_persona;
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
         const id_tipo_verificacion = 1;
-        const coincide = yield usuario_model_1.usuario.verificarcorreo(id_usuario, correo);
+        const coincide = yield usuario_model_1.usuario.verificarcorreo(correo);
         if (coincide) {
-            yield usuario_model_1.usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+            yield usuario_model_1.usuario.usuariocodigocorreo(correo, codigo_verificacion, id_tipo_verificacion);
             yield (0, emailservice_1.sendVerificationEmail)(correo, codigo_verificacion);
             res.status(200).json({ message: 'Usuario registrado y código de verificación enviado correctamente.' });
         }
@@ -67,13 +66,13 @@ const registrarusuario = (req, res, next) => __awaiter(void 0, void 0, void 0, f
 exports.registrarusuario = registrarusuario;
 const enviarcodigoverificacioncorreo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id_usuario, correo } = req.body;
+        const { correo } = req.body;
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
         const id_tipo_verificacion = 1;
-        const coincide = yield usuario_model_1.usuario.verificarcorreo(id_usuario, correo);
+        const coincide = yield usuario_model_1.usuario.verificarcorreo(correo);
         if (coincide) {
             try {
-                yield usuario_model_1.usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+                yield usuario_model_1.usuario.usuariocodigocorreo(correo, codigo_verificacion, id_tipo_verificacion);
                 yield (0, emailservice_1.sendVerificationEmail)(correo, codigo_verificacion);
                 return res.status(200).json({ message: 'Código de verificación enviado correctamente.' });
             }
@@ -100,13 +99,13 @@ const enviarcodigoverificacioncorreo = (req, res) => __awaiter(void 0, void 0, v
 exports.enviarcodigoverificacioncorreo = enviarcodigoverificacioncorreo;
 const enviarcodigocambiocontrasena = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id_usuario, correo } = req.body.usuario;
+        const { correo } = req.body;
         if (!email_validator_1.default.validate(correo)) {
             return res.status(400).json({ message: 'Correo electrónico inválido.' });
         }
         const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
         const id_tipo_verificacion = 2;
-        yield usuario_model_1.usuario.usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion);
+        yield usuario_model_1.usuario.usuariocodigocorreo(correo, codigo_verificacion, id_tipo_verificacion);
         yield (0, emailservice_1.sendVerificationEmail)(correo, codigo_verificacion);
         return res.status(200).json({ message: 'Código de verificación para cambio de contraseña enviado correctamente.' });
     }
@@ -123,13 +122,13 @@ const enviarcodigocambiocontrasena = (req, res) => __awaiter(void 0, void 0, voi
 });
 exports.enviarcodigocambiocontrasena = enviarcodigocambiocontrasena;
 const verificarcodigo = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id_usuario, codigo_verificacion } = req.body;
-    if (!id_usuario || !codigo_verificacion) {
+    const { correo, codigo_verificacion } = req.body;
+    if (!correo || !codigo_verificacion) {
         res.status(400).json({ error: 'Faltan parámetros requeridos.' });
         return;
     }
     try {
-        const isValid = yield usuario_model_1.usuario.usuarioverificarcorreo(id_usuario, codigo_verificacion);
+        const isValid = yield usuario_model_1.usuario.usuarioverificarcorreo(correo, codigo_verificacion);
         if (isValid) {
             res.status(200).json({ message: 'Código verificado correctamente.' });
         }
@@ -143,13 +142,13 @@ const verificarcodigo = (req, res) => __awaiter(void 0, void 0, void 0, function
 });
 exports.verificarcodigo = verificarcodigo;
 const verificarcodigoorganizador = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id_usuario, codigo_verificacion } = req.body;
-    if (!id_usuario || !codigo_verificacion) {
+    const { correo, codigo_verificacion } = req.body;
+    if (!correo || !codigo_verificacion) {
         res.status(400).json({ error: 'Faltan parámetros requeridos.' });
         return;
     }
     try {
-        const isValid = yield usuario_model_1.usuario.verificar_usuario_organizador(id_usuario, codigo_verificacion);
+        const isValid = yield usuario_model_1.usuario.verificar_usuario_organizador(correo, codigo_verificacion);
         if (isValid) {
             res.status(200).json({ message: 'Código verificado correctamente.' });
         }
@@ -253,12 +252,12 @@ const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.logout = logout;
 const cambiarcontrasena = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id_usuario, contrasena_actual, nueva_contrasena } = req.body;
-    if (!id_usuario || !contrasena_actual || !nueva_contrasena) {
+    const { correo, nueva_contrasena } = req.body;
+    if (!correo || !nueva_contrasena) {
         return res.status(400).json({ message: 'Todos los campos son requeridos.' });
     }
     try {
-        const resultado = yield usuario_model_1.usuario.cambiarcontrasena(id_usuario, contrasena_actual, nueva_contrasena);
+        const resultado = yield usuario_model_1.usuario.cambiarcontrasena(correo, nueva_contrasena);
         res.status(201).json(resultado);
     }
     catch (error) {

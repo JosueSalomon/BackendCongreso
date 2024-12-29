@@ -101,13 +101,13 @@ class usuario {
             return data;
         });
     }
-    static usuariocodigocorreo(id_usuario, codigo_verificacion, id_tipo_verificacion) {
+    static usuariocodigocorreo(correo, codigo_verificacion, id_tipo_verificacion) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { data, error } = yield connection_1.default.rpc('p_guardar_codigo_verificacion', {
-                    p_id_usuario: id_usuario,
                     p_codigo_verificacion: codigo_verificacion,
-                    p_id_tipo_verificacion: id_tipo_verificacion
+                    p_id_tipo_verificacion: id_tipo_verificacion,
+                    p_correo: correo
                 });
                 if (error)
                     throw error;
@@ -123,11 +123,11 @@ class usuario {
             }
         });
     }
-    static usuarioverificarcorreo(id_usuario, codigo_verificacion) {
+    static usuarioverificarcorreo(correo, codigo_verificacion) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { data, error } = yield connection_1.default.rpc('p_verificar_codigo', {
-                    p_id_usuario: id_usuario,
+                    p_correo: correo,
                     p_codigo_verificacion: codigo_verificacion
                 });
                 if (error) {
@@ -241,12 +241,11 @@ class usuario {
             }
         });
     }
-    static cambiarcontrasena(id_usuario, contrasena_actual, nueva_contrasena) {
+    static cambiarcontrasena(correo, nueva_contrasena) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { data, error } = yield connection_1.default.rpc('p_cambiar_contrasena', {
-                    p_id_usuario: id_usuario,
-                    p_contrasena: contrasena_actual,
+                    p_correo: correo,
                     p_nueva_contrasena: nueva_contrasena,
                 });
                 if (error) {
@@ -264,11 +263,11 @@ class usuario {
             }
         });
     }
-    static verificar_usuario_organizador(id_usuario, codigo_verificacion) {
+    static verificar_usuario_organizador(correo, codigo_verificacion) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { data, error } = yield connection_1.default.rpc('p_verificar_codigo_usuario_verificado', {
-                    p_id_usuario: id_usuario,
+                    p_correo: correo,
                     p_codigo_verificacion: codigo_verificacion
                 });
                 if (error) {
@@ -286,11 +285,10 @@ class usuario {
             }
         });
     }
-    static verificarcorreo(idUsuario, correo) {
+    static verificarcorreo(correo) {
         return __awaiter(this, void 0, void 0, function* () {
             const { data, error } = yield connection_1.default.rpc('p_verificar_correo', {
-                p_id_usuario: idUsuario,
-                p_correo: correo,
+                p_correo: correo
             });
             if (error) {
                 console.error('Error al verificar el correo:', error);
