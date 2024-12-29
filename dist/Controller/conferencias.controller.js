@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obtenerUnaConferencia = exports.obtenerConferenciasTotales = void 0;
+exports.eliminarUnaConferencia = exports.editarUnaConferencia = exports.crearUnaConferencia = exports.obtenerUnaConferencia = exports.obtenerConferenciasTotales = void 0;
 const conferencias_model_1 = require("../models/conferencias.model");
 const obtenerConferenciasTotales = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -51,3 +51,59 @@ const obtenerUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.obtenerUnaConferencia = obtenerUnaConferencia;
+const crearUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia } = req.body;
+        const nuevaConferencia = yield conferencias_model_1.Conferencia.crearConferencia(nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia);
+        res.status(201).json({ nuevaConferencia });
+    }
+    catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : (error === null || error === void 0 ? void 0 : error.toString()) || 'Error desconocido';
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ',
+            error: errorInfo
+        });
+    }
+});
+exports.crearUnaConferencia = crearUnaConferencia;
+const editarUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, finalizado, inactivo, img_conferecia, img_ponente } = req.body;
+        const edicionConferencia = yield conferencias_model_1.Conferencia.editarConferencia(id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, finalizado, inactivo, img_conferecia, img_ponente);
+        res.status(201).json({ edicionConferencia });
+    }
+    catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : (error === null || error === void 0 ? void 0 : error.toString()) || 'Error desconocido';
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ',
+            error: errorInfo
+        });
+    }
+});
+exports.editarUnaConferencia = editarUnaConferencia;
+const eliminarUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idConferencia } = req.params;
+        yield conferencias_model_1.Conferencia.eliminarConferencia(Number(idConferencia));
+        res.status(200).json({
+            message: 'Conferencia eliminada correctamente'
+        });
+    }
+    catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : (error === null || error === void 0 ? void 0 : error.toString()) || 'Error desconocido';
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ',
+            error: errorInfo
+        });
+    }
+});
+exports.eliminarUnaConferencia = eliminarUnaConferencia;

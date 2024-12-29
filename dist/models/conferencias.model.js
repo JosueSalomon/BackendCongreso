@@ -37,5 +37,63 @@ class Conferencia {
             return data;
         });
     }
+    static crearConferencia(nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_crear_conferencia', {
+                p_nombre_conferencia: nombre_conferencia,
+                p_nombres_ponente: nombres_ponente,
+                p_apellidos_ponente: apellidos_ponente,
+                p_descripcion_ponente: descripcion_ponente,
+                p_img_perfil_ponente: img_perfil_ponente,
+                p_descripcion_conferencia: descripcion_conferencia,
+                p_direccion: direccion,
+                p_fecha_conferencia: fecha_conferencia,
+                p_hora_inicio: hora_inicio,
+                p_hora_final: hora_final,
+                p_cupos: cupos,
+                p_img_conferecia: img_conferecia
+            });
+            if (error) {
+                throw error;
+            }
+            return data;
+        });
+    }
+    static editarConferencia(id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, finalizado, inactivo, img_conferecia, img_ponente) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_editar_conferencia', {
+                p_id_conferencia: id_conferencia,
+                p_nombre: nombre,
+                p_nombres_ponente: nombres_ponente,
+                p_apellidos_ponente: apellidos_ponente,
+                p_descripcion_conferencia: descripcion_conferencia,
+                p_descripcion_ponente: descripcion_ponente,
+                p_direccion: direccion,
+                p_fecha_conferencia: fecha_conferencia,
+                p_hora_inicio: hora_inicio,
+                p_hora_final: hora_final,
+                p_cupos: cupos,
+                p_finalizado: finalizado,
+                p_inactivo: inactivo,
+                p_img_conferecia: img_conferecia,
+                p_img_ponente: img_ponente
+            });
+            if (error) {
+                throw error;
+            }
+            return data;
+        });
+    }
+    static eliminarConferencia(idConferencia) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_eliminar_conferencia', {
+                p_id_conferencia: idConferencia
+            });
+            if (error) {
+                throw error;
+            }
+            return data;
+        });
+    }
 }
 exports.Conferencia = Conferencia;
