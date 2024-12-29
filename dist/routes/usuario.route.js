@@ -18,6 +18,6 @@ router.post('/login', usuario_controller_1.login);
 router.post('/logout', usuario_controller_1.logout);
 router.post('/cambiarcontrasena', usuario_controller_1.cambiarcontrasena);
 router.get('/universidades', usuario_controller_1.obteneruniversidades);
-router.get('/verificacion/existe', usuario_controller_1.verificarusuario);
-router.get('/verificacion/codigo_organizador', usuario_controller_1.verificar_codigo_organizador);
+router.post('/verificacion/existe', usuario_controller_1.verificarusuario);
+router.post('/verificacion/codigo_organizador', usuario_controller_1.verificar_codigo_organizador);
 exports.default = router;
