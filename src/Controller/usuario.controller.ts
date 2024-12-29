@@ -322,3 +322,30 @@ export const obteneruniversidades = async (req: Request, res: Response): Promise
           }
         }
       };
+
+      export const verificarusuario = async (req: Request, res: Response) =>{
+          const {correo} = req.body
+      
+          try{
+      
+              const resultado = await usuario.verificarcorreo(String(correo))
+              res.status(200).json({
+                  resultado
+              });
+      
+          }catch (error) {
+              console.error('Error con fetch', error);
+              res.status(500).json({ error: 'Hubo un problema buscar el user' });
+          }
+      }
+
+
+      export const verificar_codigo_organizador = (req: Request, res: Response) => {
+            const { codigo_verificacion } = req.body;
+
+            if (codigo_verificacion === "1234") {
+                 res.status(200).json({ resultado: true });
+            } else {
+                 res.status(200).json({ resultado: false });
+            }
+          };

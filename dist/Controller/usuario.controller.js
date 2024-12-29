@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
+exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
 const emailservice_1 = require("../services/emailservice");
 const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
@@ -285,3 +285,27 @@ const obteneruniversidades = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.obteneruniversidades = obteneruniversidades;
+const verificarusuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { correo } = req.body;
+    try {
+        const resultado = yield usuario_model_1.usuario.verificarcorreo(String(correo));
+        res.status(200).json({
+            resultado
+        });
+    }
+    catch (error) {
+        console.error('Error con fetch', error);
+        res.status(500).json({ error: 'Hubo un problema buscar el user' });
+    }
+});
+exports.verificarusuario = verificarusuario;
+const verificar_codigo_organizador = (req, res) => {
+    const { codigo_verificacion } = req.body;
+    if (codigo_verificacion === "1234") {
+        res.status(200).json({ resultado: true });
+    }
+    else {
+        res.status(200).json({ resultado: false });
+    }
+};
+exports.verificar_codigo_organizador = verificar_codigo_organizador;
