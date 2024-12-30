@@ -3,11 +3,14 @@ import {NextFunction, Request, Response} from 'express'
 import dotenv from 'dotenv'
 dotenv.config()
 
-export const hacerToken = (correo: any, contrasenia: any): any => {
+export const hacerToken = (correo: any, contrasenia: any, tipo_usuario:any, nombres:any, apellidos:any): any => {
     const token = jwt.sign(
         {
             correo,
-            contrasenia
+            contrasenia,
+            tipo_usuario, 
+            nombres,
+            apellidos
         },
         process.env.SECRET_TOKEN || 'secure_token',
         {
