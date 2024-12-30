@@ -107,4 +107,28 @@ export class Conferencia {
         return data;
     }
 
+    static async insertarRecursoPorConferencia(url_descarga: string, url_vista_previa:string ,id_conferencia:number, nombre_recurso:string){
+        try {
+            const {data, error} = await supabase.rpc('insertar_recurso', {
+                p_url_descarga: url_descarga,
+                p_url_vista_previa: url_vista_previa,
+                p_id_conferencia: id_conferencia,
+                p_nombre_recurso: nombre_recurso
+            });
+
+            return data;
+        } catch (error: unknown) {
+            throw new Error(error as string);
+        }
+    }
+
+    static async traerRecursosPorConferencia(id_conferencia: number){
+        const {data, error} = await supabase.rpc('traer_recurso_por_conferencia',{
+            p_id_conferencia: id_conferencia
+        });
+        if(error){
+            throw error;
+        }
+        return data;
+    }
 }

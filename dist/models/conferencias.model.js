@@ -95,5 +95,32 @@ class Conferencia {
             return data;
         });
     }
+    static insertarRecursoPorConferencia(url_descarga, url_vista_previa, id_conferencia, nombre_recurso) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data, error } = yield connection_1.default.rpc('insertar_recurso', {
+                    p_url_descarga: url_descarga,
+                    p_url_vista_previa: url_vista_previa,
+                    p_id_conferencia: id_conferencia,
+                    p_nombre_recurso: nombre_recurso
+                });
+                return data;
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+        });
+    }
+    static traerRecursosPorConferencia(id_conferencia) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('traer_recurso_por_conferencia', {
+                p_id_conferencia: id_conferencia
+            });
+            if (error) {
+                throw error;
+            }
+            return data;
+        });
+    }
 }
 exports.Conferencia = Conferencia;

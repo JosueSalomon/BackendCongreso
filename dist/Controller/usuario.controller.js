@@ -189,8 +189,9 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const resultado = yield usuario_model_1.usuario.login(correo, contrasenia);
         return res.status(200).json({
             message: "Inicio de sesión exitoso",
-            codigoResultado: 1,
-            data: resultado
+            codigoResultado: resultado.codigo_resultado,
+            tipo_usuario: resultado.p_tipo_usuario,
+            token: resultado.token,
         });
     }
     catch (error) {

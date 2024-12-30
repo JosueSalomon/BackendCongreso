@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.eliminarUnaConferencia = exports.editarUnaConferencia = exports.crearUnaConferencia = exports.obtenerUnaConferencia = exports.obtenerConferenciasTotales = void 0;
+exports.traerRecursosPorConferencia = exports.insertarRecursoPorConferencia = exports.eliminarUnaConferencia = exports.editarUnaConferencia = exports.crearUnaConferencia = exports.obtenerUnaConferencia = exports.obtenerConferenciasTotales = void 0;
 const conferencias_model_1 = require("../models/conferencias.model");
+const googleDrive_1 = require("../services/googleDrive");
 const obtenerConferenciasTotales = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { dia } = req.body;
@@ -105,3 +106,76 @@ const eliminarUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.eliminarUnaConferencia = eliminarUnaConferencia;
+//Nuevos mètodos hechos por elmer 30 diciembre 2024
+const insertarRecursoPorConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id_conferencia, } = req.body;
+        const recurso = req.file;
+        if (!id_conferencia || !recurso) {
+            return res.status(400).json({
+                message: 'id_conferencia y recurso son obligatorios.',
+                codigoResultado: 0
+            });
+        }
+        const recursoSubido = yield subirRecursoDeConferencia(recurso);
+        yield conferencias_model_1.Conferencia.insertarRecursoPorConferencia(recursoSubido.webContentLink, recursoSubido.webViewLink, id_conferencia, recursoSubido.name || recursoSubido.originalname || 'Recurso sin nombre');
+        return res.status(201).json({
+            message: 'Recurso subido correctamente',
+            recursoSubido,
+            codigoResultado: 1
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: 'Error al subir el recurso',
+            error
+        });
+    }
+});
+exports.insertarRecursoPorConferencia = insertarRecursoPorConferencia;
+const subirRecursoDeConferencia = (recurso) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!recurso) {
+            return null;
+        }
+        // Subir el recurso a Google Drive.
+        const authClient = yield (0, googleDrive_1.authorize)();
+        const folderId = '18td9CBFAS3oTt20eOzKPke63_wyu7Yia'; // ID de la carpeta de recursos en drive.
+        const fileId = yield (0, googleDrive_1.uploadFile)(authClient, recurso, folderId);
+        return fileId;
+    }
+    catch (error) {
+        console.error('Error al subir el recurso:', error);
+        throw error;
+    }
+});
+const traerRecursosPorConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idConferencia } = req.params;
+        if (!idConferencia) {
+            return res.status(400).json({
+                message: 'id_conferencia es obligatorio',
+                codigoResultado: 0
+            });
+        }
+        const recursos = yield conferencias_model_1.Conferencia.traerRecursosPorConferencia(Number(idConferencia));
+        if (recursos.length === 0) {
+            return res.status(404).json({
+                message: 'No se encontraron recursos para la conferencia',
+                codigoResultado: 0
+            });
+        }
+        return res.status(201).json({
+            recursos,
+            message: 'Recursos obtenidos correctamente',
+            codigoResultado: 1
+        });
+    }
+    catch (error) {
+        return res.status(500).json({
+            message: error.message,
+            codigoResultado: 0
+        });
+    }
+});
+exports.traerRecursosPorConferencia = traerRecursosPorConferencia;

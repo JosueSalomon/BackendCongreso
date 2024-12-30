@@ -1,5 +1,6 @@
 import { Conferencia } from '../models/conferencias.model'
 import { Request, Response } from 'express'
+import { authorize, uploadFile } from '../services/googleDrive'
 
 
 export const obtenerConferenciasTotales = async (req: Request, res: Response) => {
@@ -163,5 +164,87 @@ export const eliminarUnaConferencia = async (req: Request, res: Response) => {
             message: 'Informacion del error: ', 
             error: errorInfo
         });
+    }
+}
+
+//Nuevos mètodos hechos por elmer 30 diciembre 2024
+export const insertarRecursoPorConferencia = async(req:Request, res:Response):Promise<any> => {
+    try {
+        const {
+            id_conferencia,
+        } = req.body;
+        
+        const recurso = req.file;
+
+        if (!id_conferencia || !recurso) {
+            return res.status(400).json({ 
+                message: 'id_conferencia y recurso son obligatorios.', 
+                codigoResultado: 0 
+            });
+        }
+
+        const recursoSubido = await subirRecursoDeConferencia(recurso);
+        await Conferencia.insertarRecursoPorConferencia(recursoSubido.webContentLink, recursoSubido.webViewLink, id_conferencia, recursoSubido.name || recursoSubido.originalname || 'Recurso sin nombre');
+        return res.status(201).json({
+            message: 'Recurso subido correctamente',
+            recursoSubido,
+            codigoResultado: 1
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Error al subir el recurso',
+            error
+        });
+    }
+}
+
+const subirRecursoDeConferencia = async (recurso: any): Promise<any> => {
+    try {
+        if (!recurso) {
+            return null;
+        }
+
+        // Subir el recurso a Google Drive.
+        const authClient = await authorize();
+        const folderId = '18td9CBFAS3oTt20eOzKPke63_wyu7Yia'; // ID de la carpeta de recursos en drive.
+        const fileId = await uploadFile(authClient, recurso, folderId);
+        return fileId;
+    } catch (error) {
+        console.error('Error al subir el recurso:', error);
+        throw error;
+    }
+
+};
+
+export const traerRecursosPorConferencia = async (req: Request, res: Response):Promise<any>  => {
+    try {
+        const { idConferencia } = req.params;
+
+        if (!idConferencia) {
+            return res.status(400).json({
+                message: 'id_conferencia es obligatorio',
+                codigoResultado: 0
+            });
+        }
+
+        const recursos = await Conferencia.traerRecursosPorConferencia(Number(idConferencia));
+
+        if (recursos.length === 0) {
+            return res.status(404).json({
+                message: 'No se encontraron recursos para la conferencia',
+                codigoResultado: 0
+            });
+        }
+
+        return res.status(201).json({
+            recursos,
+            message: 'Recursos obtenidos correctamente',
+            codigoResultado: 1
+        });
+    } catch (error:unknown) {
+        return res.status(500).json({
+            message: (error as Error).message,
+            codigoResultado: 0
+        })
     }
 }

@@ -207,51 +207,52 @@ export const enviarcodigocambiocontrasena = async (req: Request, res: Response):
             }
         }
 
-export const login = async (req: Request, res: Response) : Promise<any> => {
-  try {
-    const { correo, contrasenia } = req.body;
-
-    if(!correo || !contrasenia){
-      return res.status(401).json({
-        message : "Correo y contraseña son requeridos",
-        codigoResultado : 0,
-        data : []
-      });
-    }
-
-    const resultado = await usuario.login(correo, contrasenia);
-
-    return res.status(200).json({
-      message: "Inicio de sesión exitoso",
-      codigoResultado: 1, 
-      data : resultado
-    })
-  } catch (error : unknown) {
-    console.log(error)
-    // Manejo de errores
-    if (error instanceof Error && error.message === "Credenciales inválidas") {
-      return res.status(401).json({
-        message: "Credenciales inválidas",
-        codigoResultado: 0,
-        data: []
-      });
-    }
-
-    if(error instanceof Error && error.message === "error de pago"){
-      return res.status(403).json({
-        message: "Un administrador debe de revisar antes el pago de su recibo para el congreso",
-        codigoResultado: -1
-      })
-    }
-
-    if(error){
-      return res.status(500).json({
-        message: "Error interno del servidor backend", error,
-        codigoResultado: -1
-      })
-    }
-  }
-}
+        export const login = async (req: Request, res: Response) : Promise<any> => {
+          try {
+            const { correo, contrasenia } = req.body;
+        
+            if(!correo || !contrasenia){
+              return res.status(401).json({
+                message : "Correo y contraseña son requeridos",
+                codigoResultado : 0,
+                data : []
+              });
+            }
+        
+            const resultado = await usuario.login(correo, contrasenia);
+        
+            return res.status(200).json({
+              message: "Inicio de sesión exitoso",
+              codigoResultado: resultado.codigo_resultado, 
+              tipo_usuario: resultado.p_tipo_usuario,
+              token: resultado.token,
+            })
+          } catch (error : unknown) {
+            console.log(error)
+            // Manejo de errores
+            if (error instanceof Error && error.message === "Credenciales inválidas") {
+              return res.status(401).json({
+                message: "Credenciales inválidas",
+                codigoResultado: 0,
+                data: []
+              });
+            }
+        
+            if(error instanceof Error && error.message === "error de pago"){
+              return res.status(403).json({
+                message: "Un administrador debe de revisar antes el pago de su recibo para el congreso",
+                codigoResultado: -1
+              })
+            }
+        
+            if(error){
+              return res.status(500).json({
+                message: "Error interno del servidor backend", error,
+                codigoResultado: -1
+              })
+            }
+          }
+        }
 
 export const logout = async (req:Request, res:Response):Promise<any> => {
   try {
