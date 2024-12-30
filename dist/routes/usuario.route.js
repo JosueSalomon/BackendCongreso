@@ -13,7 +13,7 @@ router.post('/actualizarcorreo', usuario_controller_1.actualizarcorreo);
 router.post('/verificacion/correo', usuario_controller_1.enviarcodigoverificacioncorreo);
 router.post('/verificacion/reenviarcorreo', usuario_controller_1.enviarcodigoverificacioncorreo);
 router.post('/verificacion/contrasena', usuario_controller_1.enviarcodigocambiocontrasena);
-router.post('/registrar', multer_1.default.single('recibo'), usuario_controller_1.registrarusuario, usuario_controller_1.enviarcodigoverificacioncorreo);
+router.post('/registrar', multer_1.default.single('recibo'), usuario_controller_1.procesarRecibo, usuario_controller_1.registrarusuario, usuario_controller_1.enviarcodigoverificacioncorreo);
 router.post('/login', usuario_controller_1.login);
 router.post('/logout', usuario_controller_1.logout);
 router.post('/cambiarcontrasena', usuario_controller_1.cambiarcontrasena);

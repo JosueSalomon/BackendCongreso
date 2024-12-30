@@ -1,23 +1,44 @@
 import { Request, Response , NextFunction} from 'express';
 import { sendVerificationEmail } from '../services/emailservice';
+import upload from '../services/multer'
 import { usuario } from '../models/usuario.model';
 import validator from 'email-validator';
 import cloudinary from "../services/cloudinary";
 import fs from 'fs';
 
+export const procesarRecibo = async (req: Request, res: Response, next: NextFunction):Promise<any> => {
+try {
+  
+  if (!req.file) {
+    return res.status(400).json({ message: "No se recibió el archivo del recibo." });
+  }
+
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+  if (!allowedTypes.includes(req.file.mimetype)) {
+    return res.status(400).json({ message: "El archivo debe ser una imagen (jpeg, jpg, png)." });
+  }
+
+  next();
+} catch (error) {
+  console.error("Error en el middleware de recibo:", error);
+  res.status(500).json({ message: "Hubo un problema al procesar el recibo.", error });
+}
+};
+
 export const registrarusuario = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    let img_recibo="";
+    let img_recibo= "";
 
-    if(req.file){
-        const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
-        img_recibo = resultadoSubirArchivo.url;
-        fs.unlink(req.file.path, (err) => {
-          if (err) {
-              console.error('Error al eliminar el archivo local:', err);
-          } else {
-              console.log('Archivo local eliminado con éxito');
-          }
+    if (req.file) {
+      // Subir el archivo a Cloudinary
+      const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
+      img_recibo = resultadoSubirArchivo.url;
+
+      // Eliminar el archivo local
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.error("Error al eliminar el archivo local:", err);
+        }
       });
     }
 
