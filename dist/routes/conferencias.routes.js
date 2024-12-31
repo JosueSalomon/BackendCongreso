@@ -14,6 +14,6 @@ router.post('/insertar', conferencias_controller_2.crearUnaConferencia);
 router.put('/editar', conferencias_controller_2.editarUnaConferencia);
 router.delete('/eliminar/:idConferencia', conferencias_controller_2.eliminarUnaConferencia);
 //para subir los recursos de una conferencia
-router.post('/subirRecurso', multer_1.default.single('recurso'), conferencias_controller_1.insertarRecursoPorConferencia);
+router.post('/subirRecurso', multer_1.default.single('recurso'), conferencias_controller_1.subirRecursoDeConferencia);
 router.get('/obtenerRecursos/:idConferencia', conferencias_controller_1.traerRecursosPorConferencia);
 exports.default = router;

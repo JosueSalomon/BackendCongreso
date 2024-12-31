@@ -7,13 +7,13 @@ exports.verificarToken = exports.hacerToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const hacerToken = (correo, contrasenia, tipo_usuario, nombres, apellidos) => {
+const hacerToken = (correo, tipo_usuario, nombres, apellidos, id_usuario) => {
     const token = jsonwebtoken_1.default.sign({
         correo,
-        contrasenia,
         tipo_usuario,
         nombres,
-        apellidos
+        apellidos,
+        id_usuario
     }, process.env.SECRET_TOKEN || 'secure_token', {
         expiresIn: '1hr' //Token válido por 1 hora
     });

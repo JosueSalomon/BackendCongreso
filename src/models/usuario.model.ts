@@ -187,7 +187,7 @@ export class usuario {
           throw new Error("error de pago")
         }
 
-        const token = hacerToken(data.correo_salida, data.contrasenia_salida, data.p_tipo_usuario, data.nombres, data.apellidos);
+        const token = hacerToken(data.correo_salida,data.p_tipo_usuario, data.nombres, data.apellidos, data.id_usuario_salida);
         const resultado = await this.insertarTokenDelUsuario(data.correo_salida, data.contrasenia_salida, token);
         
         data.token = token;
