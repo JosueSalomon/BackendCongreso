@@ -146,4 +146,14 @@ export class Conferencia {
         }
         return data;
     }
+
+    static async obtenerAsistenciasPorUsuario(idUsuario: number){
+        const {data, error} = await supabase.rpc('p_asistencias_usuario', {
+            p_id_usuario: idUsuario
+        });
+        if(error){
+            throw error
+        };
+        return data;
+    }
 }

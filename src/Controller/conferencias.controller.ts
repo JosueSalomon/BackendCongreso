@@ -280,3 +280,25 @@ export const obtenerConferenciasPorCadaUsuario = async (req: Request, res: Respo
         });
     }
 };
+
+export const obtenerAsistenciasPorCadaUsuario = async (req: Request, res: Response) => {
+    try{
+        const {idUsuario} = req.params;
+
+        const conferencias = await Conferencia.obtenerAsistenciasPorUsuario(Number(idUsuario));
+
+        res.status(201).json({
+            conferencias
+        })
+    } catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : error?.toString() || 'Error desconocido';
+
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ', 
+            error: errorInfo
+        });
+    }
+}
