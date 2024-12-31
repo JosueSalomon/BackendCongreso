@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.traerRecursosPorConferencia = exports.subirRecursoDeConferencia = exports.eliminarUnaConferencia = exports.editarUnaConferencia = exports.crearUnaConferencia = exports.obtenerUnaConferencia = exports.obtenerConferenciasTotales = void 0;
+exports.obtenerConferenciasPorCadaUsuario = exports.traerRecursosPorConferencia = exports.subirRecursoDeConferencia = exports.eliminarUnaConferencia = exports.editarUnaConferencia = exports.crearUnaConferencia = exports.obtenerUnaConferencia = exports.obtenerConferenciasTotales = void 0;
 const conferencias_model_1 = require("../models/conferencias.model");
 const googleDrive_1 = require("../services/googleDrive");
 const obtenerConferenciasTotales = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -188,3 +188,23 @@ const traerRecursosPorConferencia = (req, res) => __awaiter(void 0, void 0, void
     }
 });
 exports.traerRecursosPorConferencia = traerRecursosPorConferencia;
+const obtenerConferenciasPorCadaUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idUsuario, dia } = req.body;
+        const conferencias = yield conferencias_model_1.Conferencia.obtenerConferenciasPorUsuario(idUsuario, dia);
+        res.status(201).json({
+            conferencias
+        });
+    }
+    catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : (error === null || error === void 0 ? void 0 : error.toString()) || 'Error desconocido';
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ',
+            error: errorInfo
+        });
+    }
+});
+exports.obtenerConferenciasPorCadaUsuario = obtenerConferenciasPorCadaUsuario;

@@ -258,3 +258,25 @@ export const traerRecursosPorConferencia = async (req: Request, res: Response):P
         })
     }
 }
+
+export const obtenerConferenciasPorCadaUsuario = async (req: Request, res: Response) => {
+    try {
+        const { idUsuario, dia } = req.body;
+        
+        const conferencias = await Conferencia.obtenerConferenciasPorUsuario(idUsuario, dia);
+        
+        res.status(201).json({
+            conferencias
+        })
+    } catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : error?.toString() || 'Error desconocido';
+
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ', 
+            error: errorInfo
+        });
+    }
+};

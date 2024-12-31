@@ -124,5 +124,17 @@ class Conferencia {
             return data;
         });
     }
+    static obtenerConferenciasPorUsuario(id_usuario, dia) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_conferencias_por_usuario', {
+                p_id_usuario: id_usuario,
+                p_dia: dia
+            });
+            if (error) {
+                throw error;
+            }
+            return data;
+        });
+    }
 }
 exports.Conferencia = Conferencia;

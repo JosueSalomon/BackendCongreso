@@ -135,4 +135,15 @@ export class Conferencia {
         }
         return data;
     }
+
+    static async obtenerConferenciasPorUsuario (id_usuario: number, dia: string){
+        const {data, error} = await supabase.rpc('p_conferencias_por_usuario',{
+            p_id_usuario: id_usuario,
+            p_dia: dia
+        });
+        if(error){
+            throw error;
+        }
+        return data;
+    }
 }
