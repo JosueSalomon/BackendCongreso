@@ -12,44 +12,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = exports.procesarRecibo = void 0;
+exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
 const emailservice_1 = require("../services/emailservice");
 const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
-const cloudinary_1 = __importDefault(require("../services/cloudinary"));
-const fs_1 = __importDefault(require("fs"));
-const procesarRecibo = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        if (!req.file) {
-            return res.status(400).json({ message: "No se recibió el archivo del recibo." });
-        }
-        const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-        if (!allowedTypes.includes(req.file.mimetype)) {
-            return res.status(400).json({ message: "El archivo debe ser una imagen (jpeg, jpg, png)." });
-        }
-        next();
-    }
-    catch (error) {
-        console.error("Error en el middleware de recibo:", error);
-        res.status(500).json({ message: "Hubo un problema al procesar el recibo.", error });
-    }
-});
-exports.procesarRecibo = procesarRecibo;
+//  export const procesarRecibo = async (req: Request, res: Response, next: NextFunction):Promise<any> => {
+//  try {
+//   if (!req.file) {
+//     return res.status(400).json({ message: "No se recibió el archivo del recibo." });
+//   }
+//   const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+//   if (!allowedTypes.includes(req.file.mimetype)) {
+//     return res.status(400).json({ message: "El archivo debe ser una imagen (jpeg, jpg, png)." });
+//   }
+//   next();
+// } catch (error) {
+//   console.error("Error en el middleware de recibo:", error);
+//   res.status(500).json({ message: "Hubo un problema al procesar el recibo.", error });
+// }
+// };
 const registrarusuario = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let img_recibo = "";
-        if (req.file) {
-            // Subir el archivo a Cloudinary
-            const resultadoSubirArchivo = yield cloudinary_1.default.uploader.upload(req.file.path);
-            img_recibo = resultadoSubirArchivo.url;
-            // Eliminar el archivo local
-            fs_1.default.unlink(req.file.path, (err) => {
-                if (err) {
-                    console.error("Error al eliminar el archivo local:", err);
-                }
-            });
-        }
-        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, codigo_recibo, codigo_organizador } = req.body;
+        //     let img_recibo= "";
+        //     if (req.file) {
+        //       // Subir el archivo a Cloudinary
+        //       const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
+        //       img_recibo = resultadoSubirArchivo.url;
+        //       // Eliminar el archivo local
+        //       fs.unlink(req.file.path, (err) => {
+        //         if (err) {
+        //           console.error("Error al eliminar el archivo local:", err);
+        //         }
+        //       });
+        //     }
+        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador } = req.body;
         if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
             res.status(400).json({ message: 'Faltan datos requeridos en la solicitud' });
             return;
