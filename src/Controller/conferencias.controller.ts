@@ -62,7 +62,8 @@ export const crearUnaConferencia = async (req: Request, res: Response) => {
             hora_inicio,
             hora_final,
             cupos,
-            img_conferecia
+            img_conferecia,
+            url_carpeta_zip
         } = req.body;
 
         const nuevaConferencia = await Conferencia.crearConferencia(
@@ -77,7 +78,8 @@ export const crearUnaConferencia = async (req: Request, res: Response) => {
             hora_inicio,
             hora_final,
             cupos,
-            img_conferecia
+            img_conferecia,
+            url_carpeta_zip
             );
     
         res.status(201).json({nuevaConferencia});
@@ -112,7 +114,8 @@ export const editarUnaConferencia = async (req: Request, res: Response) => {
             finalizado,
             inactivo,
             img_conferecia,
-            img_ponente
+            img_ponente,
+            url_carpeta_zip
         } = req.body;
         
         const edicionConferencia = await Conferencia.editarConferencia(
@@ -130,7 +133,8 @@ export const editarUnaConferencia = async (req: Request, res: Response) => {
             finalizado,
             inactivo,
             img_conferecia,
-            img_ponente
+            img_ponente,
+            url_carpeta_zip
         );
     
         res.status(201).json({edicionConferencia});

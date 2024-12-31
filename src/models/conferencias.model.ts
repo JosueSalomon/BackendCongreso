@@ -35,7 +35,8 @@ export class Conferencia {
         hora_inicio: string,
         hora_final: string,
         cupos: number,
-        img_conferecia: string
+        img_conferecia: string,
+        url_carpeta_zip: string
     ){
         const {data, error} = await supabase.rpc('p_crear_conferencia', {
             p_nombre_conferencia: nombre_conferencia,
@@ -49,7 +50,8 @@ export class Conferencia {
             p_hora_inicio: hora_inicio,
             p_hora_final: hora_final,
             p_cupos: cupos,
-            p_img_conferecia: img_conferecia
+            p_img_conferecia: img_conferecia,
+            p_url_carpeta_zip: url_carpeta_zip
         });
         if(error){
             throw error;
@@ -73,6 +75,7 @@ export class Conferencia {
         inactivo: boolean,
         img_conferecia: string,
         img_ponente: string,
+        url_carpeta_zip: string
     ){
         const {data, error} = await supabase.rpc('p_editar_conferencia', {
             p_id_conferencia: id_conferencia,
@@ -89,7 +92,8 @@ export class Conferencia {
             p_finalizado: finalizado,
             p_inactivo: inactivo,
             p_img_conferecia: img_conferecia,
-            p_img_ponente: img_ponente
+            p_img_ponente: img_ponente,
+            p_url_carpeta_zip: url_carpeta_zip
         });
         if(error){
             throw error;
