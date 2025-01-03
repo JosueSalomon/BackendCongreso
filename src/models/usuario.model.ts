@@ -112,24 +112,47 @@ export class usuario {
     return data;
   }
     
-    static async usuariocodigocorreo(correo: string, codigo_verificacion: string, id_tipo_verificacion: number): Promise<any>  {
-        try {
-            const { data, error } = await supabase.rpc('p_guardar_codigo_verificacion', {
-                p_codigo_verificacion: codigo_verificacion,
-                p_id_tipo_verificacion: id_tipo_verificacion,
-                p_correo:correo
-            });
-        
-            if (error) throw error;
-            return data;
-        } catch (error: unknown) {
-            if (error instanceof Error) {
-                throw new Error(error.message); 
-            } else {
-                throw new Error('Error desconocido');
+  static async usuariocodigocorreo(
+    correo: string, 
+    codigo_verificacion: string, 
+    id_tipo_verificacion: number
+): Promise<any>  {
+
+    try {
+        const { data, error } = await supabase.rpc('p_guardar_codigo_verificacion', {
+            p_codigo_verificacion: codigo_verificacion,
+            p_id_tipo_verificacion: id_tipo_verificacion,
+            p_correo: correo
+        });
+
+        if (error) throw error;
+        let id_usuario = data;
+
+        setTimeout(async () => {
+            try {
+                const { error: cleanError } = await supabase.rpc('p_limpiar_usuarios_no_verificados', {
+                  p_id_usuario: id_usuario
+              });
+                if (cleanError) {
+                    console.error("Error al ejecutar la funcion", cleanError);
+                } else {
+                    console.log("Usuario sin verificar eliminado correctamente.");
+                }
+            } catch (timeoutError) {
+                console.error("Error en la tarea programada:", timeoutError);
             }
+        }, 10 * 60 * 1000); // 10 minutos en milisegundos
+
+        return data;
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            throw new Error(error.message); 
+        } else {
+            throw new Error('Error desconocido');
         }
     }
+}
+
 
     static async usuarioverificarcorreo(correo: string, codigo_verificacion: string): Promise<boolean> {
         try {
