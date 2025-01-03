@@ -231,7 +231,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (error) {
             return res.status(500).json({
                 message: "Error interno del servidor backend", error,
-                codigoResultado: -1
+                codigoResultado: -2
             });
         }
     }
