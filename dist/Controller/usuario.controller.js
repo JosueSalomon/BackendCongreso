@@ -220,10 +220,16 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 data: []
             });
         }
-        if (error instanceof Error && error.message === "error de pago") {
+        if (error instanceof Error && error.message === "Su comprobante ha sido denegado, por favor vuelva a intentarlo mandando su comprobante al correo: ") {
             return res.status(403).json({
-                message: "Un administrador debe de revisar antes el pago de su recibo para el congreso",
+                message: "Su comprobante ha sido denegado, por favor vuelva a intentarlo mandando su comprobante al correo: congresofacultadingenieriaunah@gmail.com",
                 codigoResultado: -1
+            });
+        }
+        if (error instanceof Error && error.message === "Su comprobante de pago aún está en proceso de verificación, por favor vuelva a intentarlo más tarde.") {
+            return res.status(403).json({
+                message: "Su comprobante de pago aún está en proceso de verificación, por favor vuelva a intentarlo más tarde.",
+                codigoResultado: 2
             });
         }
         if (error) {

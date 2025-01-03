@@ -183,8 +183,13 @@ export class usuario {
           throw new Error("Credenciales inválidas");
         }
 
+        //Falso
         if(data.codigo_resultado === -1){
-          throw new Error("error de pago")
+          throw new Error("Su comprobante ha sido denegado, por favor vuelva a intentarlo mandando su comprobante al correo: ");
+        }
+
+        if(data.codigo_resultado === 2){
+          throw new Error("Su comprobante de pago aún está en proceso de verificación, por favor vuelva a intentarlo más tarde.");
         }
 
         const token = hacerToken(data.correo_salida,data.p_tipo_usuario, data.nombres, data.apellidos, data.id_usuario_salida);
