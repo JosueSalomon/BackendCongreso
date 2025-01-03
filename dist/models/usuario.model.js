@@ -42,6 +42,7 @@ class usuario {
             else if (codigo_organizador === '1234') {
                 id_tipo_usuario = 2;
                 codigo_recibo = '1';
+                img_recibo = '1';
             }
             else if (codigo_organizador) {
                 throw new Error('Ingrese un codigo de organizador correcto.');
@@ -63,7 +64,6 @@ class usuario {
                 const duplicado = duplicados[0];
                 throw new Error(`El campo '${duplicado.campo_duplicado}' con el valor '${duplicado.valor}' ya está en uso.`);
             }
-            // Insertar en la tabla Persona
             const { data: PersonaData, error: PersonaError } = yield connection_1.default.rpc('p_insertar_persona', {
                 p_nombres: nombres,
                 p_apellidos: apellidos,

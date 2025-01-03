@@ -62,7 +62,8 @@ export const crearUnaConferencia = async (req: Request, res: Response) => {
             hora_inicio,
             hora_final,
             cupos,
-            img_conferecia
+            img_conferecia,
+            url_carpeta_zip
         } = req.body;
 
         const nuevaConferencia = await Conferencia.crearConferencia(
@@ -77,7 +78,8 @@ export const crearUnaConferencia = async (req: Request, res: Response) => {
             hora_inicio,
             hora_final,
             cupos,
-            img_conferecia
+            img_conferecia,
+            url_carpeta_zip
             );
     
         res.status(201).json({nuevaConferencia});
@@ -112,7 +114,8 @@ export const editarUnaConferencia = async (req: Request, res: Response) => {
             finalizado,
             inactivo,
             img_conferecia,
-            img_ponente
+            img_ponente,
+            url_carpeta_zip
         } = req.body;
         
         const edicionConferencia = await Conferencia.editarConferencia(
@@ -130,7 +133,8 @@ export const editarUnaConferencia = async (req: Request, res: Response) => {
             finalizado,
             inactivo,
             img_conferecia,
-            img_ponente
+            img_ponente,
+            url_carpeta_zip
         );
     
         res.status(201).json({edicionConferencia});
@@ -252,5 +256,49 @@ export const traerRecursosPorConferencia = async (req: Request, res: Response):P
             message: (error as Error).message,
             codigoResultado: 0
         })
+    }
+}
+
+export const obtenerConferenciasPorCadaUsuario = async (req: Request, res: Response) => {
+    try {
+        const { idUsuario, dia } = req.body;
+        
+        const conferencias = await Conferencia.obtenerConferenciasPorUsuario(idUsuario, dia);
+        
+        res.status(201).json({
+            conferencias
+        })
+    } catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : error?.toString() || 'Error desconocido';
+
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ', 
+            error: errorInfo
+        });
+    }
+};
+
+export const obtenerAsistenciasPorCadaUsuario = async (req: Request, res: Response) => {
+    try{
+        const {idUsuario} = req.params;
+
+        const conferencias = await Conferencia.obtenerAsistenciasPorUsuario(Number(idUsuario));
+
+        res.status(201).json({
+            conferencias
+        })
+    } catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : error?.toString() || 'Error desconocido';
+
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ', 
+            error: errorInfo
+        });
     }
 }

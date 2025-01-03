@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.traerRecursosPorConferencia = exports.subirRecursoDeConferencia = exports.eliminarUnaConferencia = exports.editarUnaConferencia = exports.crearUnaConferencia = exports.obtenerUnaConferencia = exports.obtenerConferenciasTotales = void 0;
+exports.obtenerAsistenciasPorCadaUsuario = exports.obtenerConferenciasPorCadaUsuario = exports.traerRecursosPorConferencia = exports.subirRecursoDeConferencia = exports.eliminarUnaConferencia = exports.editarUnaConferencia = exports.crearUnaConferencia = exports.obtenerUnaConferencia = exports.obtenerConferenciasTotales = void 0;
 const conferencias_model_1 = require("../models/conferencias.model");
 const googleDrive_1 = require("../services/googleDrive");
 const obtenerConferenciasTotales = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -54,8 +54,8 @@ const obtenerUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, fu
 exports.obtenerUnaConferencia = obtenerUnaConferencia;
 const crearUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia } = req.body;
-        const nuevaConferencia = yield conferencias_model_1.Conferencia.crearConferencia(nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia);
+        const { nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, url_carpeta_zip } = req.body;
+        const nuevaConferencia = yield conferencias_model_1.Conferencia.crearConferencia(nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, url_carpeta_zip);
         res.status(201).json({ nuevaConferencia });
     }
     catch (error) {
@@ -72,8 +72,8 @@ const crearUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, func
 exports.crearUnaConferencia = crearUnaConferencia;
 const editarUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, finalizado, inactivo, img_conferecia, img_ponente } = req.body;
-        const edicionConferencia = yield conferencias_model_1.Conferencia.editarConferencia(id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, finalizado, inactivo, img_conferecia, img_ponente);
+        const { id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, finalizado, inactivo, img_conferecia, img_ponente, url_carpeta_zip } = req.body;
+        const edicionConferencia = yield conferencias_model_1.Conferencia.editarConferencia(id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, finalizado, inactivo, img_conferecia, img_ponente, url_carpeta_zip);
         res.status(201).json({ edicionConferencia });
     }
     catch (error) {
@@ -188,3 +188,43 @@ const traerRecursosPorConferencia = (req, res) => __awaiter(void 0, void 0, void
     }
 });
 exports.traerRecursosPorConferencia = traerRecursosPorConferencia;
+const obtenerConferenciasPorCadaUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idUsuario, dia } = req.body;
+        const conferencias = yield conferencias_model_1.Conferencia.obtenerConferenciasPorUsuario(idUsuario, dia);
+        res.status(201).json({
+            conferencias
+        });
+    }
+    catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : (error === null || error === void 0 ? void 0 : error.toString()) || 'Error desconocido';
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ',
+            error: errorInfo
+        });
+    }
+});
+exports.obtenerConferenciasPorCadaUsuario = obtenerConferenciasPorCadaUsuario;
+const obtenerAsistenciasPorCadaUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idUsuario } = req.params;
+        const conferencias = yield conferencias_model_1.Conferencia.obtenerAsistenciasPorUsuario(Number(idUsuario));
+        res.status(201).json({
+            conferencias
+        });
+    }
+    catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : (error === null || error === void 0 ? void 0 : error.toString()) || 'Error desconocido';
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ',
+            error: errorInfo
+        });
+    }
+});
+exports.obtenerAsistenciasPorCadaUsuario = obtenerAsistenciasPorCadaUsuario;

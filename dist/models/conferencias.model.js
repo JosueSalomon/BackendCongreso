@@ -37,7 +37,7 @@ class Conferencia {
             return data;
         });
     }
-    static crearConferencia(nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia) {
+    static crearConferencia(nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, url_carpeta_zip) {
         return __awaiter(this, void 0, void 0, function* () {
             const { data, error } = yield connection_1.default.rpc('p_crear_conferencia', {
                 p_nombre_conferencia: nombre_conferencia,
@@ -51,7 +51,8 @@ class Conferencia {
                 p_hora_inicio: hora_inicio,
                 p_hora_final: hora_final,
                 p_cupos: cupos,
-                p_img_conferecia: img_conferecia
+                p_img_conferecia: img_conferecia,
+                p_url_carpeta_zip: url_carpeta_zip
             });
             if (error) {
                 throw error;
@@ -59,7 +60,7 @@ class Conferencia {
             return data;
         });
     }
-    static editarConferencia(id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, finalizado, inactivo, img_conferecia, img_ponente) {
+    static editarConferencia(id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, finalizado, inactivo, img_conferecia, img_ponente, url_carpeta_zip) {
         return __awaiter(this, void 0, void 0, function* () {
             const { data, error } = yield connection_1.default.rpc('p_editar_conferencia', {
                 p_id_conferencia: id_conferencia,
@@ -76,7 +77,8 @@ class Conferencia {
                 p_finalizado: finalizado,
                 p_inactivo: inactivo,
                 p_img_conferecia: img_conferecia,
-                p_img_ponente: img_ponente
+                p_img_ponente: img_ponente,
+                p_url_carpeta_zip: url_carpeta_zip
             });
             if (error) {
                 throw error;
@@ -119,6 +121,30 @@ class Conferencia {
             if (error) {
                 throw error;
             }
+            return data;
+        });
+    }
+    static obtenerConferenciasPorUsuario(id_usuario, dia) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_conferencias_por_usuario', {
+                p_id_usuario: id_usuario,
+                p_dia: dia
+            });
+            if (error) {
+                throw error;
+            }
+            return data;
+        });
+    }
+    static obtenerAsistenciasPorUsuario(idUsuario) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_asistencias_usuario', {
+                p_id_usuario: idUsuario
+            });
+            if (error) {
+                throw error;
+            }
+            ;
             return data;
         });
     }
