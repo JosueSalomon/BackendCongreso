@@ -14,6 +14,7 @@ router.post('/verificacion/reenviarcorreo', usuario_controller_1.enviarcodigover
 router.post('/verificacion/contrasena', usuario_controller_1.enviarcodigocambiocontrasena);
 //router.post('/registrar',upload.single('recibo'), procesarRecibo ,registrarusuario, enviarcodigoverificacioncorreo);
 router.post('/registrar', usuario_controller_1.registrarusuario, usuario_controller_1.enviarcodigoverificacioncorreo);
+router.get('/pre-registro', usuario_controller_1.verificar_preregistro);
 router.post('/login', usuario_controller_1.login);
 router.post('/logout', usuario_controller_1.logout);
 router.post('/cambiarcontrasena', usuario_controller_1.cambiarcontrasena);

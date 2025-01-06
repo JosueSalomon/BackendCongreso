@@ -25,23 +25,8 @@ import fs from 'fs';
 // }
 // };
 
- export const registrarusuario = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const registrarusuario = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-//     let img_recibo= "";
-
-//     if (req.file) {
-//       // Subir el archivo a Cloudinary
-//       const resultadoSubirArchivo = await cloudinary.uploader.upload(req.file.path);
-//       img_recibo = resultadoSubirArchivo.url;
-
-//       // Eliminar el archivo local
-//       fs.unlink(req.file.path, (err) => {
-//         if (err) {
-//           console.error("Error al eliminar el archivo local:", err);
-//         }
-//       });
-//     }
-
     const {
       nombres,
       apellidos,
@@ -56,7 +41,7 @@ import fs from 'fs';
       contrasena,
       img_recibo,
       codigo_recibo,
-      codigo_organizador
+      codigo_organizador,
     } = req.body;
 
     if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
@@ -79,11 +64,11 @@ import fs from 'fs';
       img_recibo,
       codigo_recibo,
       codigo_organizador
-
     );
 
     if (!validator.validate(correo)) {
-       res.status(400).json({ message: 'Correo electrónico inválido.' });
+      res.status(400).json({ message: 'Correo electrónico inválido.' });
+      return;
     }
 
     const codigo_verificacion = Math.floor(100000 + Math.random() * 900000).toString();
@@ -102,12 +87,17 @@ import fs from 'fs';
   } catch (error) {
     console.error('Error al registrar usuario:', error);
     const err = error as Error;
-    res.status(500).json({
-      message: 'Hubo un problema al registrar el usuario',
-      error: err.message || error,
-    });
+    if (err.message.includes('El límite de usuarios para el congreso ha sido alcanzado')) {
+      res.status(403).json({ message: err.message });
+    } else {
+      res.status(500).json({
+        message: 'Hubo un problema al registrar el usuario',
+        error: err.message || error,
+      });
+    }
   }
 };
+
 
 export const enviarcodigoverificacioncorreo = async (req: Request, res: Response): Promise<any> => {
     try {
@@ -379,3 +369,18 @@ export const obteneruniversidades = async (req: Request, res: Response): Promise
                  res.status(200).json({ resultado: false });
             }
           };
+
+          
+      export const verificar_preregistro = async (req: Request, res: Response) =>{
+        try{
+    
+            const resultado = await usuario.verificar_preregistro();
+            res.status(200).json({
+                resultado
+            });
+    
+        }catch (error) {
+            console.error('Error con fetch', error);
+            res.status(500).json({ error: 'Hubo un problema buscar el user' });
+        }
+    }
