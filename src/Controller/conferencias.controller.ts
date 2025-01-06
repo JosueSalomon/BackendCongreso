@@ -111,8 +111,6 @@ export const editarUnaConferencia = async (req: Request, res: Response) => {
             hora_inicio,
             hora_final,
             cupos,
-            finalizado,
-            inactivo,
             img_conferecia,
             img_ponente,
             url_carpeta_zip
@@ -130,8 +128,6 @@ export const editarUnaConferencia = async (req: Request, res: Response) => {
             hora_inicio,
             hora_final,
             cupos,
-            finalizado,
-            inactivo,
             img_conferecia,
             img_ponente,
             url_carpeta_zip
