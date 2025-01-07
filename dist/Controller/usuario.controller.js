@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
+exports.obtenerCarreras = exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
 const emailservice_1 = require("../services/emailservice");
 const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
@@ -328,3 +328,18 @@ const verificar_codigo_organizador = (req, res) => {
     }
 };
 exports.verificar_codigo_organizador = verificar_codigo_organizador;
+const obtenerCarreras = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const carreras = yield usuario_model_1.usuario.obtenerCareerasUNAH();
+        return res.status(200).json(carreras);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: error.message });
+        }
+        else {
+            return res.status(500).json({ message: 'Error desconocido.' });
+        }
+    }
+});
+exports.obtenerCarreras = obtenerCarreras;
