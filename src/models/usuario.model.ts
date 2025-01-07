@@ -39,19 +39,18 @@ export class usuario {
     }
   
     if (codigo_recibo) {
-      id_tipo_usuario =1;
-      codigo_organizador="0";
-    } else if (codigo_organizador==='1234') {
+      id_tipo_usuario = 1;
+      codigo_organizador = "0";
+    } else if (codigo_organizador === '1234') {
       id_tipo_usuario = 2;
       codigo_recibo = '1';
       img_recibo = '1';
-    }  else if (codigo_organizador) {
-      throw new Error('Ingrese un codigo de organizador correcto.');
-    }  else {
+    } else if (codigo_organizador) {
+      throw new Error('Ingrese un código de organizador correcto.');
+    } else {
       throw new Error('Debe proporcionar un código de recibo o el código de organizador correcto.');
     }
-
-
+  
     const { data: duplicados, error: errorDuplicados } = await supabase.rpc('p_verificar_duplicados', {
       p_dni: dni,
       p_identificador_unah: identificador_unah,
@@ -85,31 +84,42 @@ export class usuario {
   
     const id_persona = PersonaData;
   
-    // Insertar usuario en la base de datos
-    const { data, error } = await supabase.rpc('p_insertar_usuario', {
-      p_id_persona: id_persona,
-      p_id_universidad: id_universidad,
-      p_id_tipo_usuario: id_tipo_usuario,
-      p_dni: dni,
-      p_telefono: telefono,
-      p_fecha_nacimiento: fecha_nacimiento,
-      p_genero: genero,
-      p_externo: externo,
-      p_estudiante: estudiante,
-      p_identificador_unah: identificador_unah,
-      p_correo: correo,
-      p_contrasena: contrasena,
-      p_img_recibo: img_recibo,
-      p_codigo_recibo: codigo_recibo,
-      p_codigo_organizador: codigo_organizador,
-    });
+    try {
+      const { data, error } = await supabase.rpc('p_insertar_usuario', {
+        p_id_persona: id_persona,
+        p_id_universidad: id_universidad,
+        p_id_tipo_usuario: id_tipo_usuario,
+        p_dni: dni,
+        p_telefono: telefono,
+        p_fecha_nacimiento: fecha_nacimiento,
+        p_genero: genero,
+        p_externo: externo,
+        p_estudiante: estudiante,
+        p_identificador_unah: identificador_unah,
+        p_correo: correo,
+        p_contrasena: contrasena,
+        p_img_recibo: img_recibo,
+        p_codigo_recibo: codigo_recibo,
+        p_codigo_organizador: codigo_organizador,
+      });
   
-    if (error) {
-      console.error('Error al insertar usuario:', error);
-      throw new Error('Error al insertar usuario');
+      if (error) {
+        console.error('Error al insertar usuario:', error);
+        if (error.message.includes('No se permiten más registros')) {
+          throw new Error('El límite de usuarios para el congreso ha sido alcanzado.');
+        }
+        throw new Error('Error al insertar usuario');
+      }
+  
+      return data;
+    } catch (dbError) {
+      const error = dbError as Error;
+      console.error('Error de la base de datos:', dbError);
+      if (error.message.includes('No se permiten más registros')) {
+        throw new Error('El límite de usuarios para el congreso ha sido alcanzado.');
+      }
+      throw new Error('Error al realizar la operación en la base de datos.');
     }
-  
-    return data;
   }
     
   static async usuariocodigocorreo(
@@ -339,6 +349,14 @@ static async obteneruniversidades(): Promise<{ id_universidad: number; universid
   return data || [];
 }
 
+static async verificar_preregistro(){
+  const{data, error} = await supabase.rpc('p_verificar_preregistro', {
+  });
+  if(error){
+      throw error;
+  }
+  return data;
+}
   static async obtenerCareerasUNAH(){
     const { data, error } = await supabase.rpc('p_carreras_unah')
     if (error) {

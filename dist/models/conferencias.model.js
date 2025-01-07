@@ -60,7 +60,7 @@ class Conferencia {
             return data;
         });
     }
-    static editarConferencia(id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, finalizado, inactivo, img_conferecia, img_ponente, url_carpeta_zip) {
+    static editarConferencia(id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, img_ponente, url_carpeta_zip) {
         return __awaiter(this, void 0, void 0, function* () {
             const { data, error } = yield connection_1.default.rpc('p_editar_conferencia', {
                 p_id_conferencia: id_conferencia,
@@ -74,8 +74,6 @@ class Conferencia {
                 p_hora_inicio: hora_inicio,
                 p_hora_final: hora_final,
                 p_cupos: cupos,
-                p_finalizado: finalizado,
-                p_inactivo: inactivo,
                 p_img_conferecia: img_conferecia,
                 p_img_ponente: img_ponente,
                 p_url_carpeta_zip: url_carpeta_zip

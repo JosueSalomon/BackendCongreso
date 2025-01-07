@@ -71,8 +71,6 @@ export class Conferencia {
         hora_inicio: string,
         hora_final: string,
         cupos: number,
-        finalizado: boolean,
-        inactivo: boolean,
         img_conferecia: string,
         img_ponente: string,
         url_carpeta_zip: string
@@ -89,8 +87,6 @@ export class Conferencia {
             p_hora_inicio: hora_inicio,
             p_hora_final: hora_final,
             p_cupos: cupos,
-            p_finalizado: finalizado,
-            p_inactivo: inactivo,
             p_img_conferecia: img_conferecia,
             p_img_ponente: img_ponente,
             p_url_carpeta_zip: url_carpeta_zip
