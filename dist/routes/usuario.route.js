@@ -21,4 +21,5 @@ router.post('/cambiarcontrasena', usuario_controller_1.cambiarcontrasena);
 router.get('/universidades', usuario_controller_1.obteneruniversidades);
 router.post('/verificacion/existe', usuario_controller_1.verificarusuario);
 router.post('/verificacion/codigo_organizador', usuario_controller_1.verificar_codigo_organizador);
+router.get('/carreras', usuario_controller_1.obtenerCarreras);
 exports.default = router;

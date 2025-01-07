@@ -386,3 +386,15 @@ export const obteneruniversidades = async (req: Request, res: Response): Promise
             res.status(500).json({ error: 'Hubo un problema buscar el user' });
         }
     }
+export const obtenerCarreras = async (req: Request, res: Response): Promise<any>=> {
+  try {
+    const carreras = await usuario.obtenerCareerasUNAH();
+    return res.status(200).json(carreras);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    } else {
+      return res.status(500).json({ message: 'Error desconocido.' });
+    }
+  }
+};

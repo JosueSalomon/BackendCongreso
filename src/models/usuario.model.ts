@@ -359,6 +359,15 @@ static async verificar_preregistro(){
   }
   return data;
 }
+  static async obtenerCareerasUNAH(){
+    const { data, error } = await supabase.rpc('p_carreras_unah')
+    if (error) {
+      console.error('Error al obtener universidades:', error);
+      throw new Error('Error al obtener universidades');
+    }
+  
+    return data;
+  }
 
 }
 

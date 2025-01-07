@@ -350,5 +350,15 @@ class usuario {
             return data;
         });
     }
+    static obtenerCareerasUNAH() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_carreras_unah');
+            if (error) {
+                console.error('Error al obtener universidades:', error);
+                throw new Error('Error al obtener universidades');
+            }
+            return data;
+        });
+    }
 }
 exports.usuario = usuario;

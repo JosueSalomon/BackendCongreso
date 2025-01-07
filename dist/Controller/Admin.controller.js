@@ -12,9 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.enviar_correo_organizador = exports.GetUserByID = exports.ActualizarUsuario = exports.BuscarUsuario = exports.ValidarUsuario = exports.GetUsuariosValidaciones = void 0;
+exports.sendCertificates = exports.enviar_correo_organizador = exports.GetUserByID = exports.ActualizarUsuario = exports.BuscarUsuario = exports.ValidarUsuario = exports.GetUsuariosValidaciones = void 0;
 const Admin_model_1 = require("../models/Admin.model");
 const emailservice_1 = require("../services/emailservice");
+const pdfGenerator_1 = require("../services/pdfGenerator");
 const email_validator_1 = __importDefault(require("email-validator"));
 const qrcode_1 = __importDefault(require("qrcode"));
 const GetUsuariosValidaciones = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -118,3 +119,30 @@ const enviar_correo_organizador = (req, res) => __awaiter(void 0, void 0, void 0
     }
 });
 exports.enviar_correo_organizador = enviar_correo_organizador;
+const sendCertificates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Lista de personas con los correos y nombres específicos
+        const people = [
+            { email: 'josueisacsalomonlanda@gmail.com', name: 'Josue' },
+            { email: 'josue.salomon@unah.hn', name: 'Isac' },
+            { email: 'snlopezm@unah.hn', name: 'ola2' }
+        ];
+        // Generamos los certificados en PDF y los enviamos por correo
+        const emailsSent = [];
+        for (const person of people) {
+            const { email, name } = person;
+            const date = new Date().toLocaleDateString(); // Obtener la fecha actual
+            const pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(name, date); // Generar el PDF para cada persona
+            // Llamar a la función para enviar el certificado por correo
+            yield (0, emailservice_1.sendAllCertificates)(email, name, pdfBuffer); // Pasamos el PDF generado
+            emailsSent.push(email); // Registrar el correo enviado
+        }
+        // Responder al cliente con un mensaje de éxito
+        res.status(200).json({ message: 'Certificados enviados con éxito', emailsSent });
+    }
+    catch (error) {
+        console.error('Error enviando certificados:', error);
+        res.status(500).json({ message: 'Hubo un error al enviar los certificados' });
+    }
+});
+exports.sendCertificates = sendCertificates;
