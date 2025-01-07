@@ -6,25 +6,6 @@ import validator from 'email-validator';
 import cloudinary from "../services/cloudinary";
 import fs from 'fs';
 
-//  export const procesarRecibo = async (req: Request, res: Response, next: NextFunction):Promise<any> => {
-//  try {
-  
-//   if (!req.file) {
-//     return res.status(400).json({ message: "No se recibió el archivo del recibo." });
-//   }
-
-//   const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-//   if (!allowedTypes.includes(req.file.mimetype)) {
-//     return res.status(400).json({ message: "El archivo debe ser una imagen (jpeg, jpg, png)." });
-//   }
-
-//   next();
-// } catch (error) {
-//   console.error("Error en el middleware de recibo:", error);
-//   res.status(500).json({ message: "Hubo un problema al procesar el recibo.", error });
-// }
-// };
-
 export const registrarusuario = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const {

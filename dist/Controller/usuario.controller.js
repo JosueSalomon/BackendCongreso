@@ -16,21 +16,6 @@ exports.obtenerCarreras = exports.verificar_preregistro = exports.verificar_codi
 const emailservice_1 = require("../services/emailservice");
 const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
-//  export const procesarRecibo = async (req: Request, res: Response, next: NextFunction):Promise<any> => {
-//  try {
-//   if (!req.file) {
-//     return res.status(400).json({ message: "No se recibió el archivo del recibo." });
-//   }
-//   const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-//   if (!allowedTypes.includes(req.file.mimetype)) {
-//     return res.status(400).json({ message: "El archivo debe ser una imagen (jpeg, jpg, png)." });
-//   }
-//   next();
-// } catch (error) {
-//   console.error("Error en el middleware de recibo:", error);
-//   res.status(500).json({ message: "Hubo un problema al procesar el recibo.", error });
-// }
-// };
 const registrarusuario = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador, id_carrera_unah } = req.body;
