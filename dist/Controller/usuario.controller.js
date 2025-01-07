@@ -33,12 +33,12 @@ const email_validator_1 = __importDefault(require("email-validator"));
 // };
 const registrarusuario = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador, } = req.body;
+        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador, id_carrera_unah } = req.body;
         if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
             res.status(400).json({ message: 'Faltan datos requeridos en la solicitud' });
             return;
         }
-        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador);
+        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador, id_carrera_unah);
         if (!email_validator_1.default.validate(correo)) {
             res.status(400).json({ message: 'Correo electrónico inválido.' });
             return;

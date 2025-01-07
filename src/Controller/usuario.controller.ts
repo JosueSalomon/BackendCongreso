@@ -42,6 +42,7 @@ export const registrarusuario = async (req: Request, res: Response, next: NextFu
       img_recibo,
       codigo_recibo,
       codigo_organizador,
+      id_carrera_unah
     } = req.body;
 
     if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
@@ -63,7 +64,8 @@ export const registrarusuario = async (req: Request, res: Response, next: NextFu
       contrasena,
       img_recibo,
       codigo_recibo,
-      codigo_organizador
+      codigo_organizador,
+      id_carrera_unah
     );
 
     if (!validator.validate(correo)) {
