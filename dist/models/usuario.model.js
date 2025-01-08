@@ -351,28 +351,6 @@ class usuario {
             return data;
         });
     }
-<<<<<<< HEAD
-    static insertarUsuarioEnConferencia(id_usuario, id_conferencia) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { data, error } = yield connection_1.default.rpc('p_insertar_registro_en_conferencia', {
-                    p_id_usuario: id_usuario,
-                    p_id_conferencia: id_conferencia
-                });
-                if (error) {
-                    throw new Error(error.message);
-                }
-                return data;
-            }
-            catch (error) {
-                if (error instanceof Error) {
-                    throw new Error(error.message);
-                }
-                else {
-                    throw new Error("Error desconocido");
-                }
-            }
-=======
     static obtenerCareerasUNAH() {
         return __awaiter(this, void 0, void 0, function* () {
             const { data, error } = yield connection_1.default.rpc('p_carreras_unah');
@@ -409,7 +387,28 @@ class usuario {
             }
             ;
             return data;
->>>>>>> 8ec6a67185b865aebcb2b87f2bf9c089796bff47
+        });
+    }
+    static insertarUsuarioEnConferencia(id_usuario, id_conferencia) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data, error } = yield connection_1.default.rpc('p_insertar_registro_en_conferencia', {
+                    p_id_usuario: id_usuario,
+                    p_id_conferencia: id_conferencia
+                });
+                if (error) {
+                    throw new Error(error.message);
+                }
+                return data;
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(error.message);
+                }
+                else {
+                    throw new Error("Error desconocido");
+                }
+            }
         });
     }
 }
