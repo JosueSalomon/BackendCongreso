@@ -12,33 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+<<<<<<< HEAD
 exports.inscribirEnConferencia = exports.verificar_preregistro = exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
+=======
+exports.obtenerCarreras = exports.insertarHoraSalidaPorUsuario = exports.insertarHoraEntradaPorUsuario = exports.verificar_preregistro = exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
+>>>>>>> 8ec6a67185b865aebcb2b87f2bf9c089796bff47
 const emailservice_1 = require("../services/emailservice");
 const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
-//  export const procesarRecibo = async (req: Request, res: Response, next: NextFunction):Promise<any> => {
-//  try {
-//   if (!req.file) {
-//     return res.status(400).json({ message: "No se recibió el archivo del recibo." });
-//   }
-//   const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-//   if (!allowedTypes.includes(req.file.mimetype)) {
-//     return res.status(400).json({ message: "El archivo debe ser una imagen (jpeg, jpg, png)." });
-//   }
-//   next();
-// } catch (error) {
-//   console.error("Error en el middleware de recibo:", error);
-//   res.status(500).json({ message: "Hubo un problema al procesar el recibo.", error });
-// }
-// };
 const registrarusuario = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador, } = req.body;
+        const { nombres, apellidos, id_universidad, id_tipo_usuario, telefono, dni, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador, id_carrera_unah } = req.body;
         if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
             res.status(400).json({ message: 'Faltan datos requeridos en la solicitud' });
             return;
         }
-        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador);
+        const resultado = yield usuario_model_1.usuario.registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador, id_carrera_unah);
         if (!email_validator_1.default.validate(correo)) {
             res.status(400).json({ message: 'Correo electrónico inválido.' });
             return;
@@ -335,6 +324,7 @@ const verificar_preregistro = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.verificar_preregistro = verificar_preregistro;
+<<<<<<< HEAD
 const inscribirEnConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id_usuario, id_conferencia } = req.body;
@@ -360,3 +350,60 @@ const inscribirEnConferencia = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
 });
 exports.inscribirEnConferencia = inscribirEnConferencia;
+=======
+const obtenerCarreras = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const carreras = yield usuario_model_1.usuario.obtenerCareerasUNAH();
+        return res.status(200).json(carreras);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: error.message });
+        }
+        else {
+            return res.status(500).json({ message: 'Error desconocido.' });
+        }
+    }
+});
+exports.obtenerCarreras = obtenerCarreras;
+const insertarHoraEntradaPorUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idUsuario, idConferencia, horaEntrada } = req.body;
+        const result = yield usuario_model_1.usuario.insertarHoraEntrada(idUsuario, idConferencia, horaEntrada);
+        res.status(201).json({
+            result
+        });
+    }
+    catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : (error === null || error === void 0 ? void 0 : error.toString()) || 'Error desconocido';
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ',
+            error: errorInfo
+        });
+    }
+});
+exports.insertarHoraEntradaPorUsuario = insertarHoraEntradaPorUsuario;
+const insertarHoraSalidaPorUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idUsuario, idConferencia, horaSalida } = req.body;
+        const result = yield usuario_model_1.usuario.insertarHoraSalida(idUsuario, idConferencia, horaSalida);
+        res.status(201).json({
+            result
+        });
+    }
+    catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : (error === null || error === void 0 ? void 0 : error.toString()) || 'Error desconocido';
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ',
+            error: errorInfo
+        });
+    }
+});
+exports.insertarHoraSalidaPorUsuario = insertarHoraSalidaPorUsuario;
+>>>>>>> 8ec6a67185b865aebcb2b87f2bf9c089796bff47

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendVerificationEmail = void 0;
+exports.sendAllCertificates = exports.sendVerificationEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const transporter = nodemailer_1.default.createTransport({
     host: process.env.EMAIL_HOST,
@@ -29,8 +29,31 @@ const sendVerificationEmail = (to, code) => __awaiter(void 0, void 0, void 0, fu
             from: `"Congreso" <${process.env.EMAIL_USER}>`,
             to,
             subject: 'Código de Verificación',
-            text: `Tu código de verificación es: ${code}`,
-            html: `<p>Tu código de verificación es: <b>${code}</b></p>`, // Cuerpo en HTML
+            html: `
+                <div style="font-family: Arial, sans-serif; text-align: center; background-color: #F9F9F9; padding: 20px;">
+                    <div style="max-width: 600px; margin: auto; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                        <!-- Header -->
+                        <div style="background-color: #32378C; color: white; padding: 20px;">
+                            <h1 style="margin: 0; font-size: 24px;">Código de Verificación</h1>
+                        </div>
+                        
+                        <!-- Body -->
+                        <div style="padding: 20px; color: #2C2F73; text-align: left;">
+                            <p style="font-size: 16px; margin: 0;">Hemos recibido una solicitud que requiere la verificación de tu identidad.</p>
+                            <p style="font-size: 16px; margin: 20px 0;">Por favor, utiliza el siguiente código de verificación:</p>
+                            <div style="text-align: center; margin: 20px 0;">
+                                <span style="text-align: center; display: inline-block; font-size: 28px; font-weight: bold; color: #F29D35; padding: 15px 25px; border: 2px dashed #F29D35; border-radius: 5px; background-color: #FFF4E0;">${code}</span>
+                            </div>
+                            <p style="font-size: 14px; color: #7A85BF; margin: 20px 0;">Si no realizaste esta solicitud, puedes ignorar este mensaje.</p>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div style="background-color: #F2AE30; color: white; padding: 15px; text-align: center;">
+                            <p style="margin: 0; font-size: 14px;">Si tienes preguntas, contáctanos en <a href="mailto:${process.env.EMAIL_USER}" style="color: white; text-decoration: underline;">${process.env.EMAIL_USER}</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            `,
         });
         console.log('Correo enviado: %s', info.messageId);
     }
@@ -43,3 +66,59 @@ const sendVerificationEmail = (to, code) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.sendVerificationEmail = sendVerificationEmail;
+const sendAllCertificates = (email, name, pdfBuffer) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Configuración del transporte para enviar el correo
+        const transporter = nodemailer_1.default.createTransport({
+            service: 'gmail', // o el servicio que estés usando
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+        // Diseño mejorado del correo electrónico en HTML
+        const htmlContent = `
+            <div style="font-family: 'Arial', sans-serif; background-color: #F0F0F0; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto;">
+                <!-- Header -->
+                <div style="background-color: #32378C; color: white; padding: 20px; border-top-left-radius: 8px; border-top-right-radius: 8px; text-align: center;">
+                    <h2 style="margin: 0;">¡Felicidades, ${name}!</h2>
+                    <p style="margin: 5px;">Tu Certificado de Participación ha sido generado con éxito.</p>
+                </div>
+
+                <!-- Body -->
+                <div style="background-color: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                    <p style="font-size: 16px; color: #333; line-height: 1.5;">Querido <strong>${name}</strong>,</p>
+                    <p style="font-size: 16px; color: #333; line-height: 1.5;">Nos complace informarte que has completado con éxito el evento y ahora puedes descargar tu certificado de participación.</p>
+                    <p style="font-size: 16px; color: #333; line-height: 1.5;">Haz clic en el archivo adjunto para ver o descargar tu certificado.</p>
+                    <br />
+                    <p style="font-size: 14px; color: #888; text-align: center;">Si no realizaste esta solicitud, por favor ignora este mensaje.</p>
+                </div>
+
+                <!-- Footer -->
+                <div style="background-color: #32378C; color: white; padding: 15px; text-align: center; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                    <p style="margin: 0; font-size: 14px;">Si tienes preguntas, contáctanos en <a href="mailto:${process.env.EMAIL_USER}" style="color: white; text-decoration: underline;">${process.env.EMAIL_USER}</a>.</p>
+                </div>
+            </div>
+        `;
+        // Configurar el correo a enviar
+        const info = yield transporter.sendMail({
+            from: `"Congreso" <${process.env.EMAIL_USER}>`, // Dirección de envío
+            to: email, // Dirección del destinatario
+            subject: 'Certificado de Participación', // Asunto del correo
+            html: htmlContent, // Usamos el HTML mejorado para el cuerpo
+            attachments: [
+                {
+                    filename: 'Certificado_Participacion.pdf', // Nombre del archivo adjunto
+                    content: pdfBuffer, // El contenido es el buffer del PDF
+                    encoding: 'base64',
+                },
+            ],
+        });
+        console.log('Correo enviado a: %s', info.messageId);
+    }
+    catch (error) {
+        console.error('Error enviando el correo:', error);
+        throw new Error('No se pudo enviar el correo.');
+    }
+});
+exports.sendAllCertificates = sendAllCertificates;

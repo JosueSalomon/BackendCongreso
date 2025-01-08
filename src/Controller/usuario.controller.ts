@@ -42,6 +42,7 @@ export const registrarusuario = async (req: Request, res: Response, next: NextFu
       img_recibo,
       codigo_recibo,
       codigo_organizador,
+      id_carrera_unah
     } = req.body;
 
     if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
@@ -63,7 +64,8 @@ export const registrarusuario = async (req: Request, res: Response, next: NextFu
       contrasena,
       img_recibo,
       codigo_recibo,
-      codigo_organizador
+      codigo_organizador,
+      id_carrera_unah
     );
 
     if (!validator.validate(correo)) {
@@ -411,4 +413,69 @@ export const inscribirEnConferencia = async (req: Request, res: Response):Promis
       data: []
     });
   }
+}
+
+export const obtenerCarreras = async (req: Request, res: Response): Promise<any>=> {
+  try {
+    const carreras = await usuario.obtenerCareerasUNAH();
+    return res.status(200).json(carreras);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    } else {
+      return res.status(500).json({ message: 'Error desconocido.' });
+    }
+  }
+};
+
+export const insertarHoraEntradaPorUsuario = async (req: Request, res: Response) => {
+  try{
+      const {idUsuario,
+            idConferencia,
+            horaEntrada} = req.body;
+
+      const result = await usuario.insertarHoraEntrada(idUsuario,
+            idConferencia,
+            horaEntrada);
+
+      res.status(201).json({
+          result
+      })
+  } catch (error) {
+      const errorInfo = error && typeof error === 'object'
+          ? JSON.stringify(error, null, 2)
+          : error?.toString() || 'Error desconocido';
+
+      console.error('Informacion del error: ', errorInfo);
+      res.status(500).json({
+          message: 'Informacion del error: ', 
+          error: errorInfo
+      });
+  }
+}
+
+export const insertarHoraSalidaPorUsuario = async (req: Request, res: Response) => {
+try{
+    const {idUsuario,
+          idConferencia,
+          horaSalida} = req.body;
+
+    const result = await usuario.insertarHoraSalida(idUsuario,
+          idConferencia,
+          horaSalida);
+
+    res.status(201).json({
+        result
+    })
+} catch (error) {
+    const errorInfo = error && typeof error === 'object'
+        ? JSON.stringify(error, null, 2)
+        : error?.toString() || 'Error desconocido';
+
+    console.error('Informacion del error: ', errorInfo);
+    res.status(500).json({
+        message: 'Informacion del error: ', 
+        error: errorInfo
+    });
+}
 }

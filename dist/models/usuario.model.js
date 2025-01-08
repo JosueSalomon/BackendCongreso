@@ -18,7 +18,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const jwt_1 = require("../services/jwt");
 dotenv_1.default.config();
 class usuario {
-    static registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador) {
+    static registrarusuario(nombres, apellidos, id_universidad, id_tipo_usuario, dni, telefono, fecha_nacimiento, genero, identificador_unah, correo, contrasena, img_recibo, codigo_recibo, codigo_organizador, id_carrera_unah) {
         return __awaiter(this, void 0, void 0, function* () {
             let externo = false;
             let estudiante = false;
@@ -93,6 +93,7 @@ class usuario {
                     p_img_recibo: img_recibo,
                     p_codigo_recibo: codigo_recibo,
                     p_codigo_organizador: codigo_organizador,
+                    p_id_carrera_unah: id_carrera_unah
                 });
                 if (error) {
                     console.error('Error al insertar usuario:', error);
@@ -350,6 +351,7 @@ class usuario {
             return data;
         });
     }
+<<<<<<< HEAD
     static insertarUsuarioEnConferencia(id_usuario, id_conferencia) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -370,6 +372,44 @@ class usuario {
                     throw new Error("Error desconocido");
                 }
             }
+=======
+    static obtenerCareerasUNAH() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_carreras_unah');
+            if (error) {
+                console.error('Error al obtener universidades:', error);
+                throw new Error('Error al obtener universidades');
+            }
+            return data;
+        });
+    }
+    static insertarHoraEntrada(idUsuario, idConferencia, horaEntrada) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_crear_asistencia', {
+                p_id_usuario: idUsuario,
+                p_id_conferencia: idConferencia,
+                p_hora_entrada: horaEntrada
+            });
+            if (error) {
+                throw error;
+            }
+            ;
+            return data;
+        });
+    }
+    static insertarHoraSalida(idUsuario, idConferencia, horaSalida) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_asistencia_hora_salida', {
+                p_id_usuario: idUsuario,
+                p_id_conferencia: idConferencia,
+                p_hora_salida: horaSalida
+            });
+            if (error) {
+                throw error;
+            }
+            ;
+            return data;
+>>>>>>> 8ec6a67185b865aebcb2b87f2bf9c089796bff47
         });
     }
 }
