@@ -152,4 +152,14 @@ export class Conferencia {
         };
         return data;
     }
+
+    static async obtenerConferenciaFecha(fecha: string){
+        const {data, error } = await supabase.rpc('p_obtener_conferencias_por_fecha', {
+            p_fecha_actual: fecha
+        });
+        if(error){
+            throw error
+        };
+        return data;
+    }
 }

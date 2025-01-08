@@ -14,6 +14,7 @@ router.put('/editar', conferencias_controller_1.editarUnaConferencia);
 router.delete('/eliminar/:idConferencia', conferencias_controller_1.eliminarUnaConferencia);
 router.post('/usuario', conferencias_controller_1.obtenerConferenciasPorCadaUsuario);
 router.get('/usuario/:idUsuario/asistencias', conferencias_controller_1.obtenerAsistenciasPorCadaUsuario);
+router.post('/fecha', conferencias_controller_1.obtenerConferenciasPorFecha);
 //para subir los recursos de una conferencia
 router.post('/subirRecurso', multer_1.default.single('recurso'), conferencias_controller_1.subirRecursoDeConferencia);
 router.get('/obtenerRecursos/:idConferencia', conferencias_controller_1.traerRecursosPorConferencia);

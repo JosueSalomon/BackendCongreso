@@ -358,6 +358,38 @@ static async verificar_preregistro(){
   return data;
 }
 
+  static async insertarHoraEntrada(
+    idUsuario: number,
+    idConferencia: number,
+    horaEntrada: string
+  ){
+    const {data, error } = await supabase.rpc('p_crear_asistencia', {
+        p_id_usuario: idUsuario,
+        p_id_conferencia: idConferencia,
+        p_hora_entrada: horaEntrada
+    });
+    if(error){
+        throw error
+    };
+    return data;
+  }
+
+  static async insertarHoraSalida(
+    idUsuario: number,
+    idConferencia: number,
+    horaSalida: string
+  ){
+    const {data, error } = await supabase.rpc('p_asistencia_hora_salida', {
+        p_id_usuario: idUsuario,
+        p_id_conferencia: idConferencia,
+        p_hora_salida: horaSalida
+    });
+    if(error){
+        throw error
+    };
+    return data;
+  }
+
 }
 
 

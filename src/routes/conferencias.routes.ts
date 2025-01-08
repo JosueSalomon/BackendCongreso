@@ -2,7 +2,8 @@ import express from 'express';
 import upload from '../services/multer';
 import {crearUnaConferencia, editarUnaConferencia, eliminarUnaConferencia, obtenerUnaConferencia, 
     obtenerConferenciasTotales, subirRecursoDeConferencia, traerRecursosPorConferencia,
-    obtenerConferenciasPorCadaUsuario, obtenerAsistenciasPorCadaUsuario } from '../Controller/conferencias.controller'
+    obtenerConferenciasPorCadaUsuario, obtenerAsistenciasPorCadaUsuario,
+    obtenerConferenciasPorFecha} from '../Controller/conferencias.controller'
 const router = express.Router();
 
 router.get('/:idConferencia', obtenerUnaConferencia);
@@ -12,6 +13,7 @@ router.put('/editar', editarUnaConferencia);
 router.delete('/eliminar/:idConferencia', eliminarUnaConferencia);
 router.post('/usuario', obtenerConferenciasPorCadaUsuario);
 router.get('/usuario/:idUsuario/asistencias', obtenerAsistenciasPorCadaUsuario);
+router.post('/fecha', obtenerConferenciasPorFecha);
 
 //para subir los recursos de una conferencia
 router.post('/subirRecurso', upload.single('recurso'), subirRecursoDeConferencia);

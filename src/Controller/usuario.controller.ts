@@ -384,3 +384,55 @@ export const obteneruniversidades = async (req: Request, res: Response): Promise
             res.status(500).json({ error: 'Hubo un problema buscar el user' });
         }
     }
+
+    export const insertarHoraEntradaPorUsuario = async (req: Request, res: Response) => {
+        try{
+            const {idUsuario,
+                  idConferencia,
+                  horaEntrada} = req.body;
+    
+            const result = await usuario.insertarHoraEntrada(idUsuario,
+                  idConferencia,
+                  horaEntrada);
+    
+            res.status(201).json({
+                result
+            })
+        } catch (error) {
+            const errorInfo = error && typeof error === 'object'
+                ? JSON.stringify(error, null, 2)
+                : error?.toString() || 'Error desconocido';
+    
+            console.error('Informacion del error: ', errorInfo);
+            res.status(500).json({
+                message: 'Informacion del error: ', 
+                error: errorInfo
+            });
+        }
+    }
+
+    export const insertarHoraSalidaPorUsuario = async (req: Request, res: Response) => {
+      try{
+          const {idUsuario,
+                idConferencia,
+                horaSalida} = req.body;
+  
+          const result = await usuario.insertarHoraSalida(idUsuario,
+                idConferencia,
+                horaSalida);
+  
+          res.status(201).json({
+              result
+          })
+      } catch (error) {
+          const errorInfo = error && typeof error === 'object'
+              ? JSON.stringify(error, null, 2)
+              : error?.toString() || 'Error desconocido';
+  
+          console.error('Informacion del error: ', errorInfo);
+          res.status(500).json({
+              message: 'Informacion del error: ', 
+              error: errorInfo
+          });
+      }
+  }

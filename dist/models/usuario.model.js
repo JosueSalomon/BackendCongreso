@@ -349,5 +349,33 @@ class usuario {
             return data;
         });
     }
+    static insertarHoraEntrada(idUsuario, idConferencia, horaEntrada) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_crear_asistencia', {
+                p_id_usuario: idUsuario,
+                p_id_conferencia: idConferencia,
+                p_hora_entrada: horaEntrada
+            });
+            if (error) {
+                throw error;
+            }
+            ;
+            return data;
+        });
+    }
+    static insertarHoraSalida(idUsuario, idConferencia, horaSalida) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_asistencia_hora_salida', {
+                p_id_usuario: idUsuario,
+                p_id_conferencia: idConferencia,
+                p_hora_salida: horaSalida
+            });
+            if (error) {
+                throw error;
+            }
+            ;
+            return data;
+        });
+    }
 }
 exports.usuario = usuario;

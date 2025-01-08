@@ -146,5 +146,17 @@ class Conferencia {
             return data;
         });
     }
+    static obtenerConferenciaFecha(fecha) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_obtener_conferencias_por_fecha', {
+                p_fecha_actual: fecha
+            });
+            if (error) {
+                throw error;
+            }
+            ;
+            return data;
+        });
+    }
 }
 exports.Conferencia = Conferencia;

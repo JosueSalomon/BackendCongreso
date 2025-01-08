@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verificar_preregistro = exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
+exports.insertarHoraSalidaPorUsuario = exports.insertarHoraEntradaPorUsuario = exports.verificar_preregistro = exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
 const emailservice_1 = require("../services/emailservice");
 const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
@@ -335,3 +335,43 @@ const verificar_preregistro = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.verificar_preregistro = verificar_preregistro;
+const insertarHoraEntradaPorUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idUsuario, idConferencia, horaEntrada } = req.body;
+        const result = yield usuario_model_1.usuario.insertarHoraEntrada(idUsuario, idConferencia, horaEntrada);
+        res.status(201).json({
+            result
+        });
+    }
+    catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : (error === null || error === void 0 ? void 0 : error.toString()) || 'Error desconocido';
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ',
+            error: errorInfo
+        });
+    }
+});
+exports.insertarHoraEntradaPorUsuario = insertarHoraEntradaPorUsuario;
+const insertarHoraSalidaPorUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { idUsuario, idConferencia, horaSalida } = req.body;
+        const result = yield usuario_model_1.usuario.insertarHoraSalida(idUsuario, idConferencia, horaSalida);
+        res.status(201).json({
+            result
+        });
+    }
+    catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : (error === null || error === void 0 ? void 0 : error.toString()) || 'Error desconocido';
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ',
+            error: errorInfo
+        });
+    }
+});
+exports.insertarHoraSalidaPorUsuario = insertarHoraSalidaPorUsuario;
