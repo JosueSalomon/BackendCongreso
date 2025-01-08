@@ -209,6 +209,8 @@ export class usuario {
           p_correo : correo,
           p_contrasenia : contrasenia
         });
+
+        console.log(data)
         if(error){
           throw new Error(`Ocurrió el siguiente error ${error.message}`)
         }
@@ -358,6 +360,28 @@ static async verificar_preregistro(){
   return data;
 }
 
+  static async insertarUsuarioEnConferencia(id_usuario: number, id_conferencia:number):Promise<any>{
+    try {
+      const {data, error} = await supabase.rpc('p_insertar_registro_en_conferencia', {
+        p_id_usuario: id_usuario,
+        p_id_conferencia: id_conferencia
+      });
+
+      if(error){
+        throw new Error(error.message)
+      }
+
+      return data;
+
+    } catch (error) {
+      if(error instanceof Error){
+        throw new Error(error.message);
+      }else {
+        throw new Error("Error desconocido");
+      }
+    }
+
+  }
 }
 
 

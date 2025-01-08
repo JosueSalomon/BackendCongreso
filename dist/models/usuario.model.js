@@ -202,6 +202,7 @@ class usuario {
                     p_correo: correo,
                     p_contrasenia: contrasenia
                 });
+                console.log(data);
                 if (error) {
                     throw new Error(`Ocurrió el siguiente error ${error.message}`);
                 }
@@ -347,6 +348,28 @@ class usuario {
                 throw error;
             }
             return data;
+        });
+    }
+    static insertarUsuarioEnConferencia(id_usuario, id_conferencia) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data, error } = yield connection_1.default.rpc('p_insertar_registro_en_conferencia', {
+                    p_id_usuario: id_usuario,
+                    p_id_conferencia: id_conferencia
+                });
+                if (error) {
+                    throw new Error(error.message);
+                }
+                return data;
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(error.message);
+                }
+                else {
+                    throw new Error("Error desconocido");
+                }
+            }
         });
     }
 }
