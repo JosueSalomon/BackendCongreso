@@ -217,7 +217,7 @@ class usuario {
                 if (data.codigo_resultado === 2) {
                     throw new Error("Su comprobante de pago aún está en proceso de verificación, por favor vuelva a intentarlo más tarde.");
                 }
-                const token = (0, jwt_1.hacerToken)(data.correo_salida, data.p_tipo_usuario, data.nombres, data.apellidos, data.id_usuario_salida);
+                const token = (0, jwt_1.hacerToken)(data.correo_salida, data.p_tipo_usuario, data.nombres, data.apellidos, data.id_usuario_salida, data.numero_cuenta);
                 const resultado = yield this.insertarTokenDelUsuario(data.correo_salida, data.contrasenia_salida, token);
                 data.token = token;
                 return data;
