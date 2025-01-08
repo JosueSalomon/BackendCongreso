@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.insertarHoraSalidaPorUsuario = exports.insertarHoraEntradaPorUsuario = exports.obtenerCarreras = exports.inscribirEnConferencia = exports.verificar_preregistro = exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
+exports.cancelarInscripcionConferencia = exports.insertarHoraSalidaPorUsuario = exports.insertarHoraEntradaPorUsuario = exports.obtenerCarreras = exports.inscribirEnConferencia = exports.verificar_preregistro = exports.verificar_codigo_organizador = exports.verificarusuario = exports.obteneruniversidades = exports.cambiarcontrasena = exports.logout = exports.login = exports.actualizarcorreo = exports.verificarcodigoorganizador = exports.verificarcodigo = exports.enviarcodigocambiocontrasena = exports.enviarcodigoverificacioncorreo = exports.registrarusuario = void 0;
 const emailservice_1 = require("../services/emailservice");
 const usuario_model_1 = require("../models/usuario.model");
 const email_validator_1 = __importDefault(require("email-validator"));
@@ -415,3 +415,27 @@ const insertarHoraSalidaPorUsuario = (req, res) => __awaiter(void 0, void 0, voi
     }
 });
 exports.insertarHoraSalidaPorUsuario = insertarHoraSalidaPorUsuario;
+const cancelarInscripcionConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id_usuario, id_conferencia } = req.body;
+        if (!id_usuario || !id_conferencia) {
+            return res.status(400).json({ message: 'Faltan parámetros requeridos.' });
+        }
+        const mensaje = yield usuario_model_1.usuario.cancelarInscripcionEnConferencia(id_usuario, id_conferencia);
+        return res.status(200).json({
+            message: mensaje,
+            codigoResultado: 1
+        });
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: error.message, codigoResultado: -1 });
+        }
+        return res.status(500).json({
+            message: error instanceof Error ? error.message : "Error interno del servidor",
+            codigoResultado: -1,
+            data: []
+        });
+    }
+});
+exports.cancelarInscripcionConferencia = cancelarInscripcionConferencia;

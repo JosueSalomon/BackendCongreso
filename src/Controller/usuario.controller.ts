@@ -479,3 +479,30 @@ try{
     });
 }
 }
+
+export const cancelarInscripcionConferencia = async (req: Request, res: Response):Promise<any> => {
+  try {
+    const { id_usuario, id_conferencia } = req.body;
+
+    if(!id_usuario || !id_conferencia) {
+      return res.status(400).json({ message: 'Faltan parámetros requeridos.' });
+    }
+
+    const mensaje = await usuario.cancelarInscripcionEnConferencia(id_usuario, id_conferencia);
+
+    return res.status(200).json({
+      message: mensaje,
+      codigoResultado: 1
+    });
+  } catch (error) {
+    if(error instanceof Error){
+      return res.status(500).json({ message: error.message, codigoResultado: -1 });
+    } 
+
+    return res.status(500).json({
+      message: error instanceof Error ? error.message : "Error interno del servidor",
+      codigoResultado: -1,
+      data: []
+    });
+  }
+}

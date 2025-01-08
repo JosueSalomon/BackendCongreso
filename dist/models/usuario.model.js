@@ -411,5 +411,27 @@ class usuario {
             }
         });
     }
+    static cancelarInscripcionEnConferencia(id_usuario, id_conferencia) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { data, error } = yield connection_1.default.rpc('p_cancelar_inscripcion_en_conferencia', {
+                    p_id_usuario: id_usuario,
+                    p_id_conferencia: id_conferencia
+                });
+                if (error) {
+                    throw new Error(error.message);
+                }
+                return data;
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    throw new Error(error.message);
+                }
+                else {
+                    throw new Error("Error desconocido");
+                }
+            }
+        });
+    }
 }
 exports.usuario = usuario;

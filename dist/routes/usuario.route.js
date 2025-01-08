@@ -25,4 +25,5 @@ router.get('/carreras', usuario_controller_1.obtenerCarreras);
 router.post('/asistencia/hora/entrada', usuario_controller_1.insertarHoraEntradaPorUsuario);
 router.put('/asistencia/hora/salida', usuario_controller_1.insertarHoraSalidaPorUsuario);
 router.post('/inscripcion/conferencia', usuario_controller_1.inscribirEnConferencia);
+router.delete('/inscripcion/cancelarConferencia', usuario_controller_1.cancelarInscripcionConferencia);
 exports.default = router;
