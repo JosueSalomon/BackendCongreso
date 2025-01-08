@@ -21,7 +21,8 @@ export class usuario {
     contrasena: string,
     img_recibo: string,
     codigo_recibo: string,
-    codigo_organizador: string
+    codigo_organizador: string,
+    id_carrera_unah: number
   ) {
     let externo = false;
     let estudiante = false;
@@ -101,6 +102,7 @@ export class usuario {
         p_img_recibo: img_recibo,
         p_codigo_recibo: codigo_recibo,
         p_codigo_organizador: codigo_organizador,
+        p_id_carrera_unah : id_carrera_unah
       });
   
       if (error) {
@@ -357,6 +359,15 @@ static async verificar_preregistro(){
   }
   return data;
 }
+  static async obtenerCareerasUNAH(){
+    const { data, error } = await supabase.rpc('p_carreras_unah')
+    if (error) {
+      console.error('Error al obtener universidades:', error);
+      throw new Error('Error al obtener universidades');
+    }
+  
+    return data;
+  }
 
   static async insertarHoraEntrada(
     idUsuario: number,

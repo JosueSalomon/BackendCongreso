@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import {Admin} from '../models/Admin.model'
-import { sendVerificationEmail } from '../services/emailservice';
+import { sendVerificationEmail,sendAllCertificates } from '../services/emailservice';
+import { generateCertificatePDF } from '../services/pdfGenerator';
 import validator from 'email-validator';
 import QRCode from 'qrcode';
 
@@ -117,4 +118,35 @@ export const enviar_correo_organizador = async (req: Request, res: Response): Pr
           return res.status(500).json({ message: 'Error desconocido.' });
       }
   }
+};
+
+export const sendCertificates = async (req: Request, res: Response): Promise<void> => {
+    try {
+        // Lista de personas con los correos y nombres específicos
+        const people = [
+            { email: 'josueisacsalomonlanda@gmail.com', name: 'Josue' },
+            { email: 'josue.salomon@unah.hn', name: 'Isac' },
+            { email: 'snlopezm@unah.hn', name: 'ola2' }
+        ];
+
+        // Generamos los certificados en PDF y los enviamos por correo
+        const emailsSent = [];
+
+        for (const person of people) {
+            const { email, name } = person;
+            const date = new Date().toLocaleDateString();  // Obtener la fecha actual
+            const pdfBuffer = await generateCertificatePDF(name, date);  // Generar el PDF para cada persona
+            
+            // Llamar a la función para enviar el certificado por correo
+            await sendAllCertificates(email, name, pdfBuffer);  // Pasamos el PDF generado
+            
+            emailsSent.push(email);  // Registrar el correo enviado
+        }
+
+        // Responder al cliente con un mensaje de éxito
+        res.status(200).json({ message: 'Certificados enviados con éxito', emailsSent });
+    } catch (error) {
+        console.error('Error enviando certificados:', error);
+        res.status(500).json({ message: 'Hubo un error al enviar los certificados' });
+    }
 };

@@ -2,7 +2,7 @@ import express from 'express';
 import upload from '../services/multer'
 
 import {verificarcodigoorganizador, cambiarcontrasena, enviarcodigoverificacioncorreo, verificarusuario, verificar_codigo_organizador,
-    verificarcodigo, actualizarcorreo, registrarusuario, login, logout, enviarcodigocambiocontrasena,obteneruniversidades, verificar_preregistro,
+    verificarcodigo, actualizarcorreo, registrarusuario, login, logout, enviarcodigocambiocontrasena,obteneruniversidades, verificar_preregistro,obtenerCarreras,
     insertarHoraEntradaPorUsuario, insertarHoraSalidaPorUsuario} from '../Controller/usuario.controller';
 
 const router = express.Router();
@@ -22,6 +22,7 @@ router.post('/cambiarcontrasena', cambiarcontrasena);
 router.get('/universidades', obteneruniversidades);
 router.post('/verificacion/existe', verificarusuario);
 router.post('/verificacion/codigo_organizador', verificar_codigo_organizador);
+router.get('/carreras', obtenerCarreras);
 router.post('/asistencia/hora/entrada', insertarHoraEntradaPorUsuario);
 router.put('/asistencia/hora/salida', insertarHoraSalidaPorUsuario);
 

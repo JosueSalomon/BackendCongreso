@@ -6,25 +6,6 @@ import validator from 'email-validator';
 import cloudinary from "../services/cloudinary";
 import fs from 'fs';
 
-//  export const procesarRecibo = async (req: Request, res: Response, next: NextFunction):Promise<any> => {
-//  try {
-  
-//   if (!req.file) {
-//     return res.status(400).json({ message: "No se recibió el archivo del recibo." });
-//   }
-
-//   const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-//   if (!allowedTypes.includes(req.file.mimetype)) {
-//     return res.status(400).json({ message: "El archivo debe ser una imagen (jpeg, jpg, png)." });
-//   }
-
-//   next();
-// } catch (error) {
-//   console.error("Error en el middleware de recibo:", error);
-//   res.status(500).json({ message: "Hubo un problema al procesar el recibo.", error });
-// }
-// };
-
 export const registrarusuario = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const {
@@ -42,6 +23,7 @@ export const registrarusuario = async (req: Request, res: Response, next: NextFu
       img_recibo,
       codigo_recibo,
       codigo_organizador,
+      id_carrera_unah
     } = req.body;
 
     if (!nombres || !apellidos || !telefono || !fecha_nacimiento || !dni || !correo || !contrasena) {
@@ -63,7 +45,8 @@ export const registrarusuario = async (req: Request, res: Response, next: NextFu
       contrasena,
       img_recibo,
       codigo_recibo,
-      codigo_organizador
+      codigo_organizador,
+      id_carrera_unah
     );
 
     if (!validator.validate(correo)) {
@@ -384,6 +367,18 @@ export const obteneruniversidades = async (req: Request, res: Response): Promise
             res.status(500).json({ error: 'Hubo un problema buscar el user' });
         }
     }
+export const obtenerCarreras = async (req: Request, res: Response): Promise<any>=> {
+  try {
+    const carreras = await usuario.obtenerCareerasUNAH();
+    return res.status(200).json(carreras);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    } else {
+      return res.status(500).json({ message: 'Error desconocido.' });
+    }
+  }
+};
 
     export const insertarHoraEntradaPorUsuario = async (req: Request, res: Response) => {
         try{
