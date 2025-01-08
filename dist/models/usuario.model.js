@@ -217,6 +217,12 @@ class usuario {
                 if (data.codigo_resultado === 2) {
                     throw new Error("Su comprobante de pago aún está en proceso de verificación, por favor vuelva a intentarlo más tarde.");
                 }
+                if (data.codigo_resultado === -3) {
+                    throw new Error("No puede iniciar sesión, debe de confirmar su cuenta de correo.");
+                }
+                if (data.codigo_resultado === -4) {
+                    throw new Error("No tiene una cuenta creada, por favor registrese.");
+                }
                 const token = (0, jwt_1.hacerToken)(data.correo_salida, data.p_tipo_usuario, data.nombres, data.apellidos, data.id_usuario_salida, data.numero_cuenta);
                 const resultado = yield this.insertarTokenDelUsuario(data.correo_salida, data.contrasenia_salida, token);
                 data.token = token;

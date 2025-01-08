@@ -272,7 +272,21 @@ export const login = async (req: Request, res: Response): Promise<any> => {
         codigoResultado: -2
       })
     }
+
+    if(error instanceof Error && error.message === "No puede iniciar sesión, debe de confirmar su cuenta de correo."){
+      return res.status(403).json({
+        message: "No puede iniciar sesión, debe de confirmar su cuenta de correo.",
+        codigoResultado: -3
+      })
+    }
+
+    if(error instanceof Error && error.message === "No tiene una cuenta creada, por favor registrese."){
+      return res.status(403).json({
+        message: "No tiene una cuenta creada, por favor registrese.",
+        codigoResultado: -4
+      })
   }
+}
 }
 
 export const logout = async (req: Request, res: Response): Promise<any> => {

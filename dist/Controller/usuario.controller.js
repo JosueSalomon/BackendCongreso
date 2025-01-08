@@ -228,6 +228,18 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 codigoResultado: -2
             });
         }
+        if (error instanceof Error && error.message === "No puede iniciar sesión, debe de confirmar su cuenta de correo.") {
+            return res.status(403).json({
+                message: "No puede iniciar sesión, debe de confirmar su cuenta de correo.",
+                codigoResultado: -3
+            });
+        }
+        if (error instanceof Error && error.message === "No tiene una cuenta creada, por favor registrese.") {
+            return res.status(403).json({
+                message: "No tiene una cuenta creada, por favor registrese.",
+                codigoResultado: -4
+            });
+        }
     }
 });
 exports.login = login;
