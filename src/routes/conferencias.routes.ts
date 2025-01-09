@@ -3,7 +3,8 @@ import upload from '../services/multer';
 import {crearUnaConferencia, editarUnaConferencia, eliminarUnaConferencia, obtenerUnaConferencia, 
     obtenerConferenciasTotales, subirRecursoDeConferencia, traerRecursosPorConferencia,
     obtenerConferenciasPorCadaUsuario, obtenerAsistenciasPorCadaUsuario,
-    obtenerConferenciasPorFecha} from '../Controller/conferencias.controller'
+    obtenerConferenciasPorFecha, obtenerConferenciaPorUsuarioInscripciones,
+    obtenerConferenciaPorUsuarioGenerales} from '../Controller/conferencias.controller'
 const router = express.Router();
 
 router.get('/:idConferencia', obtenerUnaConferencia);
@@ -14,6 +15,8 @@ router.delete('/eliminar/:idConferencia', eliminarUnaConferencia);
 router.post('/usuario', obtenerConferenciasPorCadaUsuario);
 router.get('/usuario/:idUsuario/asistencias', obtenerAsistenciasPorCadaUsuario);
 router.post('/fecha', obtenerConferenciasPorFecha);
+router.post('/usuario/inscritas', obtenerConferenciaPorUsuarioInscripciones);
+router.post('/usuario/general', obtenerConferenciaPorUsuarioGenerales); //Retorna un campo extra "inscrito" tipo booleano 
 
 //para subir los recursos de una conferencia
 router.post('/subirRecurso', upload.single('recurso'), subirRecursoDeConferencia);

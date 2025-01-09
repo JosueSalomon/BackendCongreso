@@ -320,3 +320,47 @@ export const obtenerConferenciasPorFecha = async (req: Request, res: Response) =
         });
     }
 }
+
+export const obtenerConferenciaPorUsuarioInscripciones = async (req: Request, res: Response) => {
+    try{
+        const {idUsuario, fecha} = req.body;
+
+        const conferencias = await Conferencia.obtenerConferenciaUsuarioInscripciones(idUsuario, fecha);
+
+        res.status(201).json({
+            conferencias
+        })
+    } catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : error?.toString() || 'Error desconocido';
+
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ', 
+            error: errorInfo
+        });
+    }
+}
+
+export const obtenerConferenciaPorUsuarioGenerales = async (req: Request, res: Response) => {
+    try{
+        const {idUsuario, fecha} = req.body;
+
+        const conferencias = await Conferencia.obtenerConferenciaUsuarioGenerales(idUsuario, fecha);
+
+        res.status(201).json({
+            conferencias
+        })
+    } catch (error) {
+        const errorInfo = error && typeof error === 'object'
+            ? JSON.stringify(error, null, 2)
+            : error?.toString() || 'Error desconocido';
+
+        console.error('Informacion del error: ', errorInfo);
+        res.status(500).json({
+            message: 'Informacion del error: ', 
+            error: errorInfo
+        });
+    }
+}
