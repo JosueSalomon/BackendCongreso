@@ -209,6 +209,7 @@ class usuario {
                 const token = (0, jwt_1.hacerToken)(data.correo_salida, data.p_tipo_usuario, data.nombres, data.apellidos, data.id_usuario_salida, data.numero_cuenta);
                 const resultado = yield this.insertarTokenDelUsuario(data.correo_salida, data.contrasenia_salida, token);
                 data.token = token;
+                console.log(data);
                 return data;
             }
             catch (error) {

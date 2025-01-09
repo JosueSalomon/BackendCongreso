@@ -226,7 +226,7 @@ export class usuario {
       const resultado = await this.insertarTokenDelUsuario(data.correo_salida, data.contrasenia_salida, token);
 
       data.token = token;
-
+      console.log(data);
       return data;
     } catch (error: unknown) {
       if (error instanceof Error) {
