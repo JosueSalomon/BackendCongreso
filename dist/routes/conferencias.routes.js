@@ -15,6 +15,8 @@ router.delete('/eliminar/:idConferencia', conferencias_controller_1.eliminarUnaC
 router.post('/usuario', conferencias_controller_1.obtenerConferenciasPorCadaUsuario);
 router.get('/usuario/:idUsuario/asistencias', conferencias_controller_1.obtenerAsistenciasPorCadaUsuario);
 router.post('/fecha', conferencias_controller_1.obtenerConferenciasPorFecha);
+router.post('/usuario/inscritas', conferencias_controller_1.obtenerConferenciaPorUsuarioInscripciones);
+router.post('/usuario/general', conferencias_controller_1.obtenerConferenciaPorUsuarioGenerales); //Retorna un campo extra "inscrito" tipo booleano 
 //para subir los recursos de una conferencia
 router.post('/subirRecurso', multer_1.default.single('recurso'), conferencias_controller_1.subirRecursoDeConferencia);
 router.get('/obtenerRecursos/:idConferencia', conferencias_controller_1.traerRecursosPorConferencia);

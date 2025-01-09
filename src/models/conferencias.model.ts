@@ -162,4 +162,27 @@ export class Conferencia {
         };
         return data;
     }
+
+    static async obtenerConferenciaUsuarioGenerales(idUsuario: number, fecha:string){
+        const {data, error } = await supabase.rpc('p_obtener_conferencias_usuario_nuevo_campo', {
+            p_id_usuario: idUsuario,
+            p_dia: fecha
+        });
+        if(error){
+            throw error
+        };
+        return data;
+    }
+
+    static async obtenerConferenciaUsuarioInscripciones (idUsuario: number, fecha:string){
+        const {data, error } = await supabase.rpc('p_obtener_conferencias_inscritas_por_usuario', {
+            p_id_usuario: idUsuario,
+            p_dia: fecha
+        });
+        if(error){
+            throw error
+        };
+        return data;
+    }
+
 }
