@@ -125,25 +125,21 @@ export const sendCertificates = async (req: Request, res: Response): Promise<voi
         // Lista de personas con los correos y nombres específicos
         const people = [
             { email: 'josueisacsalomonlanda@gmail.com', name: 'Josue' },
-            { email: 'josue.salomon@unah.hn', name: 'Isac' },
-            { email: 'snlopezm@unah.hn', name: 'ola2' }
+            { email: 'josue.salomon@unah.hn', name: 'Isac' }
         ];
 
-        // Generamos los certificados en PDF y los enviamos por correo
         const emailsSent = [];
 
         for (const person of people) {
             const { email, name } = person;
-            const date = new Date().toLocaleDateString();  // Obtener la fecha actual
-            const pdfBuffer = await generateCertificatePDF(name, date);  // Generar el PDF para cada persona
+            const date = new Date().toLocaleDateString(); 
+            const pdfBuffer = await generateCertificatePDF(name, date);  
             
-            // Llamar a la función para enviar el certificado por correo
-            await sendAllCertificates(email, name, pdfBuffer);  // Pasamos el PDF generado
+            await sendAllCertificates(email, name, pdfBuffer);  
             
-            emailsSent.push(email);  // Registrar el correo enviado
+            emailsSent.push(email);  
         }
 
-        // Responder al cliente con un mensaje de éxito
         res.status(200).json({ message: 'Certificados enviados con éxito', emailsSent });
     } catch (error) {
         console.error('Error enviando certificados:', error);
