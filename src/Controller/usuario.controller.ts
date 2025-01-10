@@ -266,13 +266,6 @@ export const login = async (req: Request, res: Response): Promise<any> => {
       })
     }
 
-    if (error) {
-      return res.status(500).json({
-        message: "Error interno del servidor backend", error,
-        codigoResultado: -2
-      })
-    }
-
     if(error instanceof Error && error.message === "No puede iniciar sesión, debe de confirmar su cuenta de correo."){
       return res.status(403).json({
         message: "No puede iniciar sesión, debe de confirmar su cuenta de correo.",
@@ -285,6 +278,13 @@ export const login = async (req: Request, res: Response): Promise<any> => {
         message: "No tiene una cuenta creada, por favor registrese.",
         codigoResultado: -4
       })
+  }
+
+  if (error) {
+    return res.status(500).json({
+      message: "Error interno del servidor backend", error,
+      codigoResultado: -2
+    })
   }
 }
 }

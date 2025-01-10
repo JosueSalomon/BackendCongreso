@@ -124,23 +124,6 @@ class usuario {
                 });
                 if (error)
                     throw error;
-                let id_usuario = data;
-                setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-                    try {
-                        const { error: cleanError } = yield connection_1.default.rpc('p_limpiar_usuarios_no_verificados', {
-                            p_id_usuario: id_usuario
-                        });
-                        if (cleanError) {
-                            console.error("Error al ejecutar la funcion", cleanError);
-                        }
-                        else {
-                            console.log("Usuario sin verificar eliminado correctamente.");
-                        }
-                    }
-                    catch (timeoutError) {
-                        console.error("Error en la tarea programada:", timeoutError);
-                    }
-                }), 10 * 60 * 1000); // 10 minutos en milisegundos
                 return data;
             }
             catch (error) {
@@ -226,6 +209,7 @@ class usuario {
                 const token = (0, jwt_1.hacerToken)(data.correo_salida, data.p_tipo_usuario, data.nombres, data.apellidos, data.id_usuario_salida, data.numero_cuenta);
                 const resultado = yield this.insertarTokenDelUsuario(data.correo_salida, data.contrasenia_salida, token);
                 data.token = token;
+                console.log(data);
                 return data;
             }
             catch (error) {

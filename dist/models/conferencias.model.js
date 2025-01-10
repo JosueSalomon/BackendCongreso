@@ -158,5 +158,31 @@ class Conferencia {
             return data;
         });
     }
+    static obtenerConferenciaUsuarioGenerales(idUsuario, fecha) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_obtener_conferencias_usuario_nuevo_campo', {
+                p_id_usuario: idUsuario,
+                p_dia: fecha
+            });
+            if (error) {
+                throw error;
+            }
+            ;
+            return data;
+        });
+    }
+    static obtenerConferenciaUsuarioInscripciones(idUsuario, fecha) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_obtener_conferencias_inscritas_por_usuario', {
+                p_id_usuario: idUsuario,
+                p_dia: fecha
+            });
+            if (error) {
+                throw error;
+            }
+            ;
+            return data;
+        });
+    }
 }
 exports.Conferencia = Conferencia;
