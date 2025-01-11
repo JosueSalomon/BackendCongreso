@@ -1,8 +1,8 @@
 import puppeteer from 'puppeteer-core';
+import chromium from 'chrome-aws-lambda';
 
 export const generateCertificatePDF = async (name: string, date: string): Promise<Buffer> => {
-    const htmlContent = `
-        <!DOCTYPE html>
+    const htmlContent = `<!DOCTYPE html>
         <html lang="es">
         <head>
             <meta charset="UTF-8">
@@ -93,29 +93,26 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
             </div>
         </body>
         </html>
-    `;
+`
 
     try {
         console.log('Generando el certificado para:', name);
 
-        // Ruta al ejecutable de Chromium o Chrome
-        const executablePath = 'C:/Program Files/Google/Chrome/Application/chrome.exe'; // Cambiar si es necesario
+        const executablePath = await chromium.executablePath;
 
-        // Usar Puppeteer para generar el PDF
         const browser = await puppeteer.launch({
-            executablePath, // Especificamos la ruta al ejecutable
-            args: ['--no-sandbox', '--disable-setuid-sandbox'], // Configuración para entornos seguros
-            headless: true, // Ejecutar sin interfaz gráfica
+            executablePath,
+            args: chromium.args,
+            headless: chromium.headless,
         });
 
         const page = await browser.newPage();
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
-        // Generar el PDF en orientación horizontal
         console.log('Creando el PDF...');
         const pdfBuffer = await page.pdf({
             format: 'a4',
-            landscape: true, // Cambiado a horizontal
+            landscape: true,
             printBackground: true,
         });
 

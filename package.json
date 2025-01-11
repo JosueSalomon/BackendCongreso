@@ -43,6 +43,7 @@
     "nodemailer": "^6.9.16",
     "pdf-lib": "^1.17.1",
     "puppeteer": "^23.11.1",
+    "puppeteer-core": "^9.1.0",
     "qrcode": "^1.5.4"
   }
 }

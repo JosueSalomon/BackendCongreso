@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateCertificatePDF = void 0;
 const puppeteer_core_1 = __importDefault(require("puppeteer-core"));
+const chrome_aws_lambda_1 = __importDefault(require("chrome-aws-lambda"));
 const generateCertificatePDF = (name, date) => __awaiter(void 0, void 0, void 0, function* () {
-    const htmlContent = `
-        <!DOCTYPE html>
+    const htmlContent = `<!DOCTYPE html>
         <html lang="es">
         <head>
             <meta charset="UTF-8">
@@ -107,24 +107,21 @@ const generateCertificatePDF = (name, date) => __awaiter(void 0, void 0, void 0,
             </div>
         </body>
         </html>
-    `;
+`;
     try {
         console.log('Generando el certificado para:', name);
-        // Ruta al ejecutable de Chromium o Chrome
-        const executablePath = 'C:/Program Files/Google/Chrome/Application/chrome.exe'; // Cambiar si es necesario
-        // Usar Puppeteer para generar el PDF
+        const executablePath = yield chrome_aws_lambda_1.default.executablePath;
         const browser = yield puppeteer_core_1.default.launch({
-            executablePath, // Especificamos la ruta al ejecutable
-            args: ['--no-sandbox', '--disable-setuid-sandbox'], // Configuración para entornos seguros
-            headless: true, // Ejecutar sin interfaz gráfica
+            executablePath,
+            args: chrome_aws_lambda_1.default.args,
+            headless: chrome_aws_lambda_1.default.headless,
         });
         const page = yield browser.newPage();
         yield page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-        // Generar el PDF en orientación horizontal
         console.log('Creando el PDF...');
         const pdfBuffer = yield page.pdf({
             format: 'a4',
-            landscape: true, // Cambiado a horizontal
+            landscape: true,
             printBackground: true,
         });
         yield browser.close();
