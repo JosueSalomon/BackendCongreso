@@ -25,6 +25,7 @@ export class Conferencia {
 
     static async crearConferencia(
         nombre_conferencia: string,
+        id_ponente: number,
         nombres_ponente: string,
         apellidos_ponente: string,
         descripcion_ponente: string,
@@ -40,6 +41,7 @@ export class Conferencia {
     ){
         const {data, error} = await supabase.rpc('p_crear_conferencia', {
             p_nombre_conferencia: nombre_conferencia,
+            p_id_ponente: id_ponente, 
             p_nombres_ponente: nombres_ponente,
             p_apellidos_ponente: apellidos_ponente,
             p_descripcion_ponente: descripcion_ponente,
@@ -61,6 +63,7 @@ export class Conferencia {
 
     static async editarConferencia(
         id_conferencia: number,
+        id_ponente: number,
         nombre: string,
         nombres_ponente: string,
         apellidos_ponente: string,
@@ -77,6 +80,7 @@ export class Conferencia {
     ){
         const {data, error} = await supabase.rpc('p_editar_conferencia', {
             p_id_conferencia: id_conferencia,
+            p_id_ponente: id_ponente,
             p_nombre: nombre,
             p_nombres_ponente: nombres_ponente,
             p_apellidos_ponente: apellidos_ponente,

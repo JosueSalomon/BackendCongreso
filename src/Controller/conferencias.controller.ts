@@ -52,6 +52,7 @@ export const crearUnaConferencia = async (req: Request, res: Response) => {
     try {
         const {
             nombre_conferencia,
+            id_ponente,
             nombres_ponente,
             apellidos_ponente,
             descripcion_ponente,
@@ -68,6 +69,7 @@ export const crearUnaConferencia = async (req: Request, res: Response) => {
 
         const nuevaConferencia = await Conferencia.crearConferencia(
             nombre_conferencia,
+            id_ponente,
             nombres_ponente,
             apellidos_ponente,
             descripcion_ponente,
@@ -101,6 +103,7 @@ export const editarUnaConferencia = async (req: Request, res: Response) => {
     try {
         const {
             id_conferencia,
+            id_ponente,
             nombre,
             nombres_ponente,
             apellidos_ponente,
@@ -118,6 +121,7 @@ export const editarUnaConferencia = async (req: Request, res: Response) => {
         
         const edicionConferencia = await Conferencia.editarConferencia(
             id_conferencia,
+            id_ponente,
             nombre,
             nombres_ponente,
             apellidos_ponente,
