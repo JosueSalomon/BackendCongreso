@@ -418,7 +418,7 @@ export const inscribirEnConferencia = async (req: Request, res: Response):Promis
   } catch (error) {
 
     if(error instanceof Error){
-      return res.status(500).json({ message: error.message, codigoResultado: -1 });
+      return res.status(200).json({ message: error.message, codigoResultado: -1 });
     } 
 
     return res.status(500).json({

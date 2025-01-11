@@ -362,7 +362,7 @@ const inscribirEnConferencia = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
     catch (error) {
         if (error instanceof Error) {
-            return res.status(500).json({ message: error.message, codigoResultado: -1 });
+            return res.status(200).json({ message: error.message, codigoResultado: -1 });
         }
         return res.status(500).json({
             message: error instanceof Error ? error.message : "Error interno del servidor",
