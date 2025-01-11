@@ -1,5 +1,4 @@
-import puppeteer from 'puppeteer-core';
-import chromium from 'chrome-aws-lambda';
+import pdf from 'html-pdf';
 
 export const generateCertificatePDF = async (name: string, date: string): Promise<Buffer> => {
     const htmlContent = `<!DOCTYPE html>
@@ -92,48 +91,20 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
                 </div>
             </div>
         </body>
-        </html>
-    `;
+        </html>`;
 
-    let browser;
-    try {
-        console.log('Generando el certificado para:', name);
+    console.log('Generando el certificado para:', name);
 
-        const executablePath = await chromium.executablePath;
-        browser = await puppeteer.launch({
-            executablePath,
-            args: chromium.args,
-            headless: chromium.headless,
-        });
-
-        const page = await browser.newPage();
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-
-        console.log('Creando el PDF...');
-        const pdfBuffer = await page.pdf({
-            format: 'a4',
-            landscape: true,
-            printBackground: true,
-        });
-
-        if (!pdfBuffer || pdfBuffer.length === 0) {
-            throw new Error('El PDF generado está vacío');
-        }
-
-        console.log('Certificado generado exitosamente');
-        return Buffer.from(pdfBuffer);
-    } catch (error: unknown) {
-        if (error instanceof Error) {
-            console.error('Error al generar el certificado:', error.message);
-            console.error('Stack trace:', error.stack);
-            throw new Error('Error al generar el certificado: ' + error.message);
-        } else {
-            console.error('Error desconocido:', error);
-            throw new Error('Error desconocido al generar el certificado');
-        }
-    } finally {
-        if (browser) {
-            await browser.close();
-        }
-    }
+    return new Promise<Buffer>((resolve, reject) => {
+        pdf.create(htmlContent, { format: 'A4', orientation: 'landscape', border: '10mm' })
+            .toBuffer((err, buffer) => {
+                if (err) {
+                    console.error('Error al generar el certificado:', err);
+                    reject(new Error('Error al generar el certificado: ' + err.message));
+                } else {
+                    console.log('Certificado generado exitosamente');
+                    resolve(buffer);
+                }
+            });
+    });
 };

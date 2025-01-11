@@ -127,8 +127,7 @@ export const enviar_correo_organizador = async (req: Request, res: Response): Pr
 export const sendCertificates = async (req: Request, res: Response): Promise<void> => {
 
     try {
-        // Obtener usuarios desde la función `GetUsuariosValidaciones`
-        const resultado = await Admin.GetUsuariosValidaciones(false);
+        const resultado = await Admin.GetUsuariosValidaciones(true);
 
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'No se encontraron usuarios para el estado proporcionado' });

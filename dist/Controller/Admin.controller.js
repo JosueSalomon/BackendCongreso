@@ -126,8 +126,7 @@ const enviar_correo_organizador = (req, res) => __awaiter(void 0, void 0, void 0
 exports.enviar_correo_organizador = enviar_correo_organizador;
 const sendCertificates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Obtener usuarios desde la función `GetUsuariosValidaciones`
-        const resultado = yield Admin_model_1.Admin.GetUsuariosValidaciones(false);
+        const resultado = yield Admin_model_1.Admin.GetUsuariosValidaciones(true);
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'No se encontraron usuarios para el estado proporcionado' });
             return;

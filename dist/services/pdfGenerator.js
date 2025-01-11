@@ -13,8 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateCertificatePDF = void 0;
-const puppeteer_core_1 = __importDefault(require("puppeteer-core"));
-const chrome_aws_lambda_1 = __importDefault(require("chrome-aws-lambda"));
+const html_pdf_1 = __importDefault(require("html-pdf"));
 const generateCertificatePDF = (name, date) => __awaiter(void 0, void 0, void 0, function* () {
     const htmlContent = `<!DOCTYPE html>
         <html lang="es">
@@ -106,46 +105,20 @@ const generateCertificatePDF = (name, date) => __awaiter(void 0, void 0, void 0,
                 </div>
             </div>
         </body>
-        </html>
-    `;
-    let browser;
-    try {
-        console.log('Generando el certificado para:', name);
-        const executablePath = yield chrome_aws_lambda_1.default.executablePath;
-        browser = yield puppeteer_core_1.default.launch({
-            executablePath,
-            args: chrome_aws_lambda_1.default.args,
-            headless: chrome_aws_lambda_1.default.headless,
+        </html>`;
+    console.log('Generando el certificado para:', name);
+    return new Promise((resolve, reject) => {
+        html_pdf_1.default.create(htmlContent, { format: 'A4', orientation: 'landscape', border: '10mm' })
+            .toBuffer((err, buffer) => {
+            if (err) {
+                console.error('Error al generar el certificado:', err);
+                reject(new Error('Error al generar el certificado: ' + err.message));
+            }
+            else {
+                console.log('Certificado generado exitosamente');
+                resolve(buffer);
+            }
         });
-        const page = yield browser.newPage();
-        yield page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-        console.log('Creando el PDF...');
-        const pdfBuffer = yield page.pdf({
-            format: 'a4',
-            landscape: true,
-            printBackground: true,
-        });
-        if (!pdfBuffer || pdfBuffer.length === 0) {
-            throw new Error('El PDF generado está vacío');
-        }
-        console.log('Certificado generado exitosamente');
-        return Buffer.from(pdfBuffer);
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            console.error('Error al generar el certificado:', error.message);
-            console.error('Stack trace:', error.stack);
-            throw new Error('Error al generar el certificado: ' + error.message);
-        }
-        else {
-            console.error('Error desconocido:', error);
-            throw new Error('Error desconocido al generar el certificado');
-        }
-    }
-    finally {
-        if (browser) {
-            yield browser.close();
-        }
-    }
+    });
 });
 exports.generateCertificatePDF = generateCertificatePDF;
