@@ -107,11 +107,12 @@ const generateCertificatePDF = (name, date) => __awaiter(void 0, void 0, void 0,
             </div>
         </body>
         </html>
-`;
+    `;
+    let browser;
     try {
         console.log('Generando el certificado para:', name);
         const executablePath = yield chrome_aws_lambda_1.default.executablePath;
-        const browser = yield puppeteer_core_1.default.launch({
+        browser = yield puppeteer_core_1.default.launch({
             executablePath,
             args: chrome_aws_lambda_1.default.args,
             headless: chrome_aws_lambda_1.default.headless,
@@ -124,7 +125,6 @@ const generateCertificatePDF = (name, date) => __awaiter(void 0, void 0, void 0,
             landscape: true,
             printBackground: true,
         });
-        yield browser.close();
         if (!pdfBuffer || pdfBuffer.length === 0) {
             throw new Error('El PDF generado está vacío');
         }
@@ -140,6 +140,11 @@ const generateCertificatePDF = (name, date) => __awaiter(void 0, void 0, void 0,
         else {
             console.error('Error desconocido:', error);
             throw new Error('Error desconocido al generar el certificado');
+        }
+    }
+    finally {
+        if (browser) {
+            yield browser.close();
         }
     }
 });

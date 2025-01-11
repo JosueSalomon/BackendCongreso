@@ -93,14 +93,14 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
             </div>
         </body>
         </html>
-`
+    `;
 
+    let browser;
     try {
         console.log('Generando el certificado para:', name);
 
         const executablePath = await chromium.executablePath;
-
-        const browser = await puppeteer.launch({
+        browser = await puppeteer.launch({
             executablePath,
             args: chromium.args,
             headless: chromium.headless,
@@ -116,8 +116,6 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
             printBackground: true,
         });
 
-        await browser.close();
-
         if (!pdfBuffer || pdfBuffer.length === 0) {
             throw new Error('El PDF generado está vacío');
         }
@@ -132,6 +130,10 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
         } else {
             console.error('Error desconocido:', error);
             throw new Error('Error desconocido al generar el certificado');
+        }
+    } finally {
+        if (browser) {
+            await browser.close();
         }
     }
 };
