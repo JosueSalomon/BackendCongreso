@@ -11,14 +11,6 @@
         "src": "/(.*)",
         "dest": "dist/index.js"
       }
-    ],
-    "env": {
-        "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true",
-        "AWS_LAMBDA_EXEC_WRAPPER": "/opt/bootstrap"
-    },
-    "functions": {
-        "api/*.js": {
-            "maxDuration": 30
-        }
-    }
-}
+    ]
+  }
+  
