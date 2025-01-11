@@ -54,8 +54,8 @@ const obtenerUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, fu
 exports.obtenerUnaConferencia = obtenerUnaConferencia;
 const crearUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, url_carpeta_zip } = req.body;
-        const nuevaConferencia = yield conferencias_model_1.Conferencia.crearConferencia(nombre_conferencia, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, url_carpeta_zip);
+        const { nombre_conferencia, id_ponente, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, url_carpeta_zip } = req.body;
+        const nuevaConferencia = yield conferencias_model_1.Conferencia.crearConferencia(nombre_conferencia, id_ponente, nombres_ponente, apellidos_ponente, descripcion_ponente, img_perfil_ponente, descripcion_conferencia, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, url_carpeta_zip);
         res.status(201).json({ nuevaConferencia });
     }
     catch (error) {
@@ -72,8 +72,8 @@ const crearUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, func
 exports.crearUnaConferencia = crearUnaConferencia;
 const editarUnaConferencia = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, img_ponente, url_carpeta_zip } = req.body;
-        const edicionConferencia = yield conferencias_model_1.Conferencia.editarConferencia(id_conferencia, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, img_ponente, url_carpeta_zip);
+        const { id_conferencia, id_ponente, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, img_ponente, url_carpeta_zip } = req.body;
+        const edicionConferencia = yield conferencias_model_1.Conferencia.editarConferencia(id_conferencia, id_ponente, nombre, nombres_ponente, apellidos_ponente, descripcion_conferencia, descripcion_ponente, direccion, fecha_conferencia, hora_inicio, hora_final, cupos, img_conferecia, img_ponente, url_carpeta_zip);
         res.status(201).json({ edicionConferencia });
     }
     catch (error) {

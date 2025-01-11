@@ -5,7 +5,9 @@ import {GetUsuariosValidaciones,
     ActualizarUsuario,
     GetUserByID,
     enviar_correo_organizador,
-    sendCertificates} from '../Controller/Admin.controller';
+    sendCertificates,
+    sendOneCertificate,
+    downloadCertificate} from '../Controller/Admin.controller';
 
 const router = express.Router();
 
@@ -17,7 +19,9 @@ router.post('/buscar',BuscarUsuario)
 router.put('/actualizar/usuario/:id_usuario',ActualizarUsuario)
 router.get('/user/:id_user',GetUserByID)
 router.post('/codigo/usuario_organizador', enviar_correo_organizador);
-router.post('/envio/certificados', sendCertificates);
+router.post('/certificates/send-all', sendCertificates);
+router.post('/certificates/send/:id_user', sendOneCertificate);
+router.get('/certificates/download/:id_user', downloadCertificate);
 
 
 export default router;

@@ -87,7 +87,11 @@ export const GetUserByID = async (req: Request, res: Response) =>{
             message: 'Usuario encontrado con exito',
             resultado,
         });
-
+        resultado.forEach(element => {
+            element.correo
+            element.nombres
+            element.apellidos
+        });
     }catch (error) {
         console.error('Error con fetch', error);
         res.status(500).json({ error: 'Hubo un problema buscar el user' });
@@ -121,32 +125,91 @@ export const enviar_correo_organizador = async (req: Request, res: Response): Pr
 };
 
 export const sendCertificates = async (req: Request, res: Response): Promise<void> => {
+
     try {
-        // Lista de personas con los correos y nombres específicos
-        const people = [
-            { email: 'josueisacsalomonlanda@gmail.com', name: 'Josue' },
-            { email: 'josue.salomon@unah.hn', name: 'Isac' },
-            { email: 'snlopezm@unah.hn', name: 'ola2' }
-        ];
+        // Obtener usuarios desde la función `GetUsuariosValidaciones`
+        const resultado = await Admin.GetUsuariosValidaciones(true);
 
-        // Generamos los certificados en PDF y los enviamos por correo
-        const emailsSent = [];
-
-        for (const person of people) {
-            const { email, name } = person;
-            const date = new Date().toLocaleDateString();  // Obtener la fecha actual
-            const pdfBuffer = await generateCertificatePDF(name, date);  // Generar el PDF para cada persona
-            
-            // Llamar a la función para enviar el certificado por correo
-            await sendAllCertificates(email, name, pdfBuffer);  // Pasamos el PDF generado
-            
-            emailsSent.push(email);  // Registrar el correo enviado
+        if (!resultado || resultado.length === 0) {
+            res.status(404).json({ message: 'No se encontraron usuarios para el estado proporcionado' });
+            return;
         }
 
-        // Responder al cliente con un mensaje de éxito
+        const emailsSent: string[] = [];
+
+        // Iterar sobre los usuarios obtenidos
+        await Promise.all(resultado.map(async (user) => {
+            const email = user.correo;
+            const fullName = user.nombre_completo;
+            const date = new Date().toLocaleDateString();
+
+            // Generar el certificado en formato PDF
+            const pdfBuffer = await generateCertificatePDF(fullName, date);
+
+            // Enviar el certificado
+            await sendAllCertificates(email, fullName, pdfBuffer);
+
+            emailsSent.push(email);
+        }));
+
         res.status(200).json({ message: 'Certificados enviados con éxito', emailsSent });
     } catch (error) {
         console.error('Error enviando certificados:', error);
         res.status(500).json({ message: 'Hubo un error al enviar los certificados' });
+    }
+};
+
+
+export const sendOneCertificate = async (req: Request, res: Response): Promise<void> => {
+    const { id_user } = req.params;
+    try {
+        const resultado = await Admin.GetUserByID(Number(id_user));
+
+        if (!resultado || resultado.length === 0) {
+            res.status(404).json({ message: 'Usuario no encontrado' });
+            return;
+        }
+
+        const user = resultado[0];
+
+        const email = user.correo;
+        const fullName = `${user.nombres} ${user.apellidos}`;
+        const date = new Date().toLocaleDateString();
+
+        const pdfBuffer = await generateCertificatePDF(fullName, date);
+
+        await sendAllCertificates(email, fullName, pdfBuffer);
+
+        res.status(200).json({ message: 'Certificado enviado con éxito', email });
+    } catch (error) {
+        console.error('Error enviando el certificado:', error);
+        res.status(500).json({ message: 'Hubo un error al enviar el certificado' });
+    }
+};
+
+export const downloadCertificate = async (req: Request, res: Response): Promise<void> => {
+    const { id_user } = req.params;
+
+    try {
+        const resultado = await Admin.GetUserByID(Number(id_user));
+
+        if (!resultado || resultado.length === 0) {
+            res.status(404).json({ message: 'Usuario no encontrado' });
+            return;
+        }
+
+        const user = resultado[0];
+        const fullName = `${user.nombres} ${user.apellidos}`;
+        const date = new Date().toLocaleDateString();
+
+        const pdfBuffer = await generateCertificatePDF(fullName, date);
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=certificado_${fullName}.pdf`);
+        res.send(pdfBuffer);
+
+    } catch (error) {
+        console.error('Error generando el certificado:', error);
+        res.status(500).json({ message: 'Hubo un error al generar el certificado' });
     }
 };

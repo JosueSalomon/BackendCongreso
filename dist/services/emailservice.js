@@ -68,15 +68,13 @@ const sendVerificationEmail = (to, code) => __awaiter(void 0, void 0, void 0, fu
 exports.sendVerificationEmail = sendVerificationEmail;
 const sendAllCertificates = (email, name, pdfBuffer) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Configuración del transporte para enviar el correo
         const transporter = nodemailer_1.default.createTransport({
-            service: 'gmail', // o el servicio que estés usando
+            service: 'gmail',
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS,
             },
         });
-        // Diseño mejorado del correo electrónico en HTML
         const htmlContent = `
             <div style="font-family: 'Arial', sans-serif; background-color: #F0F0F0; padding: 20px; border-radius: 8px; max-width: 600px; margin: auto;">
                 <!-- Header -->
@@ -100,16 +98,15 @@ const sendAllCertificates = (email, name, pdfBuffer) => __awaiter(void 0, void 0
                 </div>
             </div>
         `;
-        // Configurar el correo a enviar
         const info = yield transporter.sendMail({
-            from: `"Congreso" <${process.env.EMAIL_USER}>`, // Dirección de envío
-            to: email, // Dirección del destinatario
-            subject: 'Certificado de Participación', // Asunto del correo
-            html: htmlContent, // Usamos el HTML mejorado para el cuerpo
+            from: `"Congreso" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: 'Certificado de Participación',
+            html: htmlContent,
             attachments: [
                 {
-                    filename: 'Certificado_Participacion.pdf', // Nombre del archivo adjunto
-                    content: pdfBuffer, // El contenido es el buffer del PDF
+                    filename: 'Certificado_Participacion.pdf',
+                    content: pdfBuffer,
                     encoding: 'base64',
                 },
             ],

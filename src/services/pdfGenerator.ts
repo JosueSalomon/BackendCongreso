@@ -1,86 +1,57 @@
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import puppeteer from 'puppeteer-core';
+import chrome from 'chrome-aws-lambda';
 
 export const generateCertificatePDF = async (name: string, date: string): Promise<Buffer> => {
-    // Crear el documento PDF
-    const pdfDoc = await PDFDocument.create();
-    
-    const page = pdfDoc.addPage([595, 842]); // Tamaño A4 en píxeles
-    const { width, height } = page.getSize();
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Certificado de Participación</title>
+        <style>
+            /* Tu estilo aquí */
+        </style>
+    </head>
+    <body>
+        <div class="certificate-container">
+            <div class="certificate-header">
+                <h1>Certificado de Participación</h1>
+                <p>Otorgado a</p>
+            </div>
+            <div class="certificate-body">
+                <h2>${name}</h2>
+                <p>Por su destacada participación en el evento</p>
+                <p><strong>Evento XYZ</strong></p>
+                <p>Realizado el día <strong>${date}</strong></p>
+            </div>
+            <div class="certificate-footer">
+                <div class="signature"></div>
+                <p>Firma del Organizador</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
 
-    // Incrustar las fuentes estándar (Helvetica)
-    const fontTitle = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const fontText = await pdfDoc.embedFont(StandardFonts.Helvetica);
-
-    page.drawRectangle({
-        x: 0,
-        y: 0,
-        width,
-        height,
-        color: rgb(0.95, 0.95, 0.95), // Color de fondo 
+    // Usar Puppeteer con chrome-aws-lambda
+    const browser = await puppeteer.launch({
+        args: chrome.args, // Usar los argumentos de chrome-aws-lambda
+        executablePath: await chrome.executablePath, // Obtener la ruta correcta del ejecutable de Chrome
+        headless: true, // Modo sin cabeza (sin UI)
     });
 
-    const borderWidth = 20; 
-    page.drawRectangle({
-        x: borderWidth,
-        y: borderWidth,
-        width: width - 2 * borderWidth,
-        height: height - 2 * borderWidth,
-        color: rgb(1, 0.8, 0), // Color dorado
-        borderWidth: 5,
+    const page = await browser.newPage();
+    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+
+    // Generar el PDF
+    const pdfBuffer = await page.pdf({
+        format: 'a4',
+        landscape: true, // Orientación horizontal
+        printBackground: true,
     });
 
-    page.drawText('Certificado de Participación', {
-        x: width / 2 - 180,
-        y: height - 100,
-        size: 36, // 
-        font: fontTitle,
-        color: rgb(0.15, 0.23, 0.41), // Azul oscuro
-    });
+    await browser.close();
 
-    page.drawText(`Nombre: ${name}`, {
-        x: width / 2 - 150,
-        y: height - 200,
-        size: 24, 
-        font: fontText,
-        color: rgb(0.2, 0.45, 0.7), // Azul suave
-    });
-
-    page.drawText(`Fecha: ${date}`, {
-        x: width / 2 - 150,
-        y: height - 250,
-        size: 24,
-        font: fontText,
-        color: rgb(0.2, 0.45, 0.7), // Azul suave
-    });
-
-    page.drawText('Firma del organizador:', {
-        x: 50,
-        y: 100,
-        size: 18,
-        font: fontText,
-        color: rgb(0.2, 0.2, 0.2),
-    });
-
-    page.drawLine({
-        start: { x: 50, y: 90 },
-        end: { x: width - 50, y: 90 },
-        thickness: 2,
-        color: rgb(0, 0, 0),
-    });
-
-    page.drawText(`Emitido el ${new Date().toLocaleDateString()}`, {
-        x: width / 2 - 150,
-        y: 50,
-        size: 16,
-        font: fontText,
-        color: rgb(0.5, 0.5, 0.5),
-    });
-
-    // Guardar el PDF como Uint8Array
-    const pdfBytes = await pdfDoc.save();
-
-    // Convertir el Uint8Array a Buffer
-    const pdfBuffer: Buffer = Buffer.from(pdfBytes);
-    
-    return pdfBuffer;
+    return Buffer.from(pdfBuffer);
 };
