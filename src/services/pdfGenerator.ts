@@ -1,7 +1,6 @@
 import puppeteer from 'puppeteer';
-
+//HTML para el certificado
 export const generateCertificatePDF = async (name: string, date: string): Promise<Buffer> => {
-    // Definir el HTML directamente como string
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">

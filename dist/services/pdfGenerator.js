@@ -14,8 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateCertificatePDF = void 0;
 const puppeteer_1 = __importDefault(require("puppeteer"));
+//HTML para el certificado
 const generateCertificatePDF = (name, date) => __awaiter(void 0, void 0, void 0, function* () {
-    // Definir el HTML directamente como string
     const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
