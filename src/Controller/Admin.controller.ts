@@ -187,3 +187,29 @@ export const sendOneCertificate = async (req: Request, res: Response): Promise<v
     }
 };
 
+export const downloadCertificate = async (req: Request, res: Response): Promise<void> => {
+    const { id_user } = req.params;
+
+    try {
+        const resultado = await Admin.GetUserByID(Number(id_user));
+
+        if (!resultado || resultado.length === 0) {
+            res.status(404).json({ message: 'Usuario no encontrado' });
+            return;
+        }
+
+        const user = resultado[0];
+        const fullName = `${user.nombres} ${user.apellidos}`;
+        const date = new Date().toLocaleDateString();
+
+        const pdfBuffer = await generateCertificatePDF(fullName, date);
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=certificado_${fullName}.pdf`);
+        res.send(pdfBuffer);
+
+    } catch (error) {
+        console.error('Error generando el certificado:', error);
+        res.status(500).json({ message: 'Hubo un error al generar el certificado' });
+    }
+};

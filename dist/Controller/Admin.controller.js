@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendOneCertificate = exports.sendCertificates = exports.enviar_correo_organizador = exports.GetUserByID = exports.ActualizarUsuario = exports.BuscarUsuario = exports.ValidarUsuario = exports.GetUsuariosValidaciones = void 0;
+exports.downloadCertificate = exports.sendOneCertificate = exports.sendCertificates = exports.enviar_correo_organizador = exports.GetUserByID = exports.ActualizarUsuario = exports.BuscarUsuario = exports.ValidarUsuario = exports.GetUsuariosValidaciones = void 0;
 const Admin_model_1 = require("../models/Admin.model");
 const emailservice_1 = require("../services/emailservice");
 const pdfGenerator_1 = require("../services/pdfGenerator");
@@ -174,3 +174,25 @@ const sendOneCertificate = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.sendOneCertificate = sendOneCertificate;
+const downloadCertificate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id_user } = req.params;
+    try {
+        const resultado = yield Admin_model_1.Admin.GetUserByID(Number(id_user));
+        if (!resultado || resultado.length === 0) {
+            res.status(404).json({ message: 'Usuario no encontrado' });
+            return;
+        }
+        const user = resultado[0];
+        const fullName = `${user.nombres} ${user.apellidos}`;
+        const date = new Date().toLocaleDateString();
+        const pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(fullName, date);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=certificado_${fullName}.pdf`);
+        res.send(pdfBuffer);
+    }
+    catch (error) {
+        console.error('Error generando el certificado:', error);
+        res.status(500).json({ message: 'Hubo un error al generar el certificado' });
+    }
+});
+exports.downloadCertificate = downloadCertificate;

@@ -18,50 +18,53 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
             }
             .certificate-container {
                 width: 850px;
-                height: 600px;
-                margin: 50px auto;
+                height: 550px;
+                margin: 0 auto;
                 padding: 40px;
                 background: white;
                 border: 15px solid #2c3e50;
                 box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
                 position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
             }
             .certificate-header {
-                text-align: center;
                 border-bottom: 2px solid #2c3e50;
                 padding-bottom: 10px;
                 margin-bottom: 30px;
             }
             .certificate-header h1 {
-                font-size: 36px;
+                font-size: 42px;
                 color: #2c3e50;
                 margin: 0;
             }
             .certificate-header p {
-                font-size: 18px;
+                font-size: 22px;
                 color: #34495e;
                 margin: 5px 0;
             }
             .certificate-body {
-                text-align: center;
                 margin: 30px 0;
             }
             .certificate-body h2 {
-                font-size: 28px;
+                font-size: 36px;
                 color: #2c3e50;
                 margin-bottom: 20px;
             }
             .certificate-body p {
-                font-size: 18px;
+                font-size: 22px;
                 color: #34495e;
                 margin: 10px 0;
             }
             .certificate-footer {
-                text-align: center;
                 position: absolute;
                 bottom: 30px;
                 left: 0;
                 width: 100%;
+                text-align: center;
             }
             .certificate-footer .signature {
                 display: inline-block;
@@ -71,7 +74,7 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
                 margin: 0 auto;
             }
             .certificate-footer p {
-                font-size: 16px;
+                font-size: 20px;
                 color: #34495e;
                 margin-top: 10px;
             }
@@ -108,6 +111,7 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
 
     const pdfBuffer = await page.pdf({
         format: 'A4',
+        landscape: true, // Establece la orientación horizontal
         printBackground: true,
     });
 
