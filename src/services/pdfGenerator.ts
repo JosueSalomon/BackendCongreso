@@ -1,9 +1,10 @@
-import puppeteer from 'puppeteer';
-//HTML para el certificado
+import puppeteer from 'puppeteer-core';
+import chrome from 'chrome-aws-lambda';
+
 export const generateCertificatePDF = async (name: string, date: string): Promise<Buffer> => {
     const htmlContent = `
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -100,17 +101,20 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
     </html>
     `;
 
-    // Usar Puppeteer para generar el PDF
+    // Usar Puppeteer con `chrome-aws-lambda`
     const browser = await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox'], // Configuración para entornos como Vercel
+        args: chrome.args, // Usar los argumentos de `chrome-aws-lambda`
+        executablePath: await chrome.executablePath, // Ejecutar el navegador de `chrome-aws-lambda`
+        headless: true, // El modo sin cabeza para servidores
     });
-    const page = await browser.newPage();
 
+    const page = await browser.newPage();
     await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
+    // Generar el PDF
     const pdfBuffer = await page.pdf({
-        format: 'A4',
-        landscape: true, // Establece la orientación horizontal
+        format: 'a4',
+        landscape: true, // Establecer la orientación horizontal
         printBackground: true,
     });
 

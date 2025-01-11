@@ -13,12 +13,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateCertificatePDF = void 0;
-const puppeteer_1 = __importDefault(require("puppeteer"));
-//HTML para el certificado
+const puppeteer_core_1 = __importDefault(require("puppeteer-core"));
+const chrome_aws_lambda_1 = __importDefault(require("chrome-aws-lambda"));
 const generateCertificatePDF = (name, date) => __awaiter(void 0, void 0, void 0, function* () {
     const htmlContent = `
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -114,15 +114,18 @@ const generateCertificatePDF = (name, date) => __awaiter(void 0, void 0, void 0,
     </body>
     </html>
     `;
-    // Usar Puppeteer para generar el PDF
-    const browser = yield puppeteer_1.default.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox'], // Configuración para entornos como Vercel
+    // Usar Puppeteer con `chrome-aws-lambda`
+    const browser = yield puppeteer_core_1.default.launch({
+        args: chrome_aws_lambda_1.default.args, // Usar los argumentos de `chrome-aws-lambda`
+        executablePath: yield chrome_aws_lambda_1.default.executablePath, // Ejecutar el navegador de `chrome-aws-lambda`
+        headless: true, // El modo sin cabeza para servidores
     });
     const page = yield browser.newPage();
     yield page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+    // Generar el PDF
     const pdfBuffer = yield page.pdf({
-        format: 'A4',
-        landscape: true, // Establece la orientación horizontal
+        format: 'a4',
+        landscape: true, // Establecer la orientación horizontal
         printBackground: true,
     });
     yield browser.close();
