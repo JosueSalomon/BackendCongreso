@@ -128,7 +128,7 @@ export const sendCertificates = async (req: Request, res: Response): Promise<voi
 
     try {
         // Obtener usuarios desde la función `GetUsuariosValidaciones`
-        const resultado = await Admin.GetUsuariosValidaciones(true);
+        const resultado = await Admin.GetUsuariosValidaciones(false);
 
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'No se encontraron usuarios para el estado proporcionado' });
@@ -159,7 +159,6 @@ export const sendCertificates = async (req: Request, res: Response): Promise<voi
     }
 };
 
-
 export const sendOneCertificate = async (req: Request, res: Response): Promise<void> => {
     const { id_user } = req.params;
     try {
@@ -171,21 +170,45 @@ export const sendOneCertificate = async (req: Request, res: Response): Promise<v
         }
 
         const user = resultado[0];
-
         const email = user.correo;
         const fullName = `${user.nombres} ${user.apellidos}`;
         const date = new Date().toLocaleDateString();
 
-        const pdfBuffer = await generateCertificatePDF(fullName, date);
+        // Verificar que el nombre y correo estén presentes
+        if (!email || !fullName) {
+            res.status(400).json({ message: 'Faltan datos para generar el certificado' });
+            return;
+        }
 
-        await sendAllCertificates(email, fullName, pdfBuffer);
+        // Generar el certificado PDF
+        let pdfBuffer;
+        try {
+            pdfBuffer = await generateCertificatePDF(fullName, date);
+            if (!pdfBuffer || pdfBuffer.length === 0) {
+                throw new Error('El PDF generado está vacío');
+            }
+        } catch (error) {
+            console.error('Error generando el PDF:', error);
+            res.status(500).json({ message: 'Error al generar el certificado' });
+            return;
+        }
+
+        // Enviar el certificado por correo
+        try {
+            await sendAllCertificates(email, fullName, pdfBuffer);
+        } catch (error) {
+            console.error('Error enviando el certificado:', error);
+            res.status(500).json({ message: 'Hubo un error al enviar el certificado' });
+            return;
+        }
 
         res.status(200).json({ message: 'Certificado enviado con éxito', email });
     } catch (error) {
-        console.error('Error enviando el certificado:', error);
-        res.status(500).json({ message: 'Hubo un error al enviar el certificado' });
+        console.error('Error procesando el certificado:', error);
+        res.status(500).json({ message: 'Hubo un error al procesar el certificado' });
     }
 };
+
 
 export const downloadCertificate = async (req: Request, res: Response): Promise<void> => {
     const { id_user } = req.params;

@@ -127,7 +127,7 @@ exports.enviar_correo_organizador = enviar_correo_organizador;
 const sendCertificates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Obtener usuarios desde la función `GetUsuariosValidaciones`
-        const resultado = yield Admin_model_1.Admin.GetUsuariosValidaciones(true);
+        const resultado = yield Admin_model_1.Admin.GetUsuariosValidaciones(false);
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'No se encontraron usuarios para el estado proporcionado' });
             return;
@@ -164,13 +164,38 @@ const sendOneCertificate = (req, res) => __awaiter(void 0, void 0, void 0, funct
         const email = user.correo;
         const fullName = `${user.nombres} ${user.apellidos}`;
         const date = new Date().toLocaleDateString();
-        const pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(fullName, date);
-        yield (0, emailservice_1.sendAllCertificates)(email, fullName, pdfBuffer);
+        // Verificar que el nombre y correo estén presentes
+        if (!email || !fullName) {
+            res.status(400).json({ message: 'Faltan datos para generar el certificado' });
+            return;
+        }
+        // Generar el certificado PDF
+        let pdfBuffer;
+        try {
+            pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(fullName, date);
+            if (!pdfBuffer || pdfBuffer.length === 0) {
+                throw new Error('El PDF generado está vacío');
+            }
+        }
+        catch (error) {
+            console.error('Error generando el PDF:', error);
+            res.status(500).json({ message: 'Error al generar el certificado' });
+            return;
+        }
+        // Enviar el certificado por correo
+        try {
+            yield (0, emailservice_1.sendAllCertificates)(email, fullName, pdfBuffer);
+        }
+        catch (error) {
+            console.error('Error enviando el certificado:', error);
+            res.status(500).json({ message: 'Hubo un error al enviar el certificado' });
+            return;
+        }
         res.status(200).json({ message: 'Certificado enviado con éxito', email });
     }
     catch (error) {
-        console.error('Error enviando el certificado:', error);
-        res.status(500).json({ message: 'Hubo un error al enviar el certificado' });
+        console.error('Error procesando el certificado:', error);
+        res.status(500).json({ message: 'Hubo un error al procesar el certificado' });
     }
 });
 exports.sendOneCertificate = sendOneCertificate;
