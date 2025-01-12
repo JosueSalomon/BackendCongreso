@@ -146,7 +146,14 @@ class usuario {
                 if (error) {
                     throw error;
                 }
-                return data;
+                if (!data) {
+                    throw new Error('La función no devolvió datos.');
+                }
+                if (typeof data !== 'object' || Array.isArray(data) || data === null) {
+                    throw new Error('La respuesta no tiene el formato esperado.');
+                }
+                const { message, valor_usuario } = data;
+                return { message, valor_usuario };
             }
             catch (error) {
                 if (error instanceof Error) {

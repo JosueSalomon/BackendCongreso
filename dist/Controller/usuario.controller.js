@@ -134,13 +134,8 @@ const verificarcodigo = (req, res) => __awaiter(void 0, void 0, void 0, function
         return;
     }
     try {
-        const isValid = yield usuario_model_1.usuario.usuarioverificarcorreo(correo, codigo_verificacion);
-        if (isValid) {
-            res.status(200).json({ message: 'Código verificado correctamente.' });
-        }
-        else {
-            res.status(400).json({ error: 'Código de verificación inválido o expirado.' });
-        }
+        const { message, valor_usuario } = yield usuario_model_1.usuario.usuarioverificarcorreo(correo, codigo_verificacion);
+        res.status(200).json({ message, valor_usuario });
     }
     catch (error) {
         res.status(500).json({ error: error instanceof Error ? error.message : 'Error desconocido.' });

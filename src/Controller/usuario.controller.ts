@@ -174,16 +174,14 @@ export const verificarcodigo = async (req: Request, res: Response) => {
   }
 
   try {
-    const isValid = await usuario.usuarioverificarcorreo(correo, codigo_verificacion);
-    if (isValid) {
-      res.status(200).json({ message: 'Código verificado correctamente.' });
-    } else {
-      res.status(400).json({ error: 'Código de verificación inválido o expirado.' });
-    }
+    const { message, valor_usuario } = await usuario.usuarioverificarcorreo(correo, codigo_verificacion);
+
+    res.status(200).json({ message, valor_usuario});
   } catch (error) {
     res.status(500).json({ error: error instanceof Error ? error.message : 'Error desconocido.' });
   }
-}
+};
+
 
 export const verificarcodigoorganizador = async (req: Request, res: Response) => {
   const { correo, codigo_verificacion } = req.body;

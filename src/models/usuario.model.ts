@@ -150,17 +150,29 @@ export class usuario {
   }
 
 
-  static async usuarioverificarcorreo(correo: string, codigo_verificacion: string): Promise<boolean> {
+  static async usuarioverificarcorreo(correo: string, codigo_verificacion: string): Promise<{ message: string; valor_usuario: boolean | null }> {
     try {
       const { data, error } = await supabase.rpc('p_verificar_codigo', {
         p_correo: correo,
         p_codigo_verificacion: codigo_verificacion
       });
-
+  
       if (error) {
         throw error;
+      }if (!data) {
+        throw new Error('La función no devolvió datos.');
       }
-      return data;
+  
+      if (typeof data !== 'object' || Array.isArray(data) || data === null) {
+        throw new Error('La respuesta no tiene el formato esperado.');
+      }
+  
+      const { message, valor_usuario } = data as {
+        message: string;
+        valor_usuario: boolean | null;
+      };
+  
+      return { message, valor_usuario };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(error.message);
@@ -169,7 +181,7 @@ export class usuario {
       }
     }
   }
-
+  
 
   // Actualizar el correo del usuario en la base de datos
   static async usuarioexternoactualizarcorreo(id_usuario: number, nuevo_correo: string): Promise<void> {
