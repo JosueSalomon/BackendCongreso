@@ -150,7 +150,7 @@ export class usuario {
   }
 
 
-  static async usuarioverificarcorreo(correo: string, codigo_verificacion: string): Promise<{ message: string; valor_usuario: boolean | null }> {
+  static async usuarioverificarcorreo(correo: string, codigo_verificacion: string): Promise<{codigo_resultado: string; message: string; valor_usuario: boolean | null }> {
     try {
       const { data, error } = await supabase.rpc('p_verificar_codigo', {
         p_correo: correo,
@@ -167,12 +167,13 @@ export class usuario {
         throw new Error('La respuesta no tiene el formato esperado.');
       }
   
-      const { message, valor_usuario } = data as {
+      const {codigo_resultado, message, valor_usuario } = data as {
+        codigo_resultado: string;
         message: string;
         valor_usuario: boolean | null;
       };
   
-      return { message, valor_usuario };
+      return {codigo_resultado, message, valor_usuario };
     } catch (error: unknown) {
       if (error instanceof Error) {
         throw new Error(error.message);

@@ -174,9 +174,9 @@ export const verificarcodigo = async (req: Request, res: Response) => {
   }
 
   try {
-    const { message, valor_usuario } = await usuario.usuarioverificarcorreo(correo, codigo_verificacion);
+    const {codigo_resultado, message, valor_usuario } = await usuario.usuarioverificarcorreo(correo, codigo_verificacion);
 
-    res.status(200).json({ message, valor_usuario});
+    res.status(200).json({codigo_resultado, message, valor_usuario});
   } catch (error) {
     res.status(500).json({ error: error instanceof Error ? error.message : 'Error desconocido.' });
   }

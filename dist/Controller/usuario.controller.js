@@ -134,8 +134,8 @@ const verificarcodigo = (req, res) => __awaiter(void 0, void 0, void 0, function
         return;
     }
     try {
-        const { message, valor_usuario } = yield usuario_model_1.usuario.usuarioverificarcorreo(correo, codigo_verificacion);
-        res.status(200).json({ message, valor_usuario });
+        const { codigo_resultado, message, valor_usuario } = yield usuario_model_1.usuario.usuarioverificarcorreo(correo, codigo_verificacion);
+        res.status(200).json({ codigo_resultado, message, valor_usuario });
     }
     catch (error) {
         res.status(500).json({ error: error instanceof Error ? error.message : 'Error desconocido.' });

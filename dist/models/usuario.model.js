@@ -152,8 +152,8 @@ class usuario {
                 if (typeof data !== 'object' || Array.isArray(data) || data === null) {
                     throw new Error('La respuesta no tiene el formato esperado.');
                 }
-                const { message, valor_usuario } = data;
-                return { message, valor_usuario };
+                const { codigo_resultado, message, valor_usuario } = data;
+                return { codigo_resultado, message, valor_usuario };
             }
             catch (error) {
                 if (error instanceof Error) {
