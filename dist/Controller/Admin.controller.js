@@ -127,21 +127,17 @@ const enviar_correo_organizador = (req, res) => __awaiter(void 0, void 0, void 0
 exports.enviar_correo_organizador = enviar_correo_organizador;
 const sendCertificates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Obtener usuarios desde la función `GetUsuariosValidaciones`
         const resultado = yield Admin_model_1.Admin.GetUsuariosValidaciones(true);
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'No se encontraron usuarios para el estado proporcionado' });
             return;
         }
         const emailsSent = [];
-        // Iterar sobre los usuarios obtenidos
         yield Promise.all(resultado.map((user) => __awaiter(void 0, void 0, void 0, function* () {
             const email = user.correo;
             const fullName = user.nombre_completo;
             const date = new Date().toLocaleDateString();
-            // Generar el certificado en formato PDF
             const pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(fullName, date);
-            // Enviar el certificado
             yield (0, emailservice_1.sendAllCertificates)(email, fullName, pdfBuffer);
             emailsSent.push(email);
         })));

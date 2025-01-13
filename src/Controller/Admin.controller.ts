@@ -127,7 +127,6 @@ export const enviar_correo_organizador = async (req: Request, res: Response): Pr
 export const sendCertificates = async (req: Request, res: Response): Promise<void> => {
 
     try {
-        // Obtener usuarios desde la función `GetUsuariosValidaciones`
         const resultado = await Admin.GetUsuariosValidaciones(true);
 
         if (!resultado || resultado.length === 0) {
@@ -137,16 +136,13 @@ export const sendCertificates = async (req: Request, res: Response): Promise<voi
 
         const emailsSent: string[] = [];
 
-        // Iterar sobre los usuarios obtenidos
         await Promise.all(resultado.map(async (user) => {
             const email = user.correo;
             const fullName = user.nombre_completo;
             const date = new Date().toLocaleDateString();
 
-            // Generar el certificado en formato PDF
             const pdfBuffer = await generateCertificatePDF(fullName, date);
 
-            // Enviar el certificado
             await sendAllCertificates(email, fullName, pdfBuffer);
 
             emailsSent.push(email);

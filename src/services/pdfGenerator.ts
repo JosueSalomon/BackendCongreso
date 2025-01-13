@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer-core';
+import chromium from 'chrome-aws-lambda';
 
 export const generateCertificatePDF = async (name: string, date: string): Promise<Buffer> => {
     const htmlContent = `
@@ -9,69 +10,7 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Certificado de Participación</title>
             <style>
-                body {
-                    margin: 0;
-                    padding: 0;
-                    font-family: 'Georgia', serif;
-                    background-color: #f4f4f9;
-                }
-                .certificate-container {
-                    width: 1123px; /* A4 width in horizontal */
-                    height: 794px; /* A4 height in horizontal */
-                    margin: 0 auto;
-                    padding: 40px;
-                    background: white;
-                    border: 15px solid #2c3e50;
-                    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    text-align: center;
-                }
-                .certificate-header {
-                    border-bottom: 2px solid #2c3e50;
-                    padding-bottom: 10px;
-                    margin-bottom: 30px;
-                }
-                .certificate-header h1 {
-                    font-size: 48px;
-                    color: #2c3e50;
-                    margin: 0;
-                }
-                .certificate-header p {
-                    font-size: 24px;
-                    color: #34495e;
-                    margin: 5px 0;
-                }
-                .certificate-body {
-                    margin: 30px 0;
-                }
-                .certificate-body h2 {
-                    font-size: 40px;
-                    color: #2c3e50;
-                    margin-bottom: 20px;
-                }
-                .certificate-body p {
-                    font-size: 24px;
-                    color: #34495e;
-                    margin: 10px 0;
-                }
-                .certificate-footer {
-                    margin-top: 20px;
-                    text-align: center;
-                }
-                .certificate-footer .signature {
-                    display: inline-block;
-                    width: 300px;
-                    height: 50px;
-                    border-bottom: 2px solid #2c3e50;
-                }
-                .certificate-footer p {
-                    font-size: 20px;
-                    color: #34495e;
-                    margin-top: 10px;
-                }
+                /* Tu estilo aquí */
             </style>
         </head>
         <body>
@@ -98,14 +37,11 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
     try {
         console.log('Generando el certificado para:', name);
 
-        // Ruta al ejecutable de Chromium o Chrome
-        const executablePath = 'C:/Program Files/Google/Chrome/Application/chrome.exe'; // Cambiar si es necesario
-
-        // Usar Puppeteer para generar el PDF
+        // Lanzar Chromium desde chrome-aws-lambda
         const browser = await puppeteer.launch({
-            executablePath, // Especificamos la ruta al ejecutable
-            args: ['--no-sandbox', '--disable-setuid-sandbox'], // Configuración para entornos seguros
-            headless: true, // Ejecutar sin interfaz gráfica
+            executablePath: await chromium.executablePath,
+            args: chromium.args,
+            headless: chromium.headless,
         });
 
         const page = await browser.newPage();
