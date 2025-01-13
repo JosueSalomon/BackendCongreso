@@ -25,9 +25,9 @@ export const GetUsuariosValidaciones = async (req: Request, res: Response) =>{
 export const ValidarUsuario = async (req: Request, res: Response) =>{
     const {id_usuario} = req.params
     const {nuevo_estado} = req.body
-
+    10
     try{
-        const uniqueUrl = `https://backend-congreso.vercel.app/admin/user/${id_usuario}`;
+        const uniqueUrl = `https://congreso-universitario.vercel.app/colaborador/informacion/${id_usuario}`;
 
         const qrCode = await QRCode.toDataURL(uniqueUrl);
 
@@ -127,6 +127,7 @@ export const enviar_correo_organizador = async (req: Request, res: Response): Pr
 export const sendCertificates = async (req: Request, res: Response): Promise<void> => {
 
     try {
+        // Obtener usuarios desde la función `GetUsuariosValidaciones`
         const resultado = await Admin.GetUsuariosValidaciones(true);
 
         if (!resultado || resultado.length === 0) {
@@ -158,6 +159,7 @@ export const sendCertificates = async (req: Request, res: Response): Promise<voi
     }
 };
 
+
 export const sendOneCertificate = async (req: Request, res: Response): Promise<void> => {
     const { id_user } = req.params;
     try {
@@ -169,45 +171,21 @@ export const sendOneCertificate = async (req: Request, res: Response): Promise<v
         }
 
         const user = resultado[0];
+
         const email = user.correo;
         const fullName = `${user.nombres} ${user.apellidos}`;
         const date = new Date().toLocaleDateString();
 
-        // Verificar que el nombre y correo estén presentes
-        if (!email || !fullName) {
-            res.status(400).json({ message: 'Faltan datos para generar el certificado' });
-            return;
-        }
+        const pdfBuffer = await generateCertificatePDF(fullName, date);
 
-        // Generar el certificado PDF
-        let pdfBuffer;
-        try {
-            pdfBuffer = await generateCertificatePDF(fullName, date);
-            if (!pdfBuffer || pdfBuffer.length === 0) {
-                throw new Error('El PDF generado está vacío');
-            }
-        } catch (error) {
-            console.error('Error generando el PDF:', error);
-            res.status(500).json({ message: 'Error al generar el certificado' });
-            return;
-        }
-
-        // Enviar el certificado por correo
-        try {
-            await sendAllCertificates(email, fullName, pdfBuffer);
-        } catch (error) {
-            console.error('Error enviando el certificado:', error);
-            res.status(500).json({ message: 'Hubo un error al enviar el certificado' });
-            return;
-        }
+        await sendAllCertificates(email, fullName, pdfBuffer);
 
         res.status(200).json({ message: 'Certificado enviado con éxito', email });
     } catch (error) {
-        console.error('Error procesando el certificado:', error);
-        res.status(500).json({ message: 'Hubo un error al procesar el certificado' });
+        console.error('Error enviando el certificado:', error);
+        res.status(500).json({ message: 'Hubo un error al enviar el certificado' });
     }
 };
-
 
 export const downloadCertificate = async (req: Request, res: Response): Promise<void> => {
     const { id_user } = req.params;

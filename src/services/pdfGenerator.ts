@@ -1,7 +1,8 @@
-import pdf from 'html-pdf';
+import puppeteer from 'puppeteer-core';
 
 export const generateCertificatePDF = async (name: string, date: string): Promise<Buffer> => {
-    const htmlContent = `<!DOCTYPE html>
+    const htmlContent = `
+        <!DOCTYPE html>
         <html lang="es">
         <head>
             <meta charset="UTF-8">
@@ -91,20 +92,49 @@ export const generateCertificatePDF = async (name: string, date: string): Promis
                 </div>
             </div>
         </body>
-        </html>`;
+        </html>
+    `;
 
-    console.log('Generando el certificado para:', name);
+    try {
+        console.log('Generando el certificado para:', name);
 
-    return new Promise<Buffer>((resolve, reject) => {
-        pdf.create(htmlContent, { format: 'A4', orientation: 'landscape', border: '10mm' })
-            .toBuffer((err, buffer) => {
-                if (err) {
-                    console.error('Error al generar el certificado:', err);
-                    reject(new Error('Error al generar el certificado: ' + err.message));
-                } else {
-                    console.log('Certificado generado exitosamente');
-                    resolve(buffer);
-                }
-            });
-    });
+        // Ruta al ejecutable de Chromium o Chrome
+        const executablePath = 'C:/Program Files/Google/Chrome/Application/chrome.exe'; // Cambiar si es necesario
+
+        // Usar Puppeteer para generar el PDF
+        const browser = await puppeteer.launch({
+            executablePath, // Especificamos la ruta al ejecutable
+            args: ['--no-sandbox', '--disable-setuid-sandbox'], // Configuración para entornos seguros
+            headless: true, // Ejecutar sin interfaz gráfica
+        });
+
+        const page = await browser.newPage();
+        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+
+        // Generar el PDF en orientación horizontal
+        console.log('Creando el PDF...');
+        const pdfBuffer = await page.pdf({
+            format: 'a4',
+            landscape: true, // Cambiado a horizontal
+            printBackground: true,
+        });
+
+        await browser.close();
+
+        if (!pdfBuffer || pdfBuffer.length === 0) {
+            throw new Error('El PDF generado está vacío');
+        }
+
+        console.log('Certificado generado exitosamente');
+        return Buffer.from(pdfBuffer);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error('Error al generar el certificado:', error.message);
+            console.error('Stack trace:', error.stack);
+            throw new Error('Error al generar el certificado: ' + error.message);
+        } else {
+            console.error('Error desconocido:', error);
+            throw new Error('Error desconocido al generar el certificado');
+        }
+    }
 };
