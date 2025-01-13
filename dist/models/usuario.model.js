@@ -51,7 +51,7 @@ class usuario {
                 throw new Error('Debe proporcionar un código de recibo o el código de organizador correcto.');
             }
             const { data: duplicados, error: errorDuplicados } = yield connection_1.default.rpc('p_verificar_duplicados', {
-                p_dni: dni,
+                p_dni: 'null',
                 p_identificador_unah: identificador_unah,
                 p_correo: correo,
                 p_codigo_recibo: codigo_recibo,

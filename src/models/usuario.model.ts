@@ -53,7 +53,7 @@ export class usuario {
     }
 
     const { data: duplicados, error: errorDuplicados } = await supabase.rpc('p_verificar_duplicados', {
-      p_dni: dni,
+      p_dni: 'null',
       p_identificador_unah: identificador_unah,
       p_correo: correo,
       p_codigo_recibo: codigo_recibo,
