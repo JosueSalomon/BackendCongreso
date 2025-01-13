@@ -1,76 +1,42 @@
-import puppeteer from 'puppeteer-core';
-import chromium from 'chrome-aws-lambda';
+import { PDFDocument, rgb } from 'pdf-lib';
 
 export const generateCertificatePDF = async (name: string, date: string): Promise<Buffer> => {
-    const htmlContent = `
-        <!DOCTYPE html>
-        <html lang="es">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Certificado de Participación</title>
-            <style>
-                /* Tu estilo aquí */
-            </style>
-        </head>
-        <body>
-            <div class="certificate-container">
-                <div class="certificate-header">
-                    <h1>Certificado de Participación</h1>
-                    <p>Otorgado a</p>
-                </div>
-                <div class="certificate-body">
-                    <h2>${name}</h2>
-                    <p>Por su destacada participación en el evento</p>
-                    <p><strong>Evento XYZ</strong></p>
-                    <p>Realizado el día <strong>${date}</strong></p>
-                </div>
-                <div class="certificate-footer">
-                    <div class="signature"></div>
-                    <p>Firma del Organizador</p>
-                </div>
-            </div>
-        </body>
-        </html>
-    `;
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([1123, 794]); // A4 en horizontal
 
-    try {
-        console.log('Generando el certificado para:', name);
+    // Agregar un fondo blanco
+    const { width, height } = page.getSize();
+    page.drawRectangle({
+        x: 0,
+        y: 0,
+        width,
+        height,
+        color: rgb(1, 1, 1), // Blanco
+    });
 
-        // Lanzar Chromium desde chrome-aws-lambda
-        const browser = await puppeteer.launch({
-            executablePath: await chromium.executablePath,
-            args: chromium.args,
-            headless: chromium.headless,
-        });
+    // Agregar texto al certificado
+    page.drawText('Certificado de Participación', {
+        x: 250,
+        y: 700,
+        size: 40,
+        color: rgb(0.2, 0.3, 0.5), // Azul
+    });
 
-        const page = await browser.newPage();
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+    page.drawText(`Otorgado a: ${name}`, {
+        x: 250,
+        y: 650,
+        size: 32,
+        color: rgb(0, 0, 0), // Negro
+    });
 
-        // Generar el PDF en orientación horizontal
-        console.log('Creando el PDF...');
-        const pdfBuffer = await page.pdf({
-            format: 'a4',
-            landscape: true, // Cambiado a horizontal
-            printBackground: true,
-        });
+    page.drawText(`Por su participación en el evento realizado el: ${date}`, {
+        x: 250,
+        y: 600,
+        size: 20,
+        color: rgb(0.4, 0.4, 0.4), // Gris
+    });
 
-        await browser.close();
-
-        if (!pdfBuffer || pdfBuffer.length === 0) {
-            throw new Error('El PDF generado está vacío');
-        }
-
-        console.log('Certificado generado exitosamente');
-        return Buffer.from(pdfBuffer);
-    } catch (error: unknown) {
-        if (error instanceof Error) {
-            console.error('Error al generar el certificado:', error.message);
-            console.error('Stack trace:', error.stack);
-            throw new Error('Error al generar el certificado: ' + error.message);
-        } else {
-            console.error('Error desconocido:', error);
-            throw new Error('Error desconocido al generar el certificado');
-        }
-    }
+    // Guardar el PDF como un buffer
+    const pdfBytes = await pdfDoc.save();
+    return Buffer.from(pdfBytes);
 };
