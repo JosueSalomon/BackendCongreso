@@ -122,7 +122,7 @@ const enviarcodigocambiocontrasena = (req, res) => __awaiter(void 0, void 0, voi
         }
         else {
             console.error('Error no identificado:', error);
-            return res.status(500).json({ message: 'Error desconocido.' });
+            return res.status(500).json({ message: 'El correo proporcionado no está asociado a ningún usuario.' });
         }
     }
 });

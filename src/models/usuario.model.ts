@@ -142,9 +142,9 @@ export class usuario {
       return data;
     } catch (error: unknown) {
       if (error instanceof Error) {
-        throw new Error(error.message);
+        throw new Error('Error al guardar el codigo de verificacion');
       } else {
-        throw new Error('Error desconocido');
+        throw new Error('El correo proporcionado no está asociado a ningún usuario');
       }
     }
   }
