@@ -218,15 +218,14 @@ export const downloadCertificate = async (req: Request, res: Response): Promise<
 
         const pdfBuffer = await generateCertificatePDF(fullName, date);
 
+        const encodedFileName = encodeURIComponent(`certificado_${fullName}.pdf`);
+
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=certificado_${fullName}.pdf`);
+        res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodedFileName}`);
         res.send(pdfBuffer);
 
     } catch (error) {
         console.error('Error generando el certificado:', error);
         res.status(500).json({ message: 'Hubo un error al generar el certificado' });
     }
-
-
-    
 };

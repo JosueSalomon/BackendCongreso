@@ -197,8 +197,9 @@ const downloadCertificate = (req, res) => __awaiter(void 0, void 0, void 0, func
         const fullName = user.nombre_completo;
         const date = new Date().toLocaleDateString();
         const pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(fullName, date);
+        const encodedFileName = encodeURIComponent(`certificado_${fullName}.pdf`);
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=certificado_${fullName}.pdf`);
+        res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodedFileName}`);
         res.send(pdfBuffer);
     }
     catch (error) {
