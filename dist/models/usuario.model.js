@@ -393,6 +393,8 @@ class usuario {
                     p_id_usuario: id_usuario,
                     p_id_conferencia: id_conferencia
                 });
+                console.log(data);
+                console.log(error);
                 if (error) {
                     throw new Error(error.message);
                 }
