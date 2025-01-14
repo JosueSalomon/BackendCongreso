@@ -177,7 +177,7 @@ export const sendCertificates = async (req: Request, res: Response): Promise<voi
 export const sendOneCertificate = async (req: Request, res: Response): Promise<void> => {
     const { id_user } = req.params;
     try {
-        const resultado = await Admin.GetUserByID(Number(id_user));
+        const resultado = await Admin.Participante_certificado_por_id(Number(id_user));
 
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'Usuario no encontrado' });
@@ -187,7 +187,7 @@ export const sendOneCertificate = async (req: Request, res: Response): Promise<v
         const user = resultado[0];
 
         const email = user.correo;
-        const fullName = `${user.nombres} ${user.apellidos}`;
+        const fullName = user.nombre_completo;
         const date = new Date().toLocaleDateString();
 
         const pdfBuffer = await generateCertificatePDF(fullName, date);
@@ -205,7 +205,7 @@ export const downloadCertificate = async (req: Request, res: Response): Promise<
     const { id_user } = req.params;
 
     try {
-        const resultado = await Admin.GetUserByID(Number(id_user));
+        const resultado = await Admin.Participante_certificado_por_id(Number(id_user));
 
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'Usuario no encontrado' });
@@ -213,7 +213,7 @@ export const downloadCertificate = async (req: Request, res: Response): Promise<
         }
 
         const user = resultado[0];
-        const fullName = `${user.nombres} ${user.apellidos}`;
+        const fullName = user.nombre_completo;
         const date = new Date().toLocaleDateString();
 
         const pdfBuffer = await generateCertificatePDF(fullName, date);

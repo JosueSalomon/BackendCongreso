@@ -99,5 +99,16 @@ class Admin {
             return data;
         });
     }
+    static Participante_certificado_por_id(userID) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_participante_certificado_por_id', {
+                p_id_usuario: userID
+            });
+            if (error) {
+                throw error;
+            }
+            return data;
+        });
+    }
 }
 exports.Admin = Admin;

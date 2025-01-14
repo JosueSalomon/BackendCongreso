@@ -166,14 +166,14 @@ exports.sendCertificates = sendCertificates;
 const sendOneCertificate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id_user } = req.params;
     try {
-        const resultado = yield Admin_model_1.Admin.GetUserByID(Number(id_user));
+        const resultado = yield Admin_model_1.Admin.Participante_certificado_por_id(Number(id_user));
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'Usuario no encontrado' });
             return;
         }
         const user = resultado[0];
         const email = user.correo;
-        const fullName = `${user.nombres} ${user.apellidos}`;
+        const fullName = user.nombre_completo;
         const date = new Date().toLocaleDateString();
         const pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(fullName, date);
         yield (0, emailservice_1.sendAllCertificates)(email, fullName, pdfBuffer);
@@ -188,13 +188,13 @@ exports.sendOneCertificate = sendOneCertificate;
 const downloadCertificate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id_user } = req.params;
     try {
-        const resultado = yield Admin_model_1.Admin.GetUserByID(Number(id_user));
+        const resultado = yield Admin_model_1.Admin.Participante_certificado_por_id(Number(id_user));
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'Usuario no encontrado' });
             return;
         }
         const user = resultado[0];
-        const fullName = `${user.nombres} ${user.apellidos}`;
+        const fullName = user.nombre_completo;
         const date = new Date().toLocaleDateString();
         const pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(fullName, date);
         res.setHeader('Content-Type', 'application/pdf');

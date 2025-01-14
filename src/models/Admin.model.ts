@@ -99,4 +99,17 @@ export class Admin{
     
         return data;
       }
+
+
+      static async Participante_certificado_por_id(
+        userID: number
+    ){
+        const {data, error} = await supabase.rpc('p_participante_certificado_por_id',{
+            p_id_usuario: userID
+        });
+        if(error){
+            throw error;
+        }
+        return data
+    }
 }
