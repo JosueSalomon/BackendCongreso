@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.downloadCertificate = exports.sendOneCertificate = exports.sendCertificates = exports.enviar_correo_organizador = exports.GetUserByID = exports.ActualizarUsuario = exports.BuscarUsuario = exports.ValidarUsuario = exports.GetUsuariosValidaciones = void 0;
+exports.downloadCertificate = exports.sendOneCertificate = exports.sendCertificates = exports.GetUsuariosAptosCertificados = exports.enviar_correo_organizador = exports.GetUserByID = exports.ActualizarUsuario = exports.BuscarUsuario = exports.ValidarUsuario = exports.GetUsuariosValidaciones = void 0;
 const Admin_model_1 = require("../models/Admin.model");
 const emailservice_1 = require("../services/emailservice");
 const pdfGenerator_1 = require("../services/pdfGenerator");
@@ -125,23 +125,33 @@ const enviar_correo_organizador = (req, res) => __awaiter(void 0, void 0, void 0
     }
 });
 exports.enviar_correo_organizador = enviar_correo_organizador;
+const GetUsuariosAptosCertificados = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const resultado = yield Admin_model_1.Admin.UsuariosCertificados();
+        res.status(200).json({
+            message: 'Usuarios encontrados',
+            resultado,
+        });
+    }
+    catch (error) {
+        console.error('Error con fetch', error);
+        res.status(500).json({ error: 'Hubo un problema buscar los usuarios' });
+    }
+});
+exports.GetUsuariosAptosCertificados = GetUsuariosAptosCertificados;
 const sendCertificates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Obtener usuarios desde la función `GetUsuariosValidaciones`
-        const resultado = yield Admin_model_1.Admin.GetUsuariosValidaciones(true);
+        const resultado = yield Admin_model_1.Admin.UsuariosCertificados();
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'No se encontraron usuarios para el estado proporcionado' });
             return;
         }
         const emailsSent = [];
-        // Iterar sobre los usuarios obtenidos
         yield Promise.all(resultado.map((user) => __awaiter(void 0, void 0, void 0, function* () {
             const email = user.correo;
             const fullName = user.nombre_completo;
             const date = new Date().toLocaleDateString();
-            // Generar el certificado en formato PDF
             const pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(fullName, date);
-            // Enviar el certificado
             yield (0, emailservice_1.sendAllCertificates)(email, fullName, pdfBuffer);
             emailsSent.push(email);
         })));
@@ -156,14 +166,14 @@ exports.sendCertificates = sendCertificates;
 const sendOneCertificate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id_user } = req.params;
     try {
-        const resultado = yield Admin_model_1.Admin.GetUserByID(Number(id_user));
+        const resultado = yield Admin_model_1.Admin.Participante_certificado_por_id(Number(id_user));
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'Usuario no encontrado' });
             return;
         }
         const user = resultado[0];
         const email = user.correo;
-        const fullName = `${user.nombres} ${user.apellidos}`;
+        const fullName = user.nombre_completo;
         const date = new Date().toLocaleDateString();
         const pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(fullName, date);
         yield (0, emailservice_1.sendAllCertificates)(email, fullName, pdfBuffer);
@@ -178,17 +188,18 @@ exports.sendOneCertificate = sendOneCertificate;
 const downloadCertificate = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id_user } = req.params;
     try {
-        const resultado = yield Admin_model_1.Admin.GetUserByID(Number(id_user));
+        const resultado = yield Admin_model_1.Admin.Participante_certificado_por_id(Number(id_user));
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'Usuario no encontrado' });
             return;
         }
         const user = resultado[0];
-        const fullName = `${user.nombres} ${user.apellidos}`;
+        const fullName = user.nombre_completo;
         const date = new Date().toLocaleDateString();
         const pdfBuffer = yield (0, pdfGenerator_1.generateCertificatePDF)(fullName, date);
+        const encodedFileName = encodeURIComponent(`certificado_${fullName}.pdf`);
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=certificado_${fullName}.pdf`);
+        res.setHeader('Content-Disposition', `attachment; filename*=UTF-8''${encodedFileName}`);
         res.send(pdfBuffer);
     }
     catch (error) {
