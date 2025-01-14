@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.downloadCertificate = exports.sendOneCertificate = exports.sendCertificates = exports.enviar_correo_organizador = exports.GetUserByID = exports.ActualizarUsuario = exports.BuscarUsuario = exports.ValidarUsuario = exports.GetUsuariosValidaciones = void 0;
+exports.downloadCertificate = exports.sendOneCertificate = exports.sendCertificates = exports.GetUsuariosAptosCertificados = exports.enviar_correo_organizador = exports.GetUserByID = exports.ActualizarUsuario = exports.BuscarUsuario = exports.ValidarUsuario = exports.GetUsuariosValidaciones = void 0;
 const Admin_model_1 = require("../models/Admin.model");
 const emailservice_1 = require("../services/emailservice");
 const pdfGenerator_1 = require("../services/pdfGenerator");
@@ -125,9 +125,23 @@ const enviar_correo_organizador = (req, res) => __awaiter(void 0, void 0, void 0
     }
 });
 exports.enviar_correo_organizador = enviar_correo_organizador;
+const GetUsuariosAptosCertificados = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const resultado = yield Admin_model_1.Admin.UsuariosCertificados();
+        res.status(200).json({
+            message: 'Usuarios encontrados',
+            resultado,
+        });
+    }
+    catch (error) {
+        console.error('Error con fetch', error);
+        res.status(500).json({ error: 'Hubo un problema buscar los usuarios' });
+    }
+});
+exports.GetUsuariosAptosCertificados = GetUsuariosAptosCertificados;
 const sendCertificates = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const resultado = yield Admin_model_1.Admin.GetUsuariosValidaciones(true);
+        const resultado = yield Admin_model_1.Admin.UsuariosCertificados();
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'No se encontraron usuarios para el estado proporcionado' });
             return;

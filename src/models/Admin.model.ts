@@ -89,4 +89,14 @@ export class Admin{
                 throw error;
             return data;
     }
+
+    static async UsuariosCertificados() {
+        const { data, error } = await supabase.rpc('p_participantes_certificados')
+        if (error) {
+          console.error('Error al obtener particiapntes que cumplieron para el certificado:', error);
+          throw new Error('Error al obtener particiapntes que cumplieron para el certificado');
+        }
+    
+        return data;
+      }
 }

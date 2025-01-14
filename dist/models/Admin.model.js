@@ -89,5 +89,15 @@ class Admin {
             return data;
         });
     }
+    static UsuariosCertificados() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { data, error } = yield connection_1.default.rpc('p_participantes_certificados');
+            if (error) {
+                console.error('Error al obtener particiapntes que cumplieron para el certificado:', error);
+                throw new Error('Error al obtener particiapntes que cumplieron para el certificado');
+            }
+            return data;
+        });
+    }
 }
 exports.Admin = Admin;

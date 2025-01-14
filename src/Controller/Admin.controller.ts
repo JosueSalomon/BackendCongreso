@@ -124,10 +124,28 @@ export const enviar_correo_organizador = async (req: Request, res: Response): Pr
   }
 };
 
+
+
+export const GetUsuariosAptosCertificados = async (req: Request, res: Response) =>{
+    try{
+        const resultado = await Admin.UsuariosCertificados();
+
+        res.status(200).json({
+            message: 'Usuarios encontrados',
+            resultado,
+        });
+    }catch (error) {
+        console.error('Error con fetch', error);
+        res.status(500).json({ error: 'Hubo un problema buscar los usuarios' });
+    }
+}
+
+
+
 export const sendCertificates = async (req: Request, res: Response): Promise<void> => {
 
     try {
-        const resultado = await Admin.GetUsuariosValidaciones(true);
+        const resultado = await Admin.UsuariosCertificados();
 
         if (!resultado || resultado.length === 0) {
             res.status(404).json({ message: 'No se encontraron usuarios para el estado proporcionado' });
@@ -208,4 +226,7 @@ export const downloadCertificate = async (req: Request, res: Response): Promise<
         console.error('Error generando el certificado:', error);
         res.status(500).json({ message: 'Hubo un error al generar el certificado' });
     }
+
+
+    
 };

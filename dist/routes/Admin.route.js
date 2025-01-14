@@ -15,4 +15,5 @@ router.post('/codigo/usuario_organizador', Admin_controller_1.enviar_correo_orga
 router.post('/certificates/send-all', Admin_controller_1.sendCertificates);
 router.post('/certificates/send/:id_user', Admin_controller_1.sendOneCertificate);
 router.get('/certificates/download/:id_user', Admin_controller_1.downloadCertificate);
+router.get('/certificates/accepted/users', Admin_controller_1.GetUsuariosAptosCertificados);
 exports.default = router;
