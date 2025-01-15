@@ -16,7 +16,7 @@ export class Admin{
     static async ValidarUsuarios(
         id_usuario: number,
         nuevo_estado: boolean,
-        url_qr: string
+        url_qr: string 
     ){
         const {data, error} = await supabase.rpc('p_cambiar_validacion',{
             p_usuario_id: id_usuario,
